@@ -1,0 +1,59 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    @apply bg-cream-50 text-olive-900 font-sans;
+    font-feature-settings: 'cv11', 'ss01';
+  }
+
+  h1,
+  h2,
+  h3 {
+    @apply font-display tracking-tight;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2
+           rounded-md bg-olive-700 px-4 py-2.5
+           text-sm font-medium text-cream-50
+           transition-all duration-150
+           hover:bg-olive-800 active:bg-olive-900
+           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-olive-500 focus-visible:ring-offset-2 focus-visible:ring-offset-cream-50
+           disabled:cursor-not-allowed disabled:bg-olive-300;
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2
+           rounded-md px-4 py-2.5
+           text-sm font-medium text-olive-700
+           transition-colors
+           hover:bg-olive-100
+           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-olive-500;
+  }
+
+  .input {
+    @apply w-full rounded-md border border-olive-200 bg-cream-50 px-3 py-2.5
+           text-sm text-olive-900 placeholder:text-olive-400
+           transition-colors
+           focus:border-olive-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-olive-200
+           disabled:cursor-not-allowed disabled:opacity-60;
+  }
+
+  .label {
+    @apply mb-1.5 block text-xs font-medium uppercase tracking-wider text-olive-700;
+  }
+
+  .card {
+    @apply rounded-xl border border-olive-100 bg-white p-6 shadow-soft;
+  }
+}
