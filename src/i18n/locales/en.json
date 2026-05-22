@@ -219,7 +219,9 @@
     "linkMorosos": "Overdue",
     "linkExpenses": "Expenses",
     "linkProcedures": "Procedures",
-    "linkBudget": "Budget"
+    "linkBudget": "Budget",
+    "linkAreas": "Common areas",
+    "linkMeetings": "Meetings"
   },
   "invite": {
     "eyebrow": "Administration",

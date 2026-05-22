@@ -219,7 +219,9 @@
     "linkMorosos": "Morosos",
     "linkExpenses": "Gastos",
     "linkProcedures": "Trámites",
-    "linkBudget": "Presupuesto"
+    "linkBudget": "Presupuesto",
+    "linkAreas": "Zonas comunes",
+    "linkMeetings": "Juntas"
   },
   "invite": {
     "eyebrow": "Administración",
@@ -518,6 +520,38 @@
       "COMPLETED": "Resuelto",
       "REJECTED": "Rechazado"
     }
+  },
+  "areas": {
+    "eyebrow": "Gestión",
+    "title": "Zonas comunes",
+    "newArea": "Nueva zona",
+    "name": "Nombre",
+    "description": "Descripción",
+    "capacity": "Aforo máx.",
+    "openTime": "Apertura",
+    "closeTime": "Cierre",
+    "slotMinutes": "Duración reserva",
+    "slot30": "30 min",
+    "slot60": "1 hora",
+    "slot120": "2 horas",
+    "maxSlotsPerDay": "Reservas/día por vecino",
+    "save": "Guardar",
+    "deactivate": "Desactivar",
+    "activate": "Activar",
+    "viewReservations": "Ver reservas",
+    "reservationsTitle": "Reservas",
+    "selectDate": "Fecha",
+    "free": "Libre",
+    "reserve": "Reservar",
+    "notes": "Notas (opcional)",
+    "confirm": "Confirmar reserva",
+    "cancel": "Cancelar reserva",
+    "confirmCancel": "¿Cancelar esta reserva?",
+    "bookedBy": "Reservado por",
+    "todayCount": "hoy",
+    "backToAreas": "Volver a zonas",
+    "empty": "No hay zonas comunes configuradas",
+    "noSlots": "No hay franjas disponibles para esta fecha"
   },
   "audit": {
     "eyebrow": "Administración",

@@ -34,6 +34,10 @@ import { ProcedureDetailPage } from '@/pages/ProcedureDetail';
 import { CommunityProceduresPage } from '@/pages/CommunityProcedures';
 import { CommunityBudgetPage } from '@/pages/CommunityBudget';
 import { AuditLogPage } from '@/pages/AuditLog';
+import { CommunityAreasPage } from '@/pages/CommunityAreas';
+import { AreaReservationsPage } from '@/pages/AreaReservations';
+import { CommunityMeetingsPage } from '@/pages/CommunityMeetings';
+import { MeetingDetailPage } from '@/pages/MeetingDetail';
 import { SoporteLoginPage } from '@/pages/SoporteLogin';
 import { NotFoundPage } from '@/pages/NotFound';
 
@@ -89,6 +93,10 @@ export function App() {
             <Route path="/communities/:id/budget" element={<ProtectedRoute allowedRoles={['ADMIN_FINCAS','SUPPORT']}><CommunityBudgetPage /></ProtectedRoute>} />
             <Route path="/invoices/:id" element={<ProtectedRoute allowedRoles={[...ADMIN_ROLES]}><InvoiceDetailPage /></ProtectedRoute>} />
             <Route path="/admin/audit" element={<ProtectedRoute allowedRoles={[...ADMIN_ROLES]}><AuditLogPage /></ProtectedRoute>} />
+            <Route path="/communities/:id/areas" element={<ProtectedRoute allowedRoles={[...ADMIN_ROLES]}><CommunityAreasPage /></ProtectedRoute>} />
+            <Route path="/communities/:id/areas/:areaId/reservations" element={<ProtectedRoute><AreaReservationsPage /></ProtectedRoute>} />
+            <Route path="/communities/:id/meetings" element={<ProtectedRoute allowedRoles={[...ADMIN_ROLES]}><CommunityMeetingsPage /></ProtectedRoute>} />
+            <Route path="/communities/:id/meetings/:meetingId" element={<ProtectedRoute><MeetingDetailPage /></ProtectedRoute>} />
             <Route path="/admin/invite" element={<ProtectedRoute allowedRoles={[...ADMIN_ROLES]}><InviteResidentPage /></ProtectedRoute>} />
 
             <Route path="*" element={<NotFoundPage />} />
