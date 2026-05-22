@@ -110,10 +110,18 @@ export function LoginPage() {
               {t('auth.login.createAccount')}
             </Link>
           </p>
+
+          {/* Aviso para vecinos */}
+          <div className="mt-6 rounded-lg border border-olive-100 bg-cream-100/60 px-4 py-3 text-sm text-olive-600">
+            {t('auth.login.vecinoNote')}
+          </div>
         </div>
 
-        <footer className="text-xs text-olive-500">
-          © {new Date().getFullYear()} {t('common.appName')}
+        <footer className="flex items-center justify-between text-xs text-olive-400">
+          <span>© {new Date().getFullYear()} {t('common.appName')}</span>
+          <Link to="/soporte" className="hover:text-olive-600">
+            {t('auth.login.soporteLink')} →
+          </Link>
         </footer>
       </main>
 

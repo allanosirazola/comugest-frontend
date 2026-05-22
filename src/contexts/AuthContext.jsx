@@ -38,6 +38,7 @@ export function AuthProvider({ children }) {
   const handleLogin = async (input) => {
     const res = await authApi.login(input);
     applyAuthResponse(res);
+    return res.user;
   };
 
   const handleRegister = async (input) => {

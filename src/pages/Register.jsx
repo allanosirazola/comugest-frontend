@@ -17,13 +17,10 @@ export function RegisterPage() {
     register: rhfRegister,
     handleSubmit,
     formState: { errors, isSubmitting },
-    watch,
   } = useForm({
     resolver: zodResolver(registerSchema),
-    defaultValues: { role: 'VECINO' },
+    defaultValues: { role: 'ADMIN_FINCAS' },
   });
-
-  const role = watch('role');
 
   const onSubmit = async (values) => {
     setServerError(null);
@@ -34,7 +31,7 @@ export function RegisterPage() {
         firstName: values.firstName,
         lastName: values.lastName,
         phone: values.phone || undefined,
-        role: values.role,
+        role: 'ADMIN_FINCAS',
         locale: i18n.resolvedLanguage ?? 'es',
         gdprAccepted: true,
       });
@@ -60,31 +57,17 @@ export function RegisterPage() {
         </h1>
         <p className="mt-2 text-sm text-olive-600">{t('auth.register.subtitle')}</p>
 
+        {/* Badge indicando que es solo para admins */}
+        <div className="mt-5 flex items-start gap-3 rounded-lg border border-olive-200 bg-olive-50 px-4 py-3">
+          <span className="mt-0.5 text-base">🏢</span>
+          <div>
+            <p className="text-sm font-medium text-olive-900">{t('auth.register.adminBadge')}</p>
+            <p className="mt-0.5 text-xs text-olive-600">{t('auth.register.adminBadgeNote')}</p>
+          </div>
+        </div>
+
         <form onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-5" noValidate>
-          {/* Selector de rol con dos tarjetas */}
-          <fieldset>
-            <legend className="label">{t('auth.register.role')}</legend>
-            <div className="grid grid-cols-2 gap-3">
-              {['VECINO', 'ADMIN_FINCAS'].map((r) => (
-                <label
-                  key={r}
-                  className={`cursor-pointer rounded-lg border p-4 transition-all ${
-                    role === r
-                      ? 'border-olive-700 bg-olive-50 shadow-soft'
-                      : 'border-olive-200 bg-white hover:border-olive-300'
-                  }`}
-                >
-                  <input type="radio" value={r} {...rhfRegister('role')} className="sr-only" />
-                  <div className="font-medium text-olive-900">
-                    {r === 'VECINO' ? t('auth.register.roleVecino') : t('auth.register.roleAdmin')}
-                  </div>
-                  <div className="mt-1 text-xs text-olive-600">
-                    {r === 'VECINO' ? t('auth.register.roleVecinoDesc') : t('auth.register.roleAdminDesc')}
-                  </div>
-                </label>
-              ))}
-            </div>
-          </fieldset>
+          <input type="hidden" {...rhfRegister('role')} value="ADMIN_FINCAS" />
 
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
             <div>

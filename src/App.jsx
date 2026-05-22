@@ -32,6 +32,7 @@ import { CreateProcedurePage } from '@/pages/CreateProcedure';
 import { MyProceduresPage } from '@/pages/MyProcedures';
 import { ProcedureDetailPage } from '@/pages/ProcedureDetail';
 import { CommunityProceduresPage } from '@/pages/CommunityProcedures';
+import { SoporteLoginPage } from '@/pages/SoporteLogin';
 import { NotFoundPage } from '@/pages/NotFound';
 
 const queryClient = new QueryClient({
@@ -51,6 +52,7 @@ export function App() {
             {/* Públicas */}
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
+            <Route path="/soporte" element={<SoporteLoginPage />} />
             <Route path="/check-email" element={<CheckEmailPage />} />
             <Route path="/verify-email" element={<VerifyEmailPage />} />
             <Route path="/accept-invitation" element={<AcceptInvitationPage />} />

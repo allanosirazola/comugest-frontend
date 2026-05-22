@@ -18,7 +18,7 @@ export const registerSchema = z.object({
   email: z.string().email(),
   phone: z.string().max(30).optional().or(z.literal('')),
   password: passwordSchema,
-  role: z.enum(['VECINO', 'ADMIN_FINCAS']),
+  role: z.enum(['ADMIN_FINCAS']),
   gdprAccepted: z.literal(true, {
     errorMap: () => ({ message: 'Debes aceptar el tratamiento de datos' }),
   }),
