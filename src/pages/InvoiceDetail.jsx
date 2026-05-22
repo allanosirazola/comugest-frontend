@@ -3,7 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Layout } from '@/components/Layout';
 import { StatusBadge, formatMoney, formatDate } from '@/components/StatusBadge';
-import { useInvoice, useRecordPayment, useDeletePayment, useCancelInvoice } from '@/hooks/useInvoices';
+import { useInvoice, useRecordPayment, useDeletePayment, useCancelInvoice, useDownloadSepa, useDownloadPdf } from '@/hooks/useInvoices';
 
 export function InvoiceDetailPage() {
   const { t } = useTranslation();
@@ -14,10 +14,15 @@ export function InvoiceDetailPage() {
   const deletePayment = useDeletePayment(id ?? '');
   const cancelInvoice = useCancelInvoice();
 
+  const sepa = useDownloadSepa(id ?? '');
+  const pdf = useDownloadPdf(id ?? '');
+
   const [payingItemId, setPayingItemId] = useState(null);
   const [payAmount, setPayAmount] = useState('');
   const [payRef, setPayRef] = useState('');
   const [actionError, setActionError] = useState(null);
+  const [sepaOpen, setSepaOpen] = useState(false);
+  const [sepaForm, setSepaForm] = useState({ creditorName: '', creditorIban: '', creditorBic: '' });
 
   if (isLoading || !invoice) {
     return (
@@ -80,12 +85,66 @@ export function InvoiceDetailPage() {
           <h1 className="mt-1 font-display text-3xl font-medium text-olive-950">{invoice.concept}</h1>
           {invoice.description && <p className="mt-2 max-w-2xl text-sm text-olive-600">{invoice.description}</p>}
         </div>
-        {invoice.status !== 'CANCELLED' && (
-          <button onClick={handleCancel} className="btn-ghost text-xs text-clay-600 hover:bg-clay-400/10">
-            {t('invoices.cancel')}
+        <div className="flex flex-wrap items-center gap-2">
+          <button
+            onClick={() => pdf.download()}
+            disabled={pdf.isPending}
+            className="btn-ghost text-xs"
+          >
+            {pdf.isPending ? t('common.loading') : t('invoices.exportPdf')}
           </button>
-        )}
+          <button
+            onClick={() => setSepaOpen(true)}
+            className="btn-ghost text-xs"
+          >
+            {t('invoices.exportSepa')}
+          </button>
+          {invoice.status !== 'CANCELLED' && (
+            <button onClick={handleCancel} className="btn-ghost text-xs text-clay-600 hover:bg-clay-400/10">
+              {t('invoices.cancel')}
+            </button>
+          )}
+        </div>
       </div>
+
+      {sepaOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-olive-950/40 p-4">
+          <div className="w-full max-w-md rounded-xl bg-white p-6 shadow-xl">
+            <h3 className="font-display text-xl text-olive-950">{t('invoices.sepaTitle')}</h3>
+            <p className="mt-1 text-sm text-olive-600">{t('invoices.sepaDesc')}</p>
+            <div className="mt-4 space-y-3">
+              {['creditorName', 'creditorIban', 'creditorBic'].map((field) => (
+                <div key={field}>
+                  <label className="label">{t(`invoices.sepa_${field}`)}</label>
+                  <input
+                    className="input"
+                    value={sepaForm[field]}
+                    onChange={(e) => setSepaForm((f) => ({ ...f, [field]: e.target.value }))}
+                  />
+                </div>
+              ))}
+            </div>
+            {sepa.error && (
+              <p className="mt-2 text-sm text-clay-600">
+                {sepa.error?.response?.data?.error?.message ?? t('errors.generic')}
+              </p>
+            )}
+            <div className="mt-5 flex justify-end gap-3">
+              <button onClick={() => setSepaOpen(false)} className="btn-ghost">{t('common.cancel')}</button>
+              <button
+                className="btn-primary"
+                disabled={sepa.isPending || !sepaForm.creditorName || !sepaForm.creditorIban || !sepaForm.creditorBic}
+                onClick={async () => {
+                  await sepa.download(sepaForm);
+                  setSepaOpen(false);
+                }}
+              >
+                {sepa.isPending ? t('common.loading') : t('invoices.downloadXml')}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="mt-8 grid gap-4 sm:grid-cols-4">
         <Stat label={t('invoices.total')} value={formatMoney(invoice.total)} />

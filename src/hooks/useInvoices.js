@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import * as api from '@/api/invoices';
+import { useCallback } from 'react';
 
 const KEYS = {
   all: ['invoices'],
@@ -80,4 +81,48 @@ export function useCancelInvoice() {
       void qc.invalidateQueries({ queryKey: KEYS.all });
     },
   });
+}
+
+export function useExportSepa() {
+  return useMutation({ mutationFn: ({ invoiceId, body }) => api.exportSepa(invoiceId, body) });
+}
+
+export function useExportPdf() {
+  return useMutation({ mutationFn: (invoiceId) => api.exportPdf(invoiceId) });
+}
+
+export function useDownloadSepa(invoiceId) {
+  const mutation = useExportSepa();
+  const download = useCallback(
+    async (body) => {
+      const xml = await mutation.mutateAsync({ invoiceId, body });
+      const blob = new Blob([xml], { type: 'application/xml' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `sepa-${invoiceId}.xml`;
+      a.click();
+      URL.revokeObjectURL(url);
+    },
+    [invoiceId, mutation]
+  );
+  return { download, isPending: mutation.isPending, error: mutation.error };
+}
+
+export function useDownloadPdf(invoiceId) {
+  const mutation = useExportPdf();
+  const download = useCallback(
+    async () => {
+      const buffer = await mutation.mutateAsync(invoiceId);
+      const blob = new Blob([buffer], { type: 'application/pdf' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `invoice-${invoiceId}.pdf`;
+      a.click();
+      URL.revokeObjectURL(url);
+    },
+    [invoiceId, mutation]
+  );
+  return { download, isPending: mutation.isPending, error: mutation.error };
 }

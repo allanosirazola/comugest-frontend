@@ -8,7 +8,10 @@
     "back": "Back",
     "language": "Language",
     "soon": "Coming soon",
-    "remove": "Remove"
+    "remove": "Remove",
+    "filter": "Filter",
+    "prev": "Previous",
+    "next": "Next"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -137,6 +140,10 @@
       "messages": {
         "title": "Messages",
         "desc": "Direct conversations with residents of your communities."
+      },
+      "audit": {
+        "title": "Audit log",
+        "desc": "View the history of all actions performed on the platform."
       }
     },
     "kpi": {
@@ -298,7 +305,15 @@
       "PAID": "Paid",
       "OVERDUE": "Overdue",
       "CANCELLED": "Cancelled"
-    }
+    },
+    "exportPdf": "Download PDF",
+    "exportSepa": "Export SEPA",
+    "sepaTitle": "Export SEPA XML",
+    "sepaDesc": "Enter the creditor details to generate the pain.001 file.",
+    "sepa_creditorName": "Creditor name",
+    "sepa_creditorIban": "Creditor IBAN",
+    "sepa_creditorBic": "BIC / SWIFT",
+    "downloadXml": "Download XML"
   },
   "morosos": {
     "title": "Overdue payments",
@@ -502,6 +517,41 @@
       "IN_PROGRESS": "In progress",
       "COMPLETED": "Completed",
       "REJECTED": "Rejected"
+    }
+  },
+  "audit": {
+    "eyebrow": "Administration",
+    "title": "Audit log",
+    "filterAction": "Action",
+    "allActions": "All actions",
+    "filterCommunity": "Community",
+    "communityIdPlaceholder": "Community ID (optional)",
+    "colDate": "Date",
+    "colAction": "Action",
+    "colActor": "Actor",
+    "colTarget": "Target",
+    "colMeta": "Detail",
+    "empty": "No audit records match this filter.",
+    "page": "Page {{n}}",
+    "action": {
+      "invoice.created": "Invoice created",
+      "invoice.cancelled": "Invoice cancelled",
+      "payment.recorded": "Payment recorded",
+      "payment.deleted": "Payment deleted",
+      "resident.invited": "Resident invited",
+      "resident.activated": "Resident activated",
+      "community.created": "Community created",
+      "community.deleted": "Community deleted",
+      "announcement.published": "Announcement published",
+      "expense.created": "Expense created",
+      "expense.deleted": "Expense deleted",
+      "procedure.submitted": "Procedure submitted",
+      "procedure.statusChanged": "Procedure status changed",
+      "ticket.created": "Ticket created",
+      "ticket.statusChanged": "Ticket status changed",
+      "budget.upserted": "Budget saved",
+      "user.login": "Login",
+      "user.roleChanged": "Role changed"
     }
   }
 }

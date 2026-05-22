@@ -37,3 +37,17 @@ export async function listMyInvoiceItems() {
   const { data } = await api.get('/me/invoice-items');
   return data.items;
 }
+
+export async function exportSepa(invoiceId, body) {
+  const { data } = await api.post(`/invoices/${invoiceId}/sepa`, body, {
+    responseType: 'text',
+  });
+  return data;
+}
+
+export async function exportPdf(invoiceId) {
+  const { data } = await api.get(`/invoices/${invoiceId}/pdf`, {
+    responseType: 'arraybuffer',
+  });
+  return data;
+}

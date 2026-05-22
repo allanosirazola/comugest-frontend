@@ -8,7 +8,10 @@
     "back": "Volver",
     "language": "Idioma",
     "soon": "Próximamente",
-    "remove": "Eliminar"
+    "remove": "Eliminar",
+    "filter": "Filtrar",
+    "prev": "Anterior",
+    "next": "Siguiente"
   },
   "nav": {
     "dashboard": "Inicio",
@@ -137,6 +140,10 @@
       "messages": {
         "title": "Mensajes",
         "desc": "Conversaciones directas con los vecinos de tus comunidades."
+      },
+      "audit": {
+        "title": "Registro de auditoría",
+        "desc": "Consulta el historial de todas las acciones realizadas en la plataforma."
       }
     },
     "kpi": {
@@ -298,7 +305,15 @@
       "PAID": "Pagada",
       "OVERDUE": "Vencida",
       "CANCELLED": "Cancelada"
-    }
+    },
+    "exportPdf": "Descargar PDF",
+    "exportSepa": "Exportar SEPA",
+    "sepaTitle": "Exportar XML SEPA",
+    "sepaDesc": "Introduce los datos del acreedor para generar el fichero pain.001.",
+    "sepa_creditorName": "Nombre del acreedor",
+    "sepa_creditorIban": "IBAN del acreedor",
+    "sepa_creditorBic": "BIC / SWIFT",
+    "downloadXml": "Descargar XML"
   },
   "morosos": {
     "title": "Morosos",
@@ -502,6 +517,41 @@
       "IN_PROGRESS": "En trámite",
       "COMPLETED": "Resuelto",
       "REJECTED": "Rechazado"
+    }
+  },
+  "audit": {
+    "eyebrow": "Administración",
+    "title": "Registro de auditoría",
+    "filterAction": "Acción",
+    "allActions": "Todas las acciones",
+    "filterCommunity": "Comunidad",
+    "communityIdPlaceholder": "ID de comunidad (opcional)",
+    "colDate": "Fecha",
+    "colAction": "Acción",
+    "colActor": "Actor",
+    "colTarget": "Objetivo",
+    "colMeta": "Detalle",
+    "empty": "No hay registros de auditoría para este filtro.",
+    "page": "Página {{n}}",
+    "action": {
+      "invoice.created": "Factura creada",
+      "invoice.cancelled": "Factura cancelada",
+      "payment.recorded": "Pago registrado",
+      "payment.deleted": "Pago eliminado",
+      "resident.invited": "Vecino invitado",
+      "resident.activated": "Vecino activado",
+      "community.created": "Comunidad creada",
+      "community.deleted": "Comunidad eliminada",
+      "announcement.published": "Aviso publicado",
+      "expense.created": "Gasto creado",
+      "expense.deleted": "Gasto eliminado",
+      "procedure.submitted": "Trámite enviado",
+      "procedure.statusChanged": "Estado de trámite cambiado",
+      "ticket.created": "Incidencia creada",
+      "ticket.statusChanged": "Estado de incidencia cambiado",
+      "budget.upserted": "Presupuesto guardado",
+      "user.login": "Inicio de sesión",
+      "user.roleChanged": "Rol cambiado"
     }
   }
 }

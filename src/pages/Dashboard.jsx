@@ -98,6 +98,7 @@ function AdminCards() {
       <Card titleKey="dashboard.admin.announcements.title" descKey="dashboard.admin.announcements.desc" to="/communities" />
       <Card titleKey="dashboard.admin.expenses.title" descKey="dashboard.admin.expenses.desc" to="/communities" />
       <Card titleKey="dashboard.admin.tickets.title" descKey="dashboard.admin.tickets.desc" to="/my-tickets" />
+      <Card titleKey="dashboard.admin.audit.title" descKey="dashboard.admin.audit.desc" to="/admin/audit" />
     </>
   );
 }
