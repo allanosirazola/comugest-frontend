@@ -22,5 +22,5 @@ export async function updateMeeting(id, input) {
 
 export async function updateAttendance(id, input) {
   const { data } = await api.patch(`/meetings/${id}/attendance`, input);
-  return data;
+  return data.attendance;
 }

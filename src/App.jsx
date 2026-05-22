@@ -94,7 +94,7 @@ export function App() {
             <Route path="/invoices/:id" element={<ProtectedRoute allowedRoles={[...ADMIN_ROLES]}><InvoiceDetailPage /></ProtectedRoute>} />
             <Route path="/admin/audit" element={<ProtectedRoute allowedRoles={[...ADMIN_ROLES]}><AuditLogPage /></ProtectedRoute>} />
             <Route path="/communities/:id/areas" element={<ProtectedRoute allowedRoles={[...ADMIN_ROLES]}><CommunityAreasPage /></ProtectedRoute>} />
-            <Route path="/communities/:id/areas/:areaId/reservations" element={<ProtectedRoute><AreaReservationsPage /></ProtectedRoute>} />
+            <Route path="/communities/:communityId/areas/:areaId/reservations" element={<ProtectedRoute><AreaReservationsPage /></ProtectedRoute>} />
             <Route path="/communities/:id/meetings" element={<ProtectedRoute allowedRoles={[...ADMIN_ROLES]}><CommunityMeetingsPage /></ProtectedRoute>} />
             <Route path="/communities/:id/meetings/:meetingId" element={<ProtectedRoute><MeetingDetailPage /></ProtectedRoute>} />
             <Route path="/admin/invite" element={<ProtectedRoute allowedRoles={[...ADMIN_ROLES]}><InviteResidentPage /></ProtectedRoute>} />
