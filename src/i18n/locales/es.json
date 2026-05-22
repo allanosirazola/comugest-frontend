@@ -8,7 +8,10 @@
     "back": "Volver",
     "language": "Idioma",
     "soon": "Próximamente",
-    "remove": "Eliminar"
+    "remove": "Eliminar",
+    "filter": "Filtrar",
+    "prev": "Anterior",
+    "next": "Siguiente"
   },
   "nav": {
     "dashboard": "Inicio",
@@ -29,29 +32,37 @@
       "email": "Correo electrónico",
       "password": "Contraseña",
       "submit": "Iniciar sesión",
-      "noAccount": "¿No tienes cuenta todavía?",
+      "noAccount": "¿Eres administrador de fincas y no tienes cuenta?",
       "createAccount": "Crear una cuenta",
       "errorInvalid": "Email o contraseña incorrectos",
-      "forgotPassword": "¿Has olvidado tu contraseña?"
+      "forgotPassword": "¿Has olvidado tu contraseña?",
+      "vecinoNote": "¿Eres vecino o inquilino? Accede con el enlace de invitación que te ha enviado tu administrador.",
+      "soporteLink": "Equipo Comugest"
     },
     "register": {
-      "title": "Crear cuenta",
-      "subtitle": "Empieza a gestionar tu comunidad en minutos.",
+      "title": "Crea tu cuenta de administrador",
+      "subtitle": "Gestiona comunidades, vecinos y facturación desde un solo lugar.",
+      "adminBadge": "Administrador de fincas",
+      "adminBadgeNote": "El registro es exclusivo para administradores. Los vecinos acceden mediante invitación.",
       "firstName": "Nombre",
       "lastName": "Apellidos",
       "email": "Correo electrónico",
       "phone": "Teléfono (opcional)",
       "password": "Contraseña",
       "passwordHelp": "Mínimo 10 caracteres, con mayúscula, minúscula y número.",
-      "role": "¿Cómo te registras?",
-      "roleVecino": "Vecino",
-      "roleVecinoDesc": "Soy propietario o inquilino de una vivienda.",
-      "roleAdmin": "Administrador de fincas",
-      "roleAdminDesc": "Gestiono una o varias comunidades.",
       "gdpr": "He leído y acepto el tratamiento de mis datos según la política de privacidad.",
       "submit": "Crear cuenta",
       "haveAccount": "¿Ya tienes una cuenta?",
       "signIn": "Inicia sesión"
+    },
+    "soporte": {
+      "title": "Panel interno",
+      "subtitle": "Acceso exclusivo para el equipo de Comugest.",
+      "email": "Correo electrónico",
+      "password": "Contraseña",
+      "submit": "Entrar al panel",
+      "errorInvalid": "Credenciales incorrectas",
+      "backToPublic": "← Volver al inicio"
     },
     "checkEmail": {
       "title": "Revisa tu correo",
@@ -129,7 +140,17 @@
       "messages": {
         "title": "Mensajes",
         "desc": "Conversaciones directas con los vecinos de tus comunidades."
+      },
+      "audit": {
+        "title": "Registro de auditoría",
+        "desc": "Consulta el historial de todas las acciones realizadas en la plataforma."
       }
+    },
+    "kpi": {
+      "pendingInvoices": "Facturas pendientes",
+      "overdueCount": "Facturas vencidas",
+      "openProcedures": "Trámites abiertos",
+      "openTickets": "Tickets abiertos"
     },
     "vecino": {
       "myInvoices": {
@@ -197,7 +218,10 @@
     "linkAnnouncements": "Anuncios",
     "linkMorosos": "Morosos",
     "linkExpenses": "Gastos",
-    "linkProcedures": "Trámites"
+    "linkProcedures": "Trámites",
+    "linkBudget": "Presupuesto",
+    "linkAreas": "Zonas comunes",
+    "linkMeetings": "Juntas"
   },
   "invite": {
     "eyebrow": "Administración",
@@ -283,7 +307,15 @@
       "PAID": "Pagada",
       "OVERDUE": "Vencida",
       "CANCELLED": "Cancelada"
-    }
+    },
+    "exportPdf": "Descargar PDF",
+    "exportSepa": "Exportar SEPA",
+    "sepaTitle": "Exportar XML SEPA",
+    "sepaDesc": "Introduce los datos del acreedor para generar el fichero pain.001.",
+    "sepa_creditorName": "Nombre del acreedor",
+    "sepa_creditorIban": "IBAN del acreedor",
+    "sepa_creditorBic": "BIC / SWIFT",
+    "downloadXml": "Descargar XML"
   },
   "morosos": {
     "title": "Morosos",
@@ -428,6 +460,20 @@
     "all": "Todos",
     "noTickets": "No hay tickets."
   },
+  "budgets": {
+    "eyebrow": "Comunidad",
+    "title": "Presupuesto {{year}}",
+    "prevYear": "Año anterior",
+    "nextYear": "Año siguiente",
+    "save": "Guardar presupuesto",
+    "noData": "Sin presupuesto para este año. Introduce los importes y guarda.",
+    "comparison": "Comparativa real vs presupuesto",
+    "category": "Categoría",
+    "budgeted": "Presupuestado",
+    "actual": "Real",
+    "variance": "Desviación",
+    "linkBudget": "Presupuesto"
+  },
   "procedures": {
     "eyebrow": "Administración",
     "newTitle": "Nuevo trámite",
@@ -473,6 +519,105 @@
       "IN_PROGRESS": "En trámite",
       "COMPLETED": "Resuelto",
       "REJECTED": "Rechazado"
+    }
+  },
+  "areas": {
+    "eyebrow": "Gestión",
+    "title": "Zonas comunes",
+    "newArea": "Nueva zona",
+    "name": "Nombre",
+    "description": "Descripción",
+    "capacity": "Aforo máx.",
+    "openTime": "Apertura",
+    "closeTime": "Cierre",
+    "slotMinutes": "Duración reserva",
+    "slot30": "30 min",
+    "slot60": "1 hora",
+    "slot120": "2 horas",
+    "maxSlotsPerDay": "Reservas/día por vecino",
+    "save": "Guardar",
+    "deactivate": "Desactivar",
+    "activate": "Activar",
+    "viewReservations": "Ver reservas",
+    "reservationsTitle": "Reservas",
+    "selectDate": "Fecha",
+    "free": "Libre",
+    "reserve": "Reservar",
+    "notes": "Notas (opcional)",
+    "confirm": "Confirmar reserva",
+    "cancel": "Cancelar reserva",
+    "confirmCancel": "¿Cancelar esta reserva?",
+    "bookedBy": "Reservado por",
+    "todayCount": "hoy",
+    "backToAreas": "Volver a zonas",
+    "empty": "No hay zonas comunes configuradas",
+    "noSlots": "No hay franjas disponibles para esta fecha"
+  },
+  "meetings": {
+    "eyebrow": "Comunidad",
+    "title": "Juntas de vecinos",
+    "newMeeting": "Convocar junta",
+    "meetingTitle": "Asunto",
+    "type": "Tipo",
+    "typeORDINARY": "Ordinaria",
+    "typeEXTRAORDINARY": "Extraordinaria",
+    "status": "Estado",
+    "statusSCHEDULED": "Convocada",
+    "statusHELD": "Celebrada",
+    "statusCANCELLED": "Cancelada",
+    "scheduledAt": "Fecha y hora",
+    "location": "Lugar",
+    "agenda": "Orden del día",
+    "minutes": "Acta",
+    "minutesUrl": "URL del acta (PDF)",
+    "attendees": "Asistentes",
+    "myAttendance": "Mi asistencia",
+    "attendancePENDING": "Pendiente",
+    "attendanceCONFIRMED": "Confirmo asistencia",
+    "attendanceDECLINED": "No asistiré",
+    "attendanceDELEGATED": "Delego en",
+    "proxy": "Nombre del delegado",
+    "markHeld": "Marcar como celebrada",
+    "backToList": "Volver a juntas",
+    "empty": "No hay juntas convocadas",
+    "create": "Convocar",
+    "attendeeCount": "convocados",
+    "editMeeting": "Editar junta",
+    "saveChanges": "Guardar cambios"
+  },
+  "audit": {
+    "eyebrow": "Administración",
+    "title": "Registro de auditoría",
+    "filterAction": "Acción",
+    "allActions": "Todas las acciones",
+    "filterCommunity": "Comunidad",
+    "communityIdPlaceholder": "ID de comunidad (opcional)",
+    "colDate": "Fecha",
+    "colAction": "Acción",
+    "colActor": "Actor",
+    "colTarget": "Objetivo",
+    "colMeta": "Detalle",
+    "empty": "No hay registros de auditoría para este filtro.",
+    "page": "Página {{n}}",
+    "action": {
+      "invoice.created": "Factura creada",
+      "invoice.cancelled": "Factura cancelada",
+      "payment.recorded": "Pago registrado",
+      "payment.deleted": "Pago eliminado",
+      "resident.invited": "Vecino invitado",
+      "resident.activated": "Vecino activado",
+      "community.created": "Comunidad creada",
+      "community.deleted": "Comunidad eliminada",
+      "announcement.published": "Aviso publicado",
+      "expense.created": "Gasto creado",
+      "expense.deleted": "Gasto eliminado",
+      "procedure.submitted": "Trámite enviado",
+      "procedure.statusChanged": "Estado de trámite cambiado",
+      "ticket.created": "Incidencia creada",
+      "ticket.statusChanged": "Estado de incidencia cambiado",
+      "budget.upserted": "Presupuesto guardado",
+      "user.login": "Inicio de sesión",
+      "user.roleChanged": "Rol cambiado"
     }
   }
 }

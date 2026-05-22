@@ -8,7 +8,10 @@
     "back": "Back",
     "language": "Language",
     "soon": "Coming soon",
-    "remove": "Remove"
+    "remove": "Remove",
+    "filter": "Filter",
+    "prev": "Previous",
+    "next": "Next"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -29,29 +32,37 @@
       "email": "Email",
       "password": "Password",
       "submit": "Sign in",
-      "noAccount": "Don't have an account yet?",
+      "noAccount": "Are you a property manager without an account?",
       "createAccount": "Create an account",
       "errorInvalid": "Invalid email or password",
-      "forgotPassword": "Forgot your password?"
+      "forgotPassword": "Forgot your password?",
+      "vecinoNote": "Are you a resident or tenant? Use the invitation link sent by your property manager.",
+      "soporteLink": "Comugest team"
     },
     "register": {
-      "title": "Create account",
-      "subtitle": "Start managing your community in minutes.",
+      "title": "Create your admin account",
+      "subtitle": "Manage communities, residents, and invoicing from one place.",
+      "adminBadge": "Property manager",
+      "adminBadgeNote": "Registration is exclusive to property managers. Residents access via invitation.",
       "firstName": "First name",
       "lastName": "Last name",
       "email": "Email",
       "phone": "Phone (optional)",
       "password": "Password",
       "passwordHelp": "At least 10 characters with uppercase, lowercase and a digit.",
-      "role": "How are you signing up?",
-      "roleVecino": "Resident",
-      "roleVecinoDesc": "I'm an owner or tenant.",
-      "roleAdmin": "Property manager",
-      "roleAdminDesc": "I manage one or more communities.",
       "gdpr": "I have read and accept the processing of my data under the privacy policy.",
       "submit": "Create account",
       "haveAccount": "Already have an account?",
       "signIn": "Sign in"
+    },
+    "soporte": {
+      "title": "Internal panel",
+      "subtitle": "Exclusive access for the Comugest team.",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Enter panel",
+      "errorInvalid": "Invalid credentials",
+      "backToPublic": "← Back to home"
     },
     "checkEmail": {
       "title": "Check your inbox",
@@ -129,7 +140,17 @@
       "messages": {
         "title": "Messages",
         "desc": "Direct conversations with residents of your communities."
+      },
+      "audit": {
+        "title": "Audit log",
+        "desc": "View the history of all actions performed on the platform."
       }
+    },
+    "kpi": {
+      "pendingInvoices": "Pending invoices",
+      "overdueCount": "Overdue invoices",
+      "openProcedures": "Open procedures",
+      "openTickets": "Open tickets"
     },
     "vecino": {
       "myInvoices": {
@@ -197,7 +218,10 @@
     "linkAnnouncements": "Announcements",
     "linkMorosos": "Overdue",
     "linkExpenses": "Expenses",
-    "linkProcedures": "Procedures"
+    "linkProcedures": "Procedures",
+    "linkBudget": "Budget",
+    "linkAreas": "Common areas",
+    "linkMeetings": "Meetings"
   },
   "invite": {
     "eyebrow": "Administration",
@@ -283,7 +307,15 @@
       "PAID": "Paid",
       "OVERDUE": "Overdue",
       "CANCELLED": "Cancelled"
-    }
+    },
+    "exportPdf": "Download PDF",
+    "exportSepa": "Export SEPA",
+    "sepaTitle": "Export SEPA XML",
+    "sepaDesc": "Enter the creditor details to generate the pain.001 file.",
+    "sepa_creditorName": "Creditor name",
+    "sepa_creditorIban": "Creditor IBAN",
+    "sepa_creditorBic": "BIC / SWIFT",
+    "downloadXml": "Download XML"
   },
   "morosos": {
     "title": "Overdue payments",
@@ -428,6 +460,20 @@
     "all": "All",
     "noTickets": "No tickets."
   },
+  "budgets": {
+    "eyebrow": "Community",
+    "title": "Budget {{year}}",
+    "prevYear": "Previous year",
+    "nextYear": "Next year",
+    "save": "Save budget",
+    "noData": "No budget for this year. Enter amounts and save.",
+    "comparison": "Actual vs budget comparison",
+    "category": "Category",
+    "budgeted": "Budgeted",
+    "actual": "Actual",
+    "variance": "Variance",
+    "linkBudget": "Budget"
+  },
   "procedures": {
     "eyebrow": "Administration",
     "newTitle": "New procedure",
@@ -473,6 +519,105 @@
       "IN_PROGRESS": "In progress",
       "COMPLETED": "Completed",
       "REJECTED": "Rejected"
+    }
+  },
+  "areas": {
+    "eyebrow": "Management",
+    "title": "Common areas",
+    "newArea": "New area",
+    "name": "Name",
+    "description": "Description",
+    "capacity": "Max capacity",
+    "openTime": "Opens",
+    "closeTime": "Closes",
+    "slotMinutes": "Booking duration",
+    "slot30": "30 min",
+    "slot60": "1 hour",
+    "slot120": "2 hours",
+    "maxSlotsPerDay": "Bookings/day per resident",
+    "save": "Save",
+    "deactivate": "Deactivate",
+    "activate": "Activate",
+    "viewReservations": "View bookings",
+    "reservationsTitle": "Bookings",
+    "selectDate": "Date",
+    "free": "Free",
+    "reserve": "Book",
+    "notes": "Notes (optional)",
+    "confirm": "Confirm booking",
+    "cancel": "Cancel booking",
+    "confirmCancel": "Cancel this booking?",
+    "bookedBy": "Booked by",
+    "todayCount": "today",
+    "backToAreas": "Back to areas",
+    "empty": "No common areas configured",
+    "noSlots": "No slots available for this date"
+  },
+  "meetings": {
+    "eyebrow": "Community",
+    "title": "General meetings",
+    "newMeeting": "Call meeting",
+    "meetingTitle": "Subject",
+    "type": "Type",
+    "typeORDINARY": "Ordinary",
+    "typeEXTRAORDINARY": "Extraordinary",
+    "status": "Status",
+    "statusSCHEDULED": "Scheduled",
+    "statusHELD": "Held",
+    "statusCANCELLED": "Cancelled",
+    "scheduledAt": "Date & time",
+    "location": "Location",
+    "agenda": "Agenda",
+    "minutes": "Minutes",
+    "minutesUrl": "Minutes URL (PDF)",
+    "attendees": "Attendees",
+    "myAttendance": "My attendance",
+    "attendancePENDING": "Pending",
+    "attendanceCONFIRMED": "I will attend",
+    "attendanceDECLINED": "I will not attend",
+    "attendanceDELEGATED": "I delegate to",
+    "proxy": "Delegate name",
+    "markHeld": "Mark as held",
+    "backToList": "Back to meetings",
+    "empty": "No meetings scheduled",
+    "create": "Schedule",
+    "attendeeCount": "invited",
+    "editMeeting": "Edit meeting",
+    "saveChanges": "Save changes"
+  },
+  "audit": {
+    "eyebrow": "Administration",
+    "title": "Audit log",
+    "filterAction": "Action",
+    "allActions": "All actions",
+    "filterCommunity": "Community",
+    "communityIdPlaceholder": "Community ID (optional)",
+    "colDate": "Date",
+    "colAction": "Action",
+    "colActor": "Actor",
+    "colTarget": "Target",
+    "colMeta": "Detail",
+    "empty": "No audit records match this filter.",
+    "page": "Page {{n}}",
+    "action": {
+      "invoice.created": "Invoice created",
+      "invoice.cancelled": "Invoice cancelled",
+      "payment.recorded": "Payment recorded",
+      "payment.deleted": "Payment deleted",
+      "resident.invited": "Resident invited",
+      "resident.activated": "Resident activated",
+      "community.created": "Community created",
+      "community.deleted": "Community deleted",
+      "announcement.published": "Announcement published",
+      "expense.created": "Expense created",
+      "expense.deleted": "Expense deleted",
+      "procedure.submitted": "Procedure submitted",
+      "procedure.statusChanged": "Procedure status changed",
+      "ticket.created": "Ticket created",
+      "ticket.statusChanged": "Ticket status changed",
+      "budget.upserted": "Budget saved",
+      "user.login": "Login",
+      "user.roleChanged": "Role changed"
     }
   }
 }
