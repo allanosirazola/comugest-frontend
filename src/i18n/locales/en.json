@@ -139,6 +139,12 @@
         "desc": "Direct conversations with residents of your communities."
       }
     },
+    "kpi": {
+      "pendingInvoices": "Pending invoices",
+      "overdueCount": "Overdue invoices",
+      "openProcedures": "Open procedures",
+      "openTickets": "Open tickets"
+    },
     "vecino": {
       "myInvoices": {
         "title": "My invoices",
@@ -205,7 +211,8 @@
     "linkAnnouncements": "Announcements",
     "linkMorosos": "Overdue",
     "linkExpenses": "Expenses",
-    "linkProcedures": "Procedures"
+    "linkProcedures": "Procedures",
+    "linkBudget": "Budget"
   },
   "invite": {
     "eyebrow": "Administration",
@@ -435,6 +442,20 @@
     "queue": "Ticket queue",
     "all": "All",
     "noTickets": "No tickets."
+  },
+  "budgets": {
+    "eyebrow": "Community",
+    "title": "Budget {{year}}",
+    "prevYear": "Previous year",
+    "nextYear": "Next year",
+    "save": "Save budget",
+    "noData": "No budget for this year. Enter amounts and save.",
+    "comparison": "Actual vs budget comparison",
+    "category": "Category",
+    "budgeted": "Budgeted",
+    "actual": "Actual",
+    "variance": "Variance",
+    "linkBudget": "Budget"
   },
   "procedures": {
     "eyebrow": "Administration",

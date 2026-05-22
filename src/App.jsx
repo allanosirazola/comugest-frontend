@@ -32,6 +32,7 @@ import { CreateProcedurePage } from '@/pages/CreateProcedure';
 import { MyProceduresPage } from '@/pages/MyProcedures';
 import { ProcedureDetailPage } from '@/pages/ProcedureDetail';
 import { CommunityProceduresPage } from '@/pages/CommunityProcedures';
+import { CommunityBudgetPage } from '@/pages/CommunityBudget';
 import { SoporteLoginPage } from '@/pages/SoporteLogin';
 import { NotFoundPage } from '@/pages/NotFound';
 
@@ -84,6 +85,7 @@ export function App() {
             <Route path="/communities/:id/announcements" element={<ProtectedRoute allowedRoles={[...ADMIN_ROLES]}><CommunityAnnouncementsPage /></ProtectedRoute>} />
             <Route path="/communities/:id/expenses" element={<ProtectedRoute allowedRoles={[...ADMIN_ROLES]}><CommunityExpensesPage /></ProtectedRoute>} />
             <Route path="/communities/:id/procedures" element={<ProtectedRoute allowedRoles={[...ADMIN_ROLES]}><CommunityProceduresPage /></ProtectedRoute>} />
+            <Route path="/communities/:id/budget" element={<ProtectedRoute allowedRoles={['ADMIN_FINCAS','SUPPORT']}><CommunityBudgetPage /></ProtectedRoute>} />
             <Route path="/invoices/:id" element={<ProtectedRoute allowedRoles={[...ADMIN_ROLES]}><InvoiceDetailPage /></ProtectedRoute>} />
             <Route path="/admin/invite" element={<ProtectedRoute allowedRoles={[...ADMIN_ROLES]}><InviteResidentPage /></ProtectedRoute>} />
 

@@ -2,11 +2,14 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { Layout } from '@/components/Layout';
 import { useAuth } from '@/contexts/AuthContext';
+import { useAdminKpis } from '@/hooks/useAdmin';
+import { formatMoney } from '@/components/StatusBadge';
 
 export function DashboardPage() {
   const { t } = useTranslation();
   const { user } = useAuth();
   const isAdmin = user?.role === 'ADMIN_FINCAS' || user?.role === 'SUPPORT';
+  const isAdminFincas = user?.role === 'ADMIN_FINCAS';
 
   return (
     <Layout>
@@ -16,10 +19,50 @@ export function DashboardPage() {
       </h1>
       <p className="mt-3 max-w-xl text-sm text-olive-600">{t('dashboard.placeholder')}</p>
 
+      {isAdminFincas && <AdminKpiStrip />}
+
       <section className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {isAdmin ? <AdminCards /> : <VecinoCards />}
       </section>
     </Layout>
+  );
+}
+
+function AdminKpiStrip() {
+  const { t } = useTranslation();
+  const { data } = useAdminKpis();
+  if (!data) return null;
+
+  return (
+    <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <KpiTile
+        label={t('dashboard.kpi.pendingInvoices')}
+        value={formatMoney(data.invoices.totalPending)}
+        accent={data.invoices.totalPending > 0}
+      />
+      <KpiTile
+        label={t('dashboard.kpi.overdueCount')}
+        value={String(data.invoices.overdueCount)}
+        accent={data.invoices.overdueCount > 0}
+      />
+      <KpiTile
+        label={t('dashboard.kpi.openProcedures')}
+        value={String(data.procedures.open)}
+      />
+      <KpiTile
+        label={t('dashboard.kpi.openTickets')}
+        value={String(data.tickets.open)}
+      />
+    </div>
+  );
+}
+
+function KpiTile({ label, value, accent }) {
+  return (
+    <div className={`card flex flex-col gap-1 ${accent ? 'border-clay-400/40 bg-clay-400/5' : ''}`}>
+      <p className="text-xs uppercase tracking-wider text-olive-500">{label}</p>
+      <p className={`font-display text-2xl font-medium ${accent ? 'text-clay-700' : 'text-olive-950'}`}>{value}</p>
+    </div>
   );
 }
 

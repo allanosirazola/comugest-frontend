@@ -139,6 +139,12 @@
         "desc": "Conversaciones directas con los vecinos de tus comunidades."
       }
     },
+    "kpi": {
+      "pendingInvoices": "Facturas pendientes",
+      "overdueCount": "Facturas vencidas",
+      "openProcedures": "Trámites abiertos",
+      "openTickets": "Tickets abiertos"
+    },
     "vecino": {
       "myInvoices": {
         "title": "Mis facturas",
@@ -205,7 +211,8 @@
     "linkAnnouncements": "Anuncios",
     "linkMorosos": "Morosos",
     "linkExpenses": "Gastos",
-    "linkProcedures": "Trámites"
+    "linkProcedures": "Trámites",
+    "linkBudget": "Presupuesto"
   },
   "invite": {
     "eyebrow": "Administración",
@@ -435,6 +442,20 @@
     "queue": "Cola de tickets",
     "all": "Todos",
     "noTickets": "No hay tickets."
+  },
+  "budgets": {
+    "eyebrow": "Comunidad",
+    "title": "Presupuesto {{year}}",
+    "prevYear": "Año anterior",
+    "nextYear": "Año siguiente",
+    "save": "Guardar presupuesto",
+    "noData": "Sin presupuesto para este año. Introduce los importes y guarda.",
+    "comparison": "Comparativa real vs presupuesto",
+    "category": "Categoría",
+    "budgeted": "Presupuestado",
+    "actual": "Real",
+    "variance": "Desviación",
+    "linkBudget": "Presupuesto"
   },
   "procedures": {
     "eyebrow": "Administración",
