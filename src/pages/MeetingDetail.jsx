@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Layout } from '@/components/Layout';
 import { useAuth } from '@/contexts/AuthContext';
 import { useMeeting, useUpdateMeeting, useUpdateAttendance } from '@/hooks/useMeetings';
+import { usePolls, useCreatePoll, useClosePoll, useCastVote } from '@/hooks/usePolls';
 
 const TYPE_COLORS = {
   ORDINARY: 'bg-olive-100 text-olive-800',
@@ -343,6 +344,158 @@ export function MeetingDetailPage() {
           )}
         </aside>
       </div>
+
+      <PollsSection meetingId={meetingId} />
     </Layout>
+  );
+}
+
+function PollsSection({ meetingId }) {
+  const { t } = useTranslation();
+  const { user } = useAuth();
+  const isAdmin = user?.role === 'ADMIN_FINCAS' || user?.role === 'SUPPORT';
+  const { data: polls = [] } = usePolls(meetingId);
+  const createPoll = useCreatePoll(meetingId);
+  const closePoll = useClosePoll(meetingId);
+  const castVote = useCastVote(meetingId);
+
+  const [showForm, setShowForm] = useState(false);
+  const [form, setForm] = useState({ question: '', description: '' });
+  const [error, setError] = useState(null);
+
+  const handleCreate = async (e) => {
+    e.preventDefault();
+    setError(null);
+    try {
+      await createPoll.mutateAsync(form);
+      setShowForm(false);
+      setForm({ question: '', description: '' });
+    } catch (err) {
+      setError(err?.response?.data?.error?.message ?? t('errors.generic'));
+    }
+  };
+
+  const handleVote = async (pollId, option) => {
+    try {
+      await castVote.mutateAsync({ pollId, option });
+    } catch (err) {
+      setError(err?.response?.data?.error?.message ?? t('errors.generic'));
+    }
+  };
+
+  const VOTE_OPTIONS = ['FAVOR', 'CONTRA', 'ABSTENCION'];
+  const VOTE_COLORS = {
+    FAVOR: 'bg-green-100 text-green-800 hover:bg-green-200',
+    CONTRA: 'bg-clay-100 text-clay-800 hover:bg-clay-200',
+    ABSTENCION: 'bg-gray-100 text-gray-800 hover:bg-gray-200',
+  };
+  const VOTE_ACTIVE = {
+    FAVOR: 'ring-2 ring-green-500',
+    CONTRA: 'ring-2 ring-clay-500',
+    ABSTENCION: 'ring-2 ring-gray-500',
+  };
+
+  return (
+    <section className="mt-10">
+      <div className="flex items-center justify-between">
+        <h2 className="font-display text-2xl text-olive-900">{t('polls.title')}</h2>
+        {isAdmin && (
+          <button onClick={() => setShowForm((v) => !v)} className="btn-primary">
+            {showForm ? t('common.cancel') : `+ ${t('polls.addPoll')}`}
+          </button>
+        )}
+      </div>
+
+      {showForm && (
+        <form onSubmit={handleCreate} className="card mt-4 grid gap-3">
+          <input
+            className="input"
+            placeholder={t('polls.fieldQuestion')}
+            value={form.question}
+            onChange={(e) => setForm({ ...form, question: e.target.value })}
+            required
+          />
+          <textarea
+            className="input"
+            placeholder={t('polls.fieldDescription')}
+            rows={2}
+            value={form.description}
+            onChange={(e) => setForm({ ...form, description: e.target.value })}
+          />
+          <button type="submit" className="btn-primary w-fit" disabled={createPoll.isPending}>
+            {createPoll.isPending ? t('common.loading') : t('polls.addPoll')}
+          </button>
+        </form>
+      )}
+
+      {error && (
+        <div role="alert" className="mt-3 rounded-md border border-clay-400/40 bg-clay-400/10 px-3 py-2 text-sm text-clay-700">
+          {error}
+        </div>
+      )}
+
+      {polls.length === 0 ? (
+        <p className="mt-6 text-sm text-olive-500">{t('polls.empty')}</p>
+      ) : (
+        <div className="mt-4 space-y-4">
+          {polls.map((poll) => {
+            const total = (poll.results?.FAVOR ?? 0) + (poll.results?.CONTRA ?? 0) + (poll.results?.ABSTENCION ?? 0);
+            return (
+              <div key={poll.id} className="card">
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <p className="font-medium text-olive-900">{poll.question}</p>
+                    {poll.description && <p className="mt-0.5 text-sm text-olive-600">{poll.description}</p>}
+                  </div>
+                  <div className="flex shrink-0 items-center gap-2">
+                    <span className={`rounded-full px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider ${poll.status === 'OPEN' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'}`}>
+                      {t(`polls.status.${poll.status.toLowerCase()}`)}
+                    </span>
+                    {isAdmin && poll.status === 'OPEN' && (
+                      <button
+                        onClick={() => closePoll.mutate(poll.id)}
+                        className="text-xs text-olive-500 hover:text-clay-600"
+                      >
+                        {t('polls.close')}
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                {/* Vote buttons */}
+                {poll.status === 'OPEN' && (
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {VOTE_OPTIONS.map((opt) => (
+                      <button
+                        key={opt}
+                        onClick={() => handleVote(poll.id, opt)}
+                        disabled={castVote.isPending}
+                        className={`rounded-full px-3 py-1 text-xs font-medium transition-all ${VOTE_COLORS[opt]} ${poll.myVote === opt ? VOTE_ACTIVE[opt] : ''}`}
+                      >
+                        {t(`polls.option.${opt.toLowerCase()}`)}
+                        {poll.results?.[opt] > 0 && ` (${poll.results[opt]})`}
+                      </button>
+                    ))}
+                    {total > 0 && <span className="self-center text-xs text-olive-500">{t('polls.totalVotes', { count: total })}</span>}
+                  </div>
+                )}
+
+                {/* Results for closed polls */}
+                {poll.status === 'CLOSED' && (
+                  <div className="mt-3 flex flex-wrap gap-4 text-sm">
+                    {VOTE_OPTIONS.map((opt) => (
+                      <span key={opt} className="text-olive-700">
+                        <span className="font-medium">{t(`polls.option.${opt.toLowerCase()}`)}</span>: {poll.results?.[opt] ?? 0}
+                      </span>
+                    ))}
+                    <span className="text-olive-500">{t('polls.totalVotes', { count: total })}</span>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </section>
   );
 }

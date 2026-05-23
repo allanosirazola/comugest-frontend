@@ -8,6 +8,8 @@ import {
   useDeleteUnit,
   useDeleteCommunity,
 } from '@/hooks/useCommunities';
+import { useCoAdmins, useAddCoAdmin, useRemoveCoAdmin } from '@/hooks/useCoAdmins';
+import { useAuth } from '@/contexts/AuthContext';
 
 export function CommunityDetailPage() {
   const { t } = useTranslation();
@@ -254,6 +256,8 @@ export function CommunityDetailPage() {
           </table>
         </div>
       </section>
+
+      <CoAdminsSection communityId={community.id} />
     </Layout>
   );
 }
@@ -264,5 +268,81 @@ function StatCard({ label, value }) {
       <p className="text-xs uppercase tracking-wider text-olive-500">{label}</p>
       <p className="mt-1 font-display text-3xl text-olive-950">{value}</p>
     </div>
+  );
+}
+
+function CoAdminsSection({ communityId }) {
+  const { t } = useTranslation();
+  const { user } = useAuth();
+  const { data: admins = [] } = useCoAdmins(communityId);
+  const addAdmin = useAddCoAdmin(communityId);
+  const removeAdmin = useRemoveCoAdmin(communityId);
+  const [email, setEmail] = useState('');
+  const [error, setError] = useState(null);
+
+  const handleAdd = async (e) => {
+    e.preventDefault();
+    setError(null);
+    try {
+      await addAdmin.mutateAsync(email.trim());
+      setEmail('');
+    } catch (err) {
+      setError(err?.response?.data?.error?.message ?? t('errors.generic'));
+    }
+  };
+
+  const handleRemove = async (userId) => {
+    if (!window.confirm(t('coAdmins.confirmRemove'))) return;
+    try {
+      await removeAdmin.mutateAsync(userId);
+    } catch (err) {
+      setError(err?.response?.data?.error?.message ?? t('errors.generic'));
+    }
+  };
+
+  return (
+    <section className="mt-10">
+      <h2 className="font-display text-2xl text-olive-900">{t('coAdmins.title')}</h2>
+      <form onSubmit={handleAdd} className="mt-4 flex gap-2">
+        <input
+          className="input flex-1"
+          type="email"
+          placeholder={t('coAdmins.emailPlaceholder')}
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
+        <button type="submit" className="btn-primary" disabled={addAdmin.isPending}>
+          {addAdmin.isPending ? t('common.loading') : t('coAdmins.addButton')}
+        </button>
+      </form>
+      {error && (
+        <div role="alert" className="mt-2 rounded-md border border-clay-400/40 bg-clay-400/10 px-3 py-2 text-sm text-clay-700">
+          {error}
+        </div>
+      )}
+      <ul className="mt-4 space-y-2">
+        {admins.map((a) => (
+          <li key={a.user.id} className="card flex items-center justify-between gap-4">
+            <div>
+              <p className="font-medium text-olive-900">{a.user.firstName} {a.user.lastName}</p>
+              <p className="text-xs text-olive-500">{a.user.email}</p>
+            </div>
+            {a.user.id !== user?.id && (
+              <button
+                onClick={() => handleRemove(a.user.id)}
+                className="text-xs text-olive-500 hover:text-clay-600"
+                aria-label={t('common.remove')}
+              >
+                ✕
+              </button>
+            )}
+          </li>
+        ))}
+        {admins.length === 0 && (
+          <p className="text-sm text-olive-500">{t('coAdmins.empty')}</p>
+        )}
+      </ul>
+    </section>
   );
 }

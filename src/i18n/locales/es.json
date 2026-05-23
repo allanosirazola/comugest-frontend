@@ -678,6 +678,31 @@
       "otro": "Otro"
     }
   },
+  "coAdmins": {
+    "title": "Co-administradores",
+    "emailPlaceholder": "Email del nuevo administrador",
+    "addButton": "Añadir",
+    "confirmRemove": "¿Eliminar este administrador?",
+    "empty": "Solo hay un administrador en esta comunidad."
+  },
+  "polls": {
+    "title": "Votaciones",
+    "addPoll": "Nueva votación",
+    "fieldQuestion": "Pregunta de la votación",
+    "fieldDescription": "Descripción (opcional)",
+    "empty": "No hay votaciones en esta junta.",
+    "close": "Cerrar votación",
+    "totalVotes": "{{count}} votos",
+    "status": {
+      "open": "Abierta",
+      "closed": "Cerrada"
+    },
+    "option": {
+      "favor": "A favor",
+      "contra": "En contra",
+      "abstencion": "Abstención"
+    }
+  },
   "audit": {
     "eyebrow": "Administración",
     "title": "Registro de auditoría",

@@ -678,6 +678,31 @@
       "otro": "Other"
     }
   },
+  "coAdmins": {
+    "title": "Co-administrators",
+    "emailPlaceholder": "New administrator's email",
+    "addButton": "Add",
+    "confirmRemove": "Remove this administrator?",
+    "empty": "This community has only one administrator."
+  },
+  "polls": {
+    "title": "Polls",
+    "addPoll": "New poll",
+    "fieldQuestion": "Poll question",
+    "fieldDescription": "Description (optional)",
+    "empty": "No polls for this meeting.",
+    "close": "Close poll",
+    "totalVotes": "{{count}} votes",
+    "status": {
+      "open": "Open",
+      "closed": "Closed"
+    },
+    "option": {
+      "favor": "In favour",
+      "contra": "Against",
+      "abstencion": "Abstain"
+    }
+  },
   "audit": {
     "eyebrow": "Administration",
     "title": "Audit log",
