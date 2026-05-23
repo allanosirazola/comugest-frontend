@@ -834,6 +834,22 @@
     "enabled": "Notifications enabled",
     "notSupported": "Your browser does not support push notifications."
   },
+  "twofa": {
+    "title": "Two-factor authentication (2FA)",
+    "desc": "Add an extra layer of security to your account with an authenticator app (Google Authenticator, Authy, etc.).",
+    "enabled": "2FA enabled",
+    "disabled": "2FA disabled",
+    "setup": "Enable 2FA",
+    "setupStep1": "Scan this QR code with your authenticator app:",
+    "setupStep2": "Enter the 6-digit code your app generates to confirm:",
+    "tokenPlaceholder": "6-digit code",
+    "verify": "Confirm and enable",
+    "verifyError": "Incorrect code. Please try again.",
+    "disableTitle": "Disable 2FA",
+    "disableDesc": "Enter your current app code to disable 2FA:",
+    "disableBtn": "Disable 2FA",
+    "cancel": "Cancel"
+  },
   "billing": {
     "eyebrow": "Subscription",
     "title": "Plan & billing",

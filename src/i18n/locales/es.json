@@ -834,6 +834,22 @@
     "enabled": "Notificaciones activadas",
     "notSupported": "Tu navegador no soporta notificaciones push."
   },
+  "twofa": {
+    "title": "Verificación en dos pasos (2FA)",
+    "desc": "Añade una capa extra de seguridad a tu cuenta con una app de autenticación (Google Authenticator, Authy, etc.).",
+    "enabled": "2FA activado",
+    "disabled": "2FA desactivado",
+    "setup": "Activar 2FA",
+    "setupStep1": "Escanea este código QR con tu app de autenticación:",
+    "setupStep2": "Introduce el código de 6 dígitos que genera la app para confirmar:",
+    "tokenPlaceholder": "Código de 6 dígitos",
+    "verify": "Confirmar y activar",
+    "verifyError": "Código incorrecto. Inténtalo de nuevo.",
+    "disableTitle": "Desactivar 2FA",
+    "disableDesc": "Introduce el código actual de tu app para desactivar 2FA:",
+    "disableBtn": "Desactivar 2FA",
+    "cancel": "Cancelar"
+  },
   "billing": {
     "eyebrow": "Suscripción",
     "title": "Plan y facturación",

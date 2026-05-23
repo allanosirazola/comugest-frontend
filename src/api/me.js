@@ -23,3 +23,18 @@ export async function listMyMeetings() {
   const { data } = await api.get('/me/meetings');
   return data.meetings;
 }
+
+export async function setup2FA() {
+  const { data } = await api.post('/me/profile/2fa/setup');
+  return data; // { secret, otpauthUrl, qrCode (data URI) }
+}
+
+export async function verify2FA(token) {
+  const { data } = await api.post('/me/profile/2fa/verify', { token });
+  return data;
+}
+
+export async function disable2FA(token) {
+  const { data } = await api.post('/me/profile/2fa/disable', { token });
+  return data;
+}

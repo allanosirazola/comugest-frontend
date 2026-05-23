@@ -44,3 +44,23 @@ export function useMyMeetings() {
     queryFn: api.listMyMeetings,
   });
 }
+
+export function useSetup2FA() {
+  return useMutation({ mutationFn: api.setup2FA });
+}
+
+export function useVerify2FA() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (token) => api.verify2FA(token),
+    onSuccess: () => void qc.invalidateQueries({ queryKey: KEYS.profile() }),
+  });
+}
+
+export function useDisable2FA() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (token) => api.disable2FA(token),
+    onSuccess: () => void qc.invalidateQueries({ queryKey: KEYS.profile() }),
+  });
+}

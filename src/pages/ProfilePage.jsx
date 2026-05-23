@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Layout } from '@/components/Layout';
 import { useAuth } from '@/contexts/AuthContext';
-import { useProfile, useUpdateProfile, useChangePassword } from '@/hooks/useMe';
+import { useProfile, useUpdateProfile, useChangePassword, useSetup2FA, useVerify2FA, useDisable2FA } from '@/hooks/useMe';
 import { usePushNotifications } from '@/hooks/usePush';
 
 export function ProfilePage() {
@@ -36,10 +36,16 @@ export function ProfilePage() {
             <ChangePasswordForm />
           </div>
 
-          <section className="mt-8 card">
+          <section className="card">
             <h2 className="font-display text-xl text-olive-900">{t('push.title')}</h2>
             <p className="mt-1 text-sm text-olive-600">{t('push.desc')}</p>
             <PushToggle />
+          </section>
+
+          <section className="card">
+            <h2 className="font-display text-xl text-olive-900">{t('twofa.title')}</h2>
+            <p className="mt-1 text-sm text-olive-600">{t('twofa.desc')}</p>
+            <TwoFactorSection profile={profile} />
           </section>
         </div>
       )}
@@ -235,6 +241,136 @@ function PushToggle() {
           <span className="text-sm text-olive-600">{t('push.enabled')}</span>
         )}
       </div>
+    </div>
+  );
+}
+
+function TwoFactorSection({ profile }) {
+  const { t } = useTranslation();
+  const setup2FA = useSetup2FA();
+  const verify2FA = useVerify2FA();
+  const disable2FA = useDisable2FA();
+
+  const [step, setStep] = useState('idle'); // idle | setup | disable
+  const [setupData, setSetupData] = useState(null);
+  const [token, setToken] = useState('');
+  const [verifyError, setVerifyError] = useState('');
+
+  const isEnabled = profile?.totpEnabled;
+
+  const handleSetup = async () => {
+    setVerifyError('');
+    const data = await setup2FA.mutateAsync();
+    setSetupData(data);
+    setStep('setup');
+    setToken('');
+  };
+
+  const handleVerify = async (e) => {
+    e.preventDefault();
+    setVerifyError('');
+    try {
+      await verify2FA.mutateAsync(token);
+      setStep('idle');
+      setSetupData(null);
+      setToken('');
+    } catch {
+      setVerifyError(t('twofa.verifyError'));
+    }
+  };
+
+  const handleDisableSubmit = async (e) => {
+    e.preventDefault();
+    setVerifyError('');
+    try {
+      await disable2FA.mutateAsync(token);
+      setStep('idle');
+      setToken('');
+    } catch {
+      setVerifyError(t('twofa.verifyError'));
+    }
+  };
+
+  if (step === 'setup' && setupData) {
+    return (
+      <div className="mt-4 space-y-4">
+        <p className="text-sm text-olive-700">{t('twofa.setupStep1')}</p>
+        <img src={setupData.qrCode} alt="QR 2FA" className="h-44 w-44 rounded border border-cream-300" />
+        <p className="font-mono text-xs text-olive-500 break-all">{setupData.secret}</p>
+        <form onSubmit={handleVerify} className="space-y-3">
+          <p className="text-sm text-olive-700">{t('twofa.setupStep2')}</p>
+          <input
+            value={token}
+            onChange={(e) => { setToken(e.target.value); setVerifyError(''); }}
+            placeholder={t('twofa.tokenPlaceholder')}
+            maxLength={6}
+            pattern="\d{6}"
+            required
+            className="input w-40"
+          />
+          {verifyError && <p className="text-sm text-clay-600">{verifyError}</p>}
+          <div className="flex gap-2">
+            <button type="submit" disabled={verify2FA.isPending} className="btn-primary">
+              {t('twofa.verify')}
+            </button>
+            <button type="button" onClick={() => { setStep('idle'); setSetupData(null); }} className="btn-ghost">
+              {t('twofa.cancel')}
+            </button>
+          </div>
+        </form>
+      </div>
+    );
+  }
+
+  if (step === 'disable') {
+    return (
+      <div className="mt-4 space-y-3">
+        <p className="text-sm text-olive-700">{t('twofa.disableDesc')}</p>
+        <form onSubmit={handleDisableSubmit} className="space-y-3">
+          <input
+            value={token}
+            onChange={(e) => { setToken(e.target.value); setVerifyError(''); }}
+            placeholder={t('twofa.tokenPlaceholder')}
+            maxLength={6}
+            pattern="\d{6}"
+            required
+            className="input w-40"
+          />
+          {verifyError && <p className="text-sm text-clay-600">{verifyError}</p>}
+          <div className="flex gap-2">
+            <button type="submit" disabled={disable2FA.isPending} className="btn-primary bg-clay-600 hover:bg-clay-700">
+              {t('twofa.disableBtn')}
+            </button>
+            <button type="button" onClick={() => { setStep('idle'); setToken(''); }} className="btn-ghost">
+              {t('twofa.cancel')}
+            </button>
+          </div>
+        </form>
+      </div>
+    );
+  }
+
+  return (
+    <div className="mt-4 flex items-center gap-4">
+      <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${isEnabled ? 'bg-olive-100 text-olive-700' : 'bg-cream-200 text-olive-500'}`}>
+        {isEnabled ? t('twofa.enabled') : t('twofa.disabled')}
+      </span>
+      {isEnabled ? (
+        <button
+          onClick={() => { setStep('disable'); setToken(''); setVerifyError(''); }}
+          className="btn-ghost text-sm text-clay-600"
+        >
+          {t('twofa.disableTitle')}
+        </button>
+      ) : (
+        <button
+          onClick={handleSetup}
+          disabled={setup2FA.isPending}
+          className="btn-primary text-sm"
+        >
+          {t('twofa.setup')}
+        </button>
+      )}
     </div>
   );
 }
