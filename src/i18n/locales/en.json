@@ -9,6 +9,7 @@
     "language": "Language",
     "soon": "Coming soon",
     "remove": "Remove",
+    "edit": "Edit",
     "filter": "Filter",
     "prev": "Previous",
     "next": "Next"
@@ -185,6 +186,10 @@
       "documents": {
         "title": "Documents",
         "desc": "Access your community documents."
+      },
+      "calendar": {
+        "title": "Calendar",
+        "desc": "Meetings, reservations and due dates in one place."
       }
     }
   },
@@ -238,6 +243,8 @@
     "linkDocuments": "Documents",
     "linkReports": "Reports",
     "linkMeters": "Meters",
+    "linkSuppliers": "Suppliers",
+    "linkCalendar": "Calendar",
     "backToDetail": "Back to community"
   },
   "invite": {
@@ -723,6 +730,20 @@
       "otro": "Other"
     }
   },
+  "suppliers": {
+    "eyebrow": "Suppliers",
+    "title": "Supplier management",
+    "addSupplier": "Add supplier",
+    "confirmDelete": "Delete this supplier?",
+    "empty": "No suppliers registered.",
+    "expenseCount": "{{count}} linked expense(s)",
+    "fieldName": "Supplier name",
+    "fieldCif": "CIF / VAT",
+    "fieldEmail": "Email",
+    "fieldPhone": "Phone",
+    "fieldAddress": "Address",
+    "fieldNotes": "Internal notes"
+  },
   "coAdmins": {
     "title": "Co-administrators",
     "emailPlaceholder": "New administrator's email",
@@ -782,5 +803,15 @@
       "user.login": "Login",
       "user.roleChanged": "Role changed"
     }
+  },
+  "calendar": {
+    "eyebrow": "Schedule",
+    "title": "Community calendar",
+    "myTitle": "My calendar",
+    "empty": "No events in this period.",
+    "typeMeeting": "Meeting",
+    "typeReservation": "Reservation",
+    "typeInvoice": "Due date",
+    "typeRecurring": "Recurring fee"
   }
 }

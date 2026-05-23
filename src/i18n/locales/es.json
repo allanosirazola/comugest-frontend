@@ -9,6 +9,7 @@
     "language": "Idioma",
     "soon": "Próximamente",
     "remove": "Eliminar",
+    "edit": "Editar",
     "filter": "Filtrar",
     "prev": "Anterior",
     "next": "Siguiente"
@@ -185,6 +186,10 @@
       "documents": {
         "title": "Documentos",
         "desc": "Accede a los documentos de tu comunidad."
+      },
+      "calendar": {
+        "title": "Calendario",
+        "desc": "Juntas, reservas y vencimientos en un solo lugar."
       }
     }
   },
@@ -238,6 +243,8 @@
     "linkDocuments": "Documentos",
     "linkReports": "Informes",
     "linkMeters": "Contadores",
+    "linkSuppliers": "Proveedores",
+    "linkCalendar": "Calendario",
     "backToDetail": "Volver a la comunidad"
   },
   "invite": {
@@ -723,6 +730,20 @@
       "otro": "Otro"
     }
   },
+  "suppliers": {
+    "eyebrow": "Proveedores",
+    "title": "Gestión de proveedores",
+    "addSupplier": "Añadir proveedor",
+    "confirmDelete": "¿Eliminar este proveedor?",
+    "empty": "No hay proveedores registrados.",
+    "expenseCount": "{{count}} gasto(s) vinculado(s)",
+    "fieldName": "Nombre del proveedor",
+    "fieldCif": "CIF / NIF",
+    "fieldEmail": "Email",
+    "fieldPhone": "Teléfono",
+    "fieldAddress": "Dirección",
+    "fieldNotes": "Notas internas"
+  },
   "coAdmins": {
     "title": "Co-administradores",
     "emailPlaceholder": "Email del nuevo administrador",
@@ -782,5 +803,15 @@
       "user.login": "Inicio de sesión",
       "user.roleChanged": "Rol cambiado"
     }
+  },
+  "calendar": {
+    "eyebrow": "Agenda",
+    "title": "Calendario de la comunidad",
+    "myTitle": "Mi calendario",
+    "empty": "No hay eventos en este período.",
+    "typeMeeting": "Junta",
+    "typeReservation": "Reserva",
+    "typeInvoice": "Vencimiento",
+    "typeRecurring": "Cuota periódica"
   }
 }

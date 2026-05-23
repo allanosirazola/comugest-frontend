@@ -48,6 +48,9 @@ import { CommunityDocumentsPage } from '@/pages/CommunityDocuments';
 import { MyDocumentsPage } from '@/pages/MyDocuments';
 import { CommunityReportsPage } from '@/pages/CommunityReports';
 import { CommunityMeterReadingsPage } from '@/pages/CommunityMeterReadings';
+import { CommunitySuppliersPage } from '@/pages/CommunitySuppliers';
+import { CommunityCalendarPage } from '@/pages/CommunityCalendar';
+import { MyCalendarPage } from '@/pages/MyCalendar';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -89,6 +92,7 @@ export function App() {
             <Route path="/my-reservations" element={<ProtectedRoute><MyReservationsPage /></ProtectedRoute>} />
             <Route path="/my-meetings" element={<ProtectedRoute><MyMeetingsPage /></ProtectedRoute>} />
             <Route path="/documents" element={<ProtectedRoute><MyDocumentsPage /></ProtectedRoute>} />
+            <Route path="/calendar" element={<ProtectedRoute><MyCalendarPage /></ProtectedRoute>} />
             <Route path="/support/tickets" element={<ProtectedRoute allowedRoles={['SUPPORT']}><SupportDashboardPage /></ProtectedRoute>} />
             <Route path="/support" element={<ProtectedRoute allowedRoles={['SUPPORT']}><SupportDashboardPage /></ProtectedRoute>} />
 
@@ -113,6 +117,8 @@ export function App() {
             <Route path="/communities/:id/documents" element={<ProtectedRoute allowedRoles={[...ADMIN_ROLES]}><CommunityDocumentsPage /></ProtectedRoute>} />
             <Route path="/communities/:id/reports" element={<ProtectedRoute allowedRoles={[...ADMIN_ROLES]}><CommunityReportsPage /></ProtectedRoute>} />
             <Route path="/communities/:id/meter-readings" element={<ProtectedRoute allowedRoles={[...ADMIN_ROLES]}><CommunityMeterReadingsPage /></ProtectedRoute>} />
+            <Route path="/communities/:id/suppliers" element={<ProtectedRoute allowedRoles={[...ADMIN_ROLES]}><CommunitySuppliersPage /></ProtectedRoute>} />
+            <Route path="/communities/:id/calendar" element={<ProtectedRoute allowedRoles={[...ADMIN_ROLES]}><CommunityCalendarPage /></ProtectedRoute>} />
             <Route path="/admin/invite" element={<ProtectedRoute allowedRoles={[...ADMIN_ROLES]}><InviteResidentPage /></ProtectedRoute>} />
 
             <Route path="*" element={<NotFoundPage />} />
