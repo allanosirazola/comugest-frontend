@@ -46,6 +46,7 @@ import { MyMeetingsPage } from '@/pages/MyMeetings';
 import { CommunityRecurringPage } from '@/pages/CommunityRecurring';
 import { CommunityDocumentsPage } from '@/pages/CommunityDocuments';
 import { MyDocumentsPage } from '@/pages/MyDocuments';
+import { CommunityReportsPage } from '@/pages/CommunityReports';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -109,6 +110,7 @@ export function App() {
             <Route path="/communities/:id/meetings/:meetingId" element={<ProtectedRoute><MeetingDetailPage /></ProtectedRoute>} />
             <Route path="/communities/:id/recurring" element={<ProtectedRoute allowedRoles={['ADMIN_FINCAS','SUPPORT']}><CommunityRecurringPage /></ProtectedRoute>} />
             <Route path="/communities/:id/documents" element={<ProtectedRoute allowedRoles={[...ADMIN_ROLES]}><CommunityDocumentsPage /></ProtectedRoute>} />
+            <Route path="/communities/:id/reports" element={<ProtectedRoute allowedRoles={[...ADMIN_ROLES]}><CommunityReportsPage /></ProtectedRoute>} />
             <Route path="/admin/invite" element={<ProtectedRoute allowedRoles={[...ADMIN_ROLES]}><InviteResidentPage /></ProtectedRoute>} />
 
             <Route path="*" element={<NotFoundPage />} />

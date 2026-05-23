@@ -236,6 +236,7 @@
     "linkAreas": "Common areas",
     "linkMeetings": "Meetings",
     "linkDocuments": "Documents",
+    "linkReports": "Reports",
     "backToDetail": "Back to community"
   },
   "invite": {
@@ -676,6 +677,25 @@
       "contrato": "Contract",
       "certificado": "Certificate",
       "otro": "Other"
+    }
+  },
+  "reports": {
+    "eyebrow": "Reports",
+    "title": "Export reports",
+    "download": "Download PDF",
+    "morosos": {
+      "title": "Arrears list",
+      "desc": "Units with outstanding invoice balances."
+    },
+    "budget": {
+      "title": "Budget vs actual",
+      "desc": "Annual budget compared to real expenses."
+    },
+    "payments": {
+      "title": "Payment history",
+      "desc": "All registered payments, with optional date filter.",
+      "from": "From",
+      "to": "To"
     }
   },
   "coAdmins": {

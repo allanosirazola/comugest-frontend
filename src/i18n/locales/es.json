@@ -236,6 +236,7 @@
     "linkAreas": "Zonas comunes",
     "linkMeetings": "Juntas",
     "linkDocuments": "Documentos",
+    "linkReports": "Informes",
     "backToDetail": "Volver a la comunidad"
   },
   "invite": {
@@ -676,6 +677,25 @@
       "contrato": "Contrato",
       "certificado": "Certificado",
       "otro": "Otro"
+    }
+  },
+  "reports": {
+    "eyebrow": "Informes",
+    "title": "Exportar informes",
+    "download": "Descargar PDF",
+    "morosos": {
+      "title": "Listado de morosos",
+      "desc": "Unidades con recibos pendientes de pago."
+    },
+    "budget": {
+      "title": "Presupuesto vs real",
+      "desc": "Comparativa del presupuesto anual frente a los gastos reales."
+    },
+    "payments": {
+      "title": "Histórico de pagos",
+      "desc": "Todos los pagos registrados, con filtro por fechas opcional.",
+      "from": "Desde",
+      "to": "Hasta"
     }
   },
   "coAdmins": {

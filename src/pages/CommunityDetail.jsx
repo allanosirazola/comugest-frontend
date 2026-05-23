@@ -139,6 +139,9 @@ export function CommunityDetailPage() {
         <Link to={`/communities/${community.id}/documents`} className="btn-ghost">
           {t('communities.linkDocuments')}
         </Link>
+        <Link to={`/communities/${community.id}/reports`} className="btn-ghost">
+          {t('communities.linkReports')}
+        </Link>
       </div>
 
       <section className="mt-10">
