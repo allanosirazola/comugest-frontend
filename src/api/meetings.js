@@ -24,3 +24,13 @@ export async function updateAttendance(id, input) {
   const { data } = await api.patch(`/meetings/${id}/attendance`, input);
   return data.attendance;
 }
+
+export async function saveMinutes(id, minutes) {
+  const { data } = await api.put(`/meetings/${id}/minutes`, { minutes });
+  return data;
+}
+
+export async function publishMinutes(id, published) {
+  const { data } = await api.patch(`/meetings/${id}/minutes/publish`, { published });
+  return data;
+}

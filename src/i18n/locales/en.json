@@ -627,6 +627,10 @@
     "agenda": "Agenda",
     "minutes": "Minutes",
     "minutesUrl": "Minutes URL (PDF)",
+    "minutesPublished": "Published",
+    "minutesPublish": "Publish minutes to residents",
+    "minutesUnpublish": "Unpublish",
+    "minutesLastUpdated": "Last edited: {{date}}",
     "attendees": "Attendees",
     "myAttendance": "My attendance",
     "attendancePENDING": "Pending",
@@ -767,7 +771,14 @@
       "favor": "In favour",
       "contra": "Against",
       "abstencion": "Abstain"
-    }
+    },
+    "votingDeadline": "Voting deadline",
+    "requiresAttendance": "Only attendees can vote",
+    "deadline": "Deadline",
+    "telematic": "Remote votes",
+    "inPerson": "In-person votes",
+    "quorumReached": "Quorum reached",
+    "quorumNotReached": "Quorum not reached"
   },
   "audit": {
     "eyebrow": "Administration",

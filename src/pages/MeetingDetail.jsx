@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Layout } from '@/components/Layout';
 import { useAuth } from '@/contexts/AuthContext';
-import { useMeeting, useUpdateMeeting, useUpdateAttendance } from '@/hooks/useMeetings';
+import { useMeeting, useUpdateMeeting, useUpdateAttendance, useSaveMinutes, usePublishMinutes } from '@/hooks/useMeetings';
 import { usePolls, useCreatePoll, useClosePoll, useCastVote } from '@/hooks/usePolls';
 
 const TYPE_COLORS = {
@@ -81,6 +81,8 @@ export function MeetingDetailPage() {
   const { data: meeting, isLoading } = useMeeting(meetingId);
   const updateMeeting = useUpdateMeeting(meetingId ?? '');
   const updateAttendance = useUpdateAttendance(meetingId ?? '');
+  const saveMinutesMutation = useSaveMinutes(meetingId ?? '');
+  const publishMinutesMutation = usePublishMinutes(meetingId ?? '');
 
   const [attendanceStatus, setAttendanceStatus] = useState(null);
   const [proxy, setProxy] = useState('');
@@ -165,9 +167,16 @@ export function MeetingDetailPage() {
             </div>
           )}
 
-          {(meeting.minutes || meeting.minutesUrl) && (
+          {(isAdmin || meeting.minutesPublished) && (meeting.minutes || meeting.minutesUrl) && (
             <div className="card border-olive-200 bg-olive-50">
-              <p className="text-xs font-medium uppercase tracking-wider text-olive-600">{t('meetings.minutes')}</p>
+              <div className="flex items-center justify-between gap-3">
+                <p className="text-xs font-medium uppercase tracking-wider text-olive-600">{t('meetings.minutes')}</p>
+                {meeting.minutesPublished && (
+                  <span className="rounded-full bg-olive-100 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider text-olive-700">
+                    {t('meetings.minutesPublished')}
+                  </span>
+                )}
+              </div>
               {meeting.minutes && (
                 <p className="mt-2 whitespace-pre-wrap text-sm text-olive-800">{meeting.minutes}</p>
               )}
@@ -180,6 +189,11 @@ export function MeetingDetailPage() {
                 >
                   📎 {t('meetings.minutesUrl')}
                 </a>
+              )}
+              {meeting.minutesUpdatedAt && (
+                <p className="mt-2 text-xs text-olive-400">
+                  {t('meetings.minutesLastUpdated', { date: new Date(meeting.minutesUpdatedAt).toLocaleString() })}
+                </p>
               )}
             </div>
           )}
@@ -340,6 +354,17 @@ export function MeetingDetailPage() {
                   {t('meetings.markHeld')}
                 </button>
               )}
+
+              {meeting.minutes && (
+                <button
+                  type="button"
+                  onClick={() => publishMinutesMutation.mutate(!meeting.minutesPublished)}
+                  disabled={publishMinutesMutation.isPending}
+                  className={`w-full py-1.5 text-sm ${meeting.minutesPublished ? 'btn-ghost text-clay-600' : 'btn-primary'}`}
+                >
+                  {meeting.minutesPublished ? t('meetings.minutesUnpublish') : t('meetings.minutesPublish')}
+                </button>
+              )}
             </div>
           )}
         </aside>
@@ -360,16 +385,21 @@ function PollsSection({ meetingId }) {
   const castVote = useCastVote(meetingId);
 
   const [showForm, setShowForm] = useState(false);
-  const [form, setForm] = useState({ question: '', description: '' });
+  const [form, setForm] = useState({ question: '', description: '', votingDeadline: '', requiresAttendance: false });
   const [error, setError] = useState(null);
 
   const handleCreate = async (e) => {
     e.preventDefault();
     setError(null);
     try {
-      await createPoll.mutateAsync(form);
+      await createPoll.mutateAsync({
+        question: form.question,
+        description: form.description || undefined,
+        votingDeadline: form.votingDeadline || undefined,
+        requiresAttendance: form.requiresAttendance,
+      });
       setShowForm(false);
-      setForm({ question: '', description: '' });
+      setForm({ question: '', description: '', votingDeadline: '', requiresAttendance: false });
     } catch (err) {
       setError(err?.response?.data?.error?.message ?? t('errors.generic'));
     }
@@ -422,6 +452,26 @@ function PollsSection({ meetingId }) {
             value={form.description}
             onChange={(e) => setForm({ ...form, description: e.target.value })}
           />
+          <div className="grid gap-3 sm:grid-cols-2">
+            <div>
+              <label className="mb-1 block text-xs text-olive-600">{t('polls.votingDeadline')}</label>
+              <input
+                type="datetime-local"
+                className="input"
+                value={form.votingDeadline}
+                onChange={(e) => setForm({ ...form, votingDeadline: e.target.value })}
+              />
+            </div>
+            <label className="flex items-center gap-2 text-sm text-olive-700 cursor-pointer self-end pb-2">
+              <input
+                type="checkbox"
+                checked={form.requiresAttendance}
+                onChange={(e) => setForm({ ...form, requiresAttendance: e.target.checked })}
+                className="rounded border-olive-300"
+              />
+              {t('polls.requiresAttendance')}
+            </label>
+          </div>
           <button type="submit" className="btn-primary w-fit" disabled={createPoll.isPending}>
             {createPoll.isPending ? t('common.loading') : t('polls.addPoll')}
           </button>
@@ -446,11 +496,24 @@ function PollsSection({ meetingId }) {
                   <div>
                     <p className="font-medium text-olive-900">{poll.question}</p>
                     {poll.description && <p className="mt-0.5 text-sm text-olive-600">{poll.description}</p>}
+                    {poll.votingDeadline && (
+                      <p className="mt-0.5 text-xs text-olive-500">
+                        {t('polls.deadline')}: {new Date(poll.votingDeadline).toLocaleString()}
+                      </p>
+                    )}
+                    {poll.requiresAttendance && (
+                      <p className="mt-0.5 text-xs text-olive-500">{t('polls.requiresAttendance')}</p>
+                    )}
                   </div>
                   <div className="flex shrink-0 items-center gap-2">
                     <span className={`rounded-full px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider ${poll.status === 'OPEN' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'}`}>
                       {t(`polls.status.${poll.status.toLowerCase()}`)}
                     </span>
+                    {poll.status === 'CLOSED' && poll.quorumReached !== null && poll.quorumReached !== undefined && (
+                      <span className={`rounded-full px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider ${poll.quorumReached ? 'bg-olive-100 text-olive-800' : 'bg-clay-100 text-clay-700'}`}>
+                        {poll.quorumReached ? t('polls.quorumReached') : t('polls.quorumNotReached')}
+                      </span>
+                    )}
                     {isAdmin && poll.status === 'OPEN' && (
                       <button
                         onClick={() => closePoll.mutate(poll.id)}
@@ -482,13 +545,20 @@ function PollsSection({ meetingId }) {
 
                 {/* Results for closed polls */}
                 {poll.status === 'CLOSED' && (
-                  <div className="mt-3 flex flex-wrap gap-4 text-sm">
-                    {VOTE_OPTIONS.map((opt) => (
-                      <span key={opt} className="text-olive-700">
-                        <span className="font-medium">{t(`polls.option.${opt.toLowerCase()}`)}</span>: {poll.results?.[opt] ?? 0}
-                      </span>
-                    ))}
-                    <span className="text-olive-500">{t('polls.totalVotes', { count: total })}</span>
+                  <div className="mt-3 space-y-1">
+                    <div className="flex flex-wrap gap-4 text-sm">
+                      {VOTE_OPTIONS.map((opt) => (
+                        <span key={opt} className="text-olive-700">
+                          <span className="font-medium">{t(`polls.option.${opt.toLowerCase()}`)}</span>: {poll.results?.[opt] ?? 0}
+                        </span>
+                      ))}
+                      <span className="text-olive-500">{t('polls.totalVotes', { count: total })}</span>
+                    </div>
+                    {(poll.results?.telematic > 0 || poll.results?.inPerson > 0) && (
+                      <p className="text-xs text-olive-400">
+                        {t('polls.telematic')}: {poll.results?.telematic ?? 0} · {t('polls.inPerson')}: {poll.results?.inPerson ?? 0}
+                      </p>
+                    )}
                   </div>
                 )}
               </div>

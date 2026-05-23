@@ -627,6 +627,10 @@
     "agenda": "Orden del día",
     "minutes": "Acta",
     "minutesUrl": "URL del acta (PDF)",
+    "minutesPublished": "Publicada",
+    "minutesPublish": "Publicar acta para vecinos",
+    "minutesUnpublish": "Retirar publicación",
+    "minutesLastUpdated": "Última edición: {{date}}",
     "attendees": "Asistentes",
     "myAttendance": "Mi asistencia",
     "attendancePENDING": "Pendiente",
@@ -767,7 +771,14 @@
       "favor": "A favor",
       "contra": "En contra",
       "abstencion": "Abstención"
-    }
+    },
+    "votingDeadline": "Fecha límite de votación",
+    "requiresAttendance": "Solo convocados pueden votar",
+    "deadline": "Límite",
+    "telematic": "Votos telemáticos",
+    "inPerson": "Votos presenciales",
+    "quorumReached": "Quórum alcanzado",
+    "quorumNotReached": "Quórum no alcanzado"
   },
   "audit": {
     "eyebrow": "Administración",
