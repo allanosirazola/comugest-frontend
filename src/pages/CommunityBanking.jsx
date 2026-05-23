@@ -23,6 +23,26 @@ export function CommunityBankingPage() {
     setForm({ institutionName: '', iban: '' });
   };
 
+  const handleExportCsv = () => {
+    if (!transactions.length) return;
+    const header = ['Fecha', 'Descripción', 'Referencia', 'Importe (€)', 'Estado'];
+    const rows = transactions.map(tx => [
+      new Date(tx.transactionDate).toLocaleDateString('es-ES'),
+      tx.description,
+      tx.reference ?? '',
+      Number(tx.amount).toFixed(2),
+      tx.reconciledAt ? 'Reconciliado' : 'Pendiente',
+    ]);
+    const csv = [header, ...rows].map(r => r.map(c => `"${String(c).replace(/"/g, '""')}"`).join(',')).join('\n');
+    const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `transacciones-${selectedAccount?.institutionName ?? 'banco'}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <Layout>
       <Link to={`/communities/${communityId}`} className="text-sm text-olive-600 hover:text-olive-900">
@@ -87,9 +107,14 @@ export function CommunityBankingPage() {
       {/* Transactions panel */}
       {selectedAccount && (
         <div className="mt-8">
-          <h2 className="font-display text-xl font-medium text-olive-900">
-            Transacciones — {selectedAccount.institutionName}
-          </h2>
+          <div className="flex items-center justify-between gap-4">
+            <h2 className="font-display text-xl font-medium text-olive-900">
+              Transacciones — {selectedAccount.institutionName}
+            </h2>
+            {transactions.length > 0 && (
+              <button onClick={handleExportCsv} className="btn-ghost text-sm">↓ Exportar CSV</button>
+            )}
+          </div>
           {transactions.length === 0 ? (
             <p className="mt-4 text-olive-500">No hay transacciones registradas.</p>
           ) : (

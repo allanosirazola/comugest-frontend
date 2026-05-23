@@ -662,7 +662,8 @@
     "signConfirm": "Firmar",
     "signError": "Código incorrecto o error al firmar.",
     "signed": "Acta firmada digitalmente",
-    "signedBadge": "Firmada digitalmente"
+    "signedBadge": "Firmada digitalmente",
+    "downloadPdf": "Descargar acta en PDF"
   },
   "recurring": {
     "eyebrow": "Facturación automática",

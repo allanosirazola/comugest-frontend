@@ -5,6 +5,7 @@ import { Layout } from '@/components/Layout';
 import { useAuth } from '@/contexts/AuthContext';
 import { useMeeting, useUpdateMeeting, useUpdateAttendance, useSaveMinutes, usePublishMinutes, useGenerateQr, useSignMinutes } from '@/hooks/useMeetings';
 import { usePolls, useCreatePoll, useClosePoll, useCastVote } from '@/hooks/usePolls';
+import { downloadMinutesPdf } from '@/api/meetings';
 
 const TYPE_COLORS = {
   ORDINARY: 'bg-olive-100 text-olive-800',
@@ -187,6 +188,20 @@ export function MeetingDetailPage() {
               </div>
               {meeting.minutes && (
                 <p className="mt-2 whitespace-pre-wrap text-sm text-olive-800">{meeting.minutes}</p>
+              )}
+              {meeting.minutesPublished && meeting.minutes && (
+                <button
+                  onClick={async () => {
+                    try {
+                      await downloadMinutesPdf(meeting.id);
+                    } catch {
+                      // silent - browser will handle download errors
+                    }
+                  }}
+                  className="mt-2 btn-ghost text-sm"
+                >
+                  ↓ {t('meetings.downloadPdf')}
+                </button>
               )}
               {meeting.minutesSignedAt && (
                 <div className="mt-3 flex items-start gap-2 rounded-lg bg-olive-50 px-3 py-2">

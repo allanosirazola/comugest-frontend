@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, PieChart, Pie, Cell, ResponsiveContainer, Legend } from 'recharts';
 import { Layout } from '@/components/Layout';
 import { useAuth } from '@/contexts/AuthContext';
@@ -44,6 +44,8 @@ export function DashboardPage() {
       <p className="mt-3 max-w-xl text-sm text-olive-600">{t('dashboard.placeholder')}</p>
 
       {isAdminFincas && <AdminKpiStrip />}
+
+      {isAdminFincas && <ActivationChecklist communities={communities} />}
 
       {isAdminFincas && firstCommunityId && <AdminCharts communityId={firstCommunityId} />}
 
@@ -143,6 +145,70 @@ function VecinoCards() {
       <Card titleKey="dashboard.vecino.documents.title" descKey="dashboard.vecino.documents.desc" to="/documents" />
       <Card titleKey="dashboard.vecino.calendar.title" descKey="dashboard.vecino.calendar.desc" to="/calendar" />
     </>
+  );
+}
+
+// ─── Activation Checklist ─────────────────────────────────────
+
+function ActivationChecklist({ communities }) {
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+  const [dismissed, setDismissed] = useState(() => !!localStorage.getItem('checklist_dismissed'));
+
+  const hasCommunity = (communities?.length ?? 0) > 0;
+  const allDone = hasCommunity; // expand as more checks are added
+
+  if (dismissed || allDone) return null;
+
+  const steps = [
+    { label: 'Cuenta creada', done: true },
+    { label: 'Crear tu primera comunidad', done: hasCommunity, action: () => navigate('/communities/new') },
+    { label: 'Invitar tu primer vecino', done: false, action: () => navigate('/admin/invite') },
+    { label: 'Emitir tu primera factura', done: false, action: () => navigate('/communities') },
+  ];
+
+  const completedCount = steps.filter(s => s.done).length;
+
+  return (
+    <div className="mt-6 card border-olive-200 bg-olive-50/60">
+      <div className="flex items-start justify-between">
+        <div>
+          <p className="font-display text-lg font-medium text-olive-900">
+            Primeros pasos ({completedCount}/{steps.length})
+          </p>
+          <div className="mt-1 h-1.5 w-48 overflow-hidden rounded-full bg-cream-200">
+            <div
+              className="h-full rounded-full bg-olive-500 transition-all"
+              style={{ width: `${(completedCount / steps.length) * 100}%` }}
+            />
+          </div>
+        </div>
+        <button
+          onClick={() => { localStorage.setItem('checklist_dismissed', '1'); setDismissed(true); }}
+          className="text-xs text-olive-400 hover:text-olive-600"
+        >
+          Ocultar
+        </button>
+      </div>
+      <ul className="mt-4 space-y-2">
+        {steps.map((step, i) => (
+          <li key={i} className="flex items-center gap-3">
+            <span className={`flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full text-xs ${
+              step.done ? 'bg-olive-500 text-white' : 'border-2 border-cream-300 text-transparent'
+            }`}>
+              ✓
+            </span>
+            {step.done ? (
+              <span className="text-sm text-olive-500 line-through">{step.label}</span>
+            ) : (
+              <button onClick={step.action} className="text-sm text-olive-800 underline-offset-2 hover:underline">
+                {step.label} →
+              </button>
+            )}
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }
 

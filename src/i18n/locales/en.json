@@ -662,7 +662,8 @@
     "signConfirm": "Sign",
     "signError": "Incorrect code or signing error.",
     "signed": "Digitally signed",
-    "signedBadge": "Digitally signed"
+    "signedBadge": "Digitally signed",
+    "downloadPdf": "Download minutes as PDF"
   },
   "recurring": {
     "eyebrow": "Automatic billing",

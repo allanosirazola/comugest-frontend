@@ -48,3 +48,14 @@ export async function signMinutes(meetingId, totpCode) {
   const { data } = await api.post(`/meetings/${meetingId}/minutes/sign`, { totpCode });
   return data.meeting;
 }
+
+export async function downloadMinutesPdf(meetingId) {
+  const response = await api.get(`/meetings/${meetingId}/minutes/pdf`, { responseType: 'blob' });
+  const blob = new Blob([response.data], { type: 'application/pdf' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `acta-${meetingId.slice(0, 8)}.pdf`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
