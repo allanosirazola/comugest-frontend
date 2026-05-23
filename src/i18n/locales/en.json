@@ -146,7 +146,8 @@
       "audit": {
         "title": "Audit log",
         "desc": "View the history of all actions performed on the platform."
-      }
+      },
+      "billing": { "title": "Billing", "desc": "Manage your subscription and plan." }
     },
     "kpi": {
       "pendingInvoices": "Pending invoices",
@@ -824,5 +825,31 @@
     "typeReservation": "Reservation",
     "typeInvoice": "Due date",
     "typeRecurring": "Recurring fee"
+  },
+  "billing": {
+    "eyebrow": "Subscription",
+    "title": "Plan & billing",
+    "currentPlan": "Current plan",
+    "freePlan": "Free Plan",
+    "statusFree": "Free",
+    "statusActive": "Active",
+    "statusPastDue": "Payment due",
+    "statusCancelled": "Cancelled",
+    "upgrade": "Subscribe to PRO",
+    "manageSubscription": "Manage subscription",
+    "renewsOn": "Renews on {{date}}",
+    "pastDueWarning": "There is an issue with your payment method. Please update it to continue.",
+    "successMessage": "Subscription activated successfully. Welcome to Comugest PRO.",
+    "proFeaturesTitle": "Everything included in PRO",
+    "acceptedMethods": "We accept card, Google Pay and Apple Pay.",
+    "feature": {
+      "communities": "Unlimited communities",
+      "documents": "Document archive",
+      "reports": "PDF report exports",
+      "meters": "Meter reading history",
+      "polls": "Telematic voting",
+      "calendar": "Unified calendar",
+      "support": "Priority support"
+    }
   }
 }

@@ -146,7 +146,8 @@
       "audit": {
         "title": "Registro de auditoría",
         "desc": "Consulta el historial de todas las acciones realizadas en la plataforma."
-      }
+      },
+      "billing": { "title": "Facturación", "desc": "Gestiona tu suscripción y plan." }
     },
     "kpi": {
       "pendingInvoices": "Facturas pendientes",
@@ -824,5 +825,31 @@
     "typeReservation": "Reserva",
     "typeInvoice": "Vencimiento",
     "typeRecurring": "Cuota periódica"
+  },
+  "billing": {
+    "eyebrow": "Suscripción",
+    "title": "Plan y facturación",
+    "currentPlan": "Plan actual",
+    "freePlan": "Plan Gratuito",
+    "statusFree": "Gratuito",
+    "statusActive": "Activo",
+    "statusPastDue": "Pago pendiente",
+    "statusCancelled": "Cancelado",
+    "upgrade": "Suscribirse a PRO",
+    "manageSubscription": "Gestionar suscripción",
+    "renewsOn": "Se renueva el {{date}}",
+    "pastDueWarning": "Hay un problema con tu método de pago. Actualízalo para continuar.",
+    "successMessage": "Suscripción activada correctamente. Bienvenido a Comugest PRO.",
+    "proFeaturesTitle": "Todo incluido en PRO",
+    "acceptedMethods": "Aceptamos tarjeta, Google Pay y Apple Pay.",
+    "feature": {
+      "communities": "Comunidades ilimitadas",
+      "documents": "Archivo de documentos",
+      "reports": "Exportación de informes PDF",
+      "meters": "Historial de contadores",
+      "polls": "Votaciones telemáticas",
+      "calendar": "Calendario unificado",
+      "support": "Soporte prioritario"
+    }
   }
 }

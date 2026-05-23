@@ -51,6 +51,8 @@ import { CommunityMeterReadingsPage } from '@/pages/CommunityMeterReadings';
 import { CommunitySuppliersPage } from '@/pages/CommunitySuppliers';
 import { CommunityCalendarPage } from '@/pages/CommunityCalendar';
 import { MyCalendarPage } from '@/pages/MyCalendar';
+import { BillingPage } from '@/pages/BillingPage';
+import { BillingSuccessPage } from '@/pages/BillingSuccess';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -120,6 +122,8 @@ export function App() {
             <Route path="/communities/:id/suppliers" element={<ProtectedRoute allowedRoles={[...ADMIN_ROLES]}><CommunitySuppliersPage /></ProtectedRoute>} />
             <Route path="/communities/:id/calendar" element={<ProtectedRoute allowedRoles={[...ADMIN_ROLES]}><CommunityCalendarPage /></ProtectedRoute>} />
             <Route path="/admin/invite" element={<ProtectedRoute allowedRoles={[...ADMIN_ROLES]}><InviteResidentPage /></ProtectedRoute>} />
+            <Route path="/billing" element={<ProtectedRoute allowedRoles={['ADMIN_FINCAS']}><BillingPage /></ProtectedRoute>} />
+            <Route path="/billing/success" element={<ProtectedRoute allowedRoles={['ADMIN_FINCAS']}><BillingSuccessPage /></ProtectedRoute>} />
 
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
