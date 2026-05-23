@@ -44,6 +44,8 @@ import { ProfilePage } from '@/pages/ProfilePage';
 import { MyReservationsPage } from '@/pages/MyReservations';
 import { MyMeetingsPage } from '@/pages/MyMeetings';
 import { CommunityRecurringPage } from '@/pages/CommunityRecurring';
+import { CommunityDocumentsPage } from '@/pages/CommunityDocuments';
+import { MyDocumentsPage } from '@/pages/MyDocuments';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -84,6 +86,7 @@ export function App() {
             <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
             <Route path="/my-reservations" element={<ProtectedRoute><MyReservationsPage /></ProtectedRoute>} />
             <Route path="/my-meetings" element={<ProtectedRoute><MyMeetingsPage /></ProtectedRoute>} />
+            <Route path="/documents" element={<ProtectedRoute><MyDocumentsPage /></ProtectedRoute>} />
             <Route path="/support/tickets" element={<ProtectedRoute allowedRoles={['SUPPORT']}><SupportDashboardPage /></ProtectedRoute>} />
             <Route path="/support" element={<ProtectedRoute allowedRoles={['SUPPORT']}><SupportDashboardPage /></ProtectedRoute>} />
 
@@ -105,6 +108,7 @@ export function App() {
             <Route path="/communities/:id/meetings" element={<ProtectedRoute allowedRoles={[...ADMIN_ROLES]}><CommunityMeetingsPage /></ProtectedRoute>} />
             <Route path="/communities/:id/meetings/:meetingId" element={<ProtectedRoute><MeetingDetailPage /></ProtectedRoute>} />
             <Route path="/communities/:id/recurring" element={<ProtectedRoute allowedRoles={['ADMIN_FINCAS','SUPPORT']}><CommunityRecurringPage /></ProtectedRoute>} />
+            <Route path="/communities/:id/documents" element={<ProtectedRoute allowedRoles={[...ADMIN_ROLES]}><CommunityDocumentsPage /></ProtectedRoute>} />
             <Route path="/admin/invite" element={<ProtectedRoute allowedRoles={[...ADMIN_ROLES]}><InviteResidentPage /></ProtectedRoute>} />
 
             <Route path="*" element={<NotFoundPage />} />

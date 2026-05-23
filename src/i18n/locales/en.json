@@ -181,6 +181,10 @@
       "meetings": {
         "title": "My meetings",
         "desc": "General meeting notices and your attendance confirmation."
+      },
+      "documents": {
+        "title": "Documents",
+        "desc": "Access your community documents."
       }
     }
   },
@@ -230,7 +234,9 @@
     "linkProcedures": "Procedures",
     "linkBudget": "Budget",
     "linkAreas": "Common areas",
-    "linkMeetings": "Meetings"
+    "linkMeetings": "Meetings",
+    "linkDocuments": "Documents",
+    "backToDetail": "Back to community"
   },
   "invite": {
     "eyebrow": "Administration",
@@ -650,6 +656,27 @@
     "active": "Active",
     "inactive": "Inactive",
     "linkRecurring": "Recurring fees"
+  },
+  "documents": {
+    "eyebrow": "Archive",
+    "title": "Community documents",
+    "myTitle": "My documents",
+    "addDocument": "Add document",
+    "confirmDelete": "Delete this document?",
+    "empty": "No documents available.",
+    "fieldName": "Document name",
+    "fieldUrl": "Document URL (Google Drive, Dropbox…)",
+    "fieldDescription": "Description (optional)",
+    "publicForResidents": "Visible to residents",
+    "adminOnly": "Admins only",
+    "category": {
+      "acta": "Minutes",
+      "reglamento": "Rules",
+      "presupuesto": "Budget",
+      "contrato": "Contract",
+      "certificado": "Certificate",
+      "otro": "Other"
+    }
   },
   "audit": {
     "eyebrow": "Administration",

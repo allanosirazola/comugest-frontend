@@ -181,6 +181,10 @@
       "meetings": {
         "title": "Mis juntas",
         "desc": "Convocatorias de juntas de vecinos y tu confirmación de asistencia."
+      },
+      "documents": {
+        "title": "Documentos",
+        "desc": "Accede a los documentos de tu comunidad."
       }
     }
   },
@@ -230,7 +234,9 @@
     "linkProcedures": "Trámites",
     "linkBudget": "Presupuesto",
     "linkAreas": "Zonas comunes",
-    "linkMeetings": "Juntas"
+    "linkMeetings": "Juntas",
+    "linkDocuments": "Documentos",
+    "backToDetail": "Volver a la comunidad"
   },
   "invite": {
     "eyebrow": "Administración",
@@ -650,6 +656,27 @@
     "active": "Activa",
     "inactive": "Inactiva",
     "linkRecurring": "Cuotas ordinarias"
+  },
+  "documents": {
+    "eyebrow": "Archivo",
+    "title": "Documentos de la comunidad",
+    "myTitle": "Mis documentos",
+    "addDocument": "Añadir documento",
+    "confirmDelete": "¿Eliminar este documento?",
+    "empty": "No hay documentos disponibles.",
+    "fieldName": "Nombre del documento",
+    "fieldUrl": "URL del documento (Google Drive, Dropbox…)",
+    "fieldDescription": "Descripción (opcional)",
+    "publicForResidents": "Visible para vecinos",
+    "adminOnly": "Solo admins",
+    "category": {
+      "acta": "Acta",
+      "reglamento": "Reglamento",
+      "presupuesto": "Presupuesto",
+      "contrato": "Contrato",
+      "certificado": "Certificado",
+      "otro": "Otro"
+    }
   },
   "audit": {
     "eyebrow": "Administración",
