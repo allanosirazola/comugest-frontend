@@ -826,6 +826,14 @@
     "typeInvoice": "Vencimiento",
     "typeRecurring": "Cuota periódica"
   },
+  "push": {
+    "title": "Notificaciones",
+    "desc": "Recibe avisos instantáneos cuando haya nuevos anuncios en tu comunidad.",
+    "enable": "Activar notificaciones",
+    "disable": "Desactivar",
+    "enabled": "Notificaciones activadas",
+    "notSupported": "Tu navegador no soporta notificaciones push."
+  },
   "billing": {
     "eyebrow": "Suscripción",
     "title": "Plan y facturación",

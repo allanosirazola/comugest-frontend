@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Layout } from '@/components/Layout';
 import { useAuth } from '@/contexts/AuthContext';
 import { useProfile, useUpdateProfile, useChangePassword } from '@/hooks/useMe';
+import { usePushNotifications } from '@/hooks/usePush';
 
 export function ProfilePage() {
   const { t } = useTranslation();
@@ -34,6 +35,12 @@ export function ProfilePage() {
             <h2 className="mb-4 font-display text-lg font-medium text-olive-900">{t('profile.changePassword')}</h2>
             <ChangePasswordForm />
           </div>
+
+          <section className="mt-8 card">
+            <h2 className="font-display text-xl text-olive-900">{t('push.title')}</h2>
+            <p className="mt-1 text-sm text-olive-600">{t('push.desc')}</p>
+            <PushToggle />
+          </section>
         </div>
       )}
     </Layout>
@@ -200,5 +207,34 @@ function ChangePasswordForm() {
         {t('profile.changePassword')}
       </button>
     </form>
+  );
+}
+
+function PushToggle() {
+  const { t } = useTranslation();
+  const { supported, subscribed, loading, error, enable, disable } = usePushNotifications();
+
+  if (!supported) {
+    return <p className="mt-3 text-sm text-olive-500">{t('push.notSupported')}</p>;
+  }
+
+  return (
+    <div className="mt-3 flex flex-col gap-2">
+      {error && (
+        <p className="text-sm text-clay-600">{error}</p>
+      )}
+      <div className="flex items-center gap-3">
+        <button
+          onClick={subscribed ? disable : enable}
+          disabled={loading}
+          className={subscribed ? 'btn-ghost text-clay-600' : 'btn-primary'}
+        >
+          {loading ? t('common.loading') : subscribed ? t('push.disable') : t('push.enable')}
+        </button>
+        {subscribed && (
+          <span className="text-sm text-olive-600">{t('push.enabled')}</span>
+        )}
+      </div>
+    </div>
   );
 }

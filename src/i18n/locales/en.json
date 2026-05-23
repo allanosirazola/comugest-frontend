@@ -826,6 +826,14 @@
     "typeInvoice": "Due date",
     "typeRecurring": "Recurring fee"
   },
+  "push": {
+    "title": "Notifications",
+    "desc": "Get instant alerts when there are new announcements in your community.",
+    "enable": "Enable notifications",
+    "disable": "Disable",
+    "enabled": "Notifications enabled",
+    "notSupported": "Your browser does not support push notifications."
+  },
   "billing": {
     "eyebrow": "Subscription",
     "title": "Plan & billing",
