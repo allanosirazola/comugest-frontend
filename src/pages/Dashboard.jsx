@@ -111,6 +111,8 @@ function VecinoCards() {
       <Card titleKey="dashboard.vecino.announcements.title" descKey="dashboard.vecino.announcements.desc" to="/announcements" />
       <Card titleKey="dashboard.vecino.expenses.title" descKey="dashboard.vecino.expenses.desc" to="/expenses" />
       <Card titleKey="dashboard.vecino.procedures.title" descKey="dashboard.vecino.procedures.desc" to="/procedures" />
+      <Card titleKey="dashboard.vecino.reservations.title" descKey="dashboard.vecino.reservations.desc" to="/my-reservations" />
+      <Card titleKey="dashboard.vecino.meetings.title" descKey="dashboard.vecino.meetings.desc" to="/my-meetings" />
     </>
   );
 }

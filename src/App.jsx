@@ -40,6 +40,9 @@ import { CommunityMeetingsPage } from '@/pages/CommunityMeetings';
 import { MeetingDetailPage } from '@/pages/MeetingDetail';
 import { SoporteLoginPage } from '@/pages/SoporteLogin';
 import { NotFoundPage } from '@/pages/NotFound';
+import { ProfilePage } from '@/pages/ProfilePage';
+import { MyReservationsPage } from '@/pages/MyReservations';
+import { MyMeetingsPage } from '@/pages/MyMeetings';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -77,6 +80,9 @@ export function App() {
             <Route path="/procedures" element={<ProtectedRoute><MyProceduresPage /></ProtectedRoute>} />
             <Route path="/procedures/new" element={<ProtectedRoute><CreateProcedurePage /></ProtectedRoute>} />
             <Route path="/procedures/:id" element={<ProtectedRoute><ProcedureDetailPage /></ProtectedRoute>} />
+            <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+            <Route path="/my-reservations" element={<ProtectedRoute><MyReservationsPage /></ProtectedRoute>} />
+            <Route path="/my-meetings" element={<ProtectedRoute><MyMeetingsPage /></ProtectedRoute>} />
             <Route path="/support/tickets" element={<ProtectedRoute allowedRoles={['SUPPORT']}><SupportDashboardPage /></ProtectedRoute>} />
             <Route path="/support" element={<ProtectedRoute allowedRoles={['SUPPORT']}><SupportDashboardPage /></ProtectedRoute>} />
 

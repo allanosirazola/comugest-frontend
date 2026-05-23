@@ -23,7 +23,8 @@
     "expenses": "Gastos",
     "report": "Reportar",
     "support": "Soporte",
-    "procedures": "Trámites"
+    "procedures": "Trámites",
+    "profile": "Mi perfil"
   },
   "auth": {
     "login": {
@@ -172,6 +173,14 @@
       "procedures": {
         "title": "Trámites",
         "desc": "Presenta gestiones a tu administrador y sigue su estado."
+      },
+      "reservations": {
+        "title": "Mis reservas",
+        "desc": "Consulta tus reservas en las zonas comunes."
+      },
+      "meetings": {
+        "title": "Mis juntas",
+        "desc": "Convocatorias de juntas de vecinos y tu confirmación de asistencia."
       }
     }
   },
@@ -329,6 +338,39 @@
     "empty": "No tienes facturas todavía",
     "emptyNote": "Cuando tu administrador emita facturas para tu inmueble, aparecerán aquí.",
     "pendingTotal": "Total pendiente de pago"
+  },
+  "profile": {
+    "title": "Mi perfil",
+    "eyebrow": "Cuenta",
+    "personalData": "Datos personales",
+    "firstName": "Nombre",
+    "lastName": "Apellidos",
+    "phone": "Teléfono",
+    "locale": "Idioma",
+    "localeEs": "Español",
+    "localeEn": "English",
+    "saveChanges": "Guardar cambios",
+    "saved": "Cambios guardados",
+    "changePassword": "Cambiar contraseña",
+    "currentPassword": "Contraseña actual",
+    "newPassword": "Nueva contraseña (mín. 8 caracteres)",
+    "passwordChanged": "Contraseña actualizada correctamente",
+    "role": "Rol"
+  },
+  "myReservations": {
+    "title": "Mis reservas",
+    "eyebrow": "Zonas comunes",
+    "empty": "No tienes reservas activas",
+    "area": "Zona",
+    "community": "Comunidad",
+    "date": "Fecha",
+    "time": "Horario"
+  },
+  "myMeetings": {
+    "title": "Mis juntas",
+    "eyebrow": "Comunidad",
+    "empty": "No estás convocado a ninguna junta",
+    "myAttendance": "Mi asistencia"
   },
   "announcements": {
     "eyebrow": "Comunicación",

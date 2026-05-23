@@ -23,7 +23,8 @@
     "expenses": "Expenses",
     "report": "Report",
     "support": "Support",
-    "procedures": "Procedures"
+    "procedures": "Procedures",
+    "profile": "My profile"
   },
   "auth": {
     "login": {
@@ -172,6 +173,14 @@
       "procedures": {
         "title": "Procedures",
         "desc": "Submit requests to your manager and track their status."
+      },
+      "reservations": {
+        "title": "My bookings",
+        "desc": "View your bookings in common areas."
+      },
+      "meetings": {
+        "title": "My meetings",
+        "desc": "General meeting notices and your attendance confirmation."
       }
     }
   },
@@ -329,6 +338,39 @@
     "empty": "You have no invoices yet",
     "emptyNote": "When your manager issues invoices for your unit, they'll show up here.",
     "pendingTotal": "Total pending"
+  },
+  "profile": {
+    "title": "My profile",
+    "eyebrow": "Account",
+    "personalData": "Personal data",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "phone": "Phone",
+    "locale": "Language",
+    "localeEs": "Español",
+    "localeEn": "English",
+    "saveChanges": "Save changes",
+    "saved": "Changes saved",
+    "changePassword": "Change password",
+    "currentPassword": "Current password",
+    "newPassword": "New password (min. 8 characters)",
+    "passwordChanged": "Password updated successfully",
+    "role": "Role"
+  },
+  "myReservations": {
+    "title": "My bookings",
+    "eyebrow": "Common areas",
+    "empty": "You have no active bookings",
+    "area": "Area",
+    "community": "Community",
+    "date": "Date",
+    "time": "Time slot"
+  },
+  "myMeetings": {
+    "title": "My meetings",
+    "eyebrow": "Community",
+    "empty": "You have no scheduled meetings",
+    "myAttendance": "My attendance"
   },
   "announcements": {
     "eyebrow": "Communication",
