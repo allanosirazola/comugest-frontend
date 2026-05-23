@@ -656,7 +656,13 @@
     "create": "Convocar",
     "attendeeCount": "convocados",
     "editMeeting": "Editar junta",
-    "saveChanges": "Guardar cambios"
+    "saveChanges": "Guardar cambios",
+    "signMinutes": "Firmar acta digitalmente",
+    "signDesc": "Introduce tu código 2FA para firmar el acta. La firma incluye un hash SHA-256 que garantiza su integridad.",
+    "signConfirm": "Firmar",
+    "signError": "Código incorrecto o error al firmar.",
+    "signed": "Acta firmada digitalmente",
+    "signedBadge": "Firmada digitalmente"
   },
   "recurring": {
     "eyebrow": "Facturación automática",

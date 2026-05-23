@@ -69,3 +69,11 @@ export function usePublishMinutes(meetingId) {
 export function useGenerateQr(meetingId) {
   return useMutation({ mutationFn: () => api.generateQrToken(meetingId) });
 }
+
+export function useSignMinutes(meetingId) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (totpCode) => api.signMinutes(meetingId, totpCode),
+    onSuccess: () => void qc.invalidateQueries({ queryKey: KEYS.detail(meetingId) }),
+  });
+}

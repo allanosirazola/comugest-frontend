@@ -151,6 +151,13 @@ export function CommunityDetailPage() {
         <Link to={`/communities/${community.id}/calendar`} className="btn-ghost">
           {t('communities.linkCalendar')}
         </Link>
+        <Link to={`/communities/${community.id}/banking`} className="card flex items-center gap-3 hover:border-olive-300">
+          <span className="text-2xl">🏦</span>
+          <div>
+            <p className="font-medium text-olive-900">Banca</p>
+            <p className="text-sm text-olive-500">Movimientos y reconciliación</p>
+          </div>
+        </Link>
       </div>
 
       <section className="mt-10">

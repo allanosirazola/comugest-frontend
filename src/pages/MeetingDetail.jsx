@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Layout } from '@/components/Layout';
 import { useAuth } from '@/contexts/AuthContext';
-import { useMeeting, useUpdateMeeting, useUpdateAttendance, useSaveMinutes, usePublishMinutes, useGenerateQr } from '@/hooks/useMeetings';
+import { useMeeting, useUpdateMeeting, useUpdateAttendance, useSaveMinutes, usePublishMinutes, useGenerateQr, useSignMinutes } from '@/hooks/useMeetings';
 import { usePolls, useCreatePoll, useClosePoll, useCastVote } from '@/hooks/usePolls';
 
 const TYPE_COLORS = {
@@ -84,6 +84,10 @@ export function MeetingDetailPage() {
   const saveMinutesMutation = useSaveMinutes(meetingId ?? '');
   const publishMinutesMutation = usePublishMinutes(meetingId ?? '');
   const generateQr = useGenerateQr(meetingId ?? '');
+  const signMinutesMutation = useSignMinutes(meetingId ?? '');
+  const [showSignModal, setShowSignModal] = useState(false);
+  const [signTotpCode, setSignTotpCode] = useState('');
+  const [signError, setSignError] = useState('');
 
   const [qrData, setQrData] = useState(null);
   const [qrError, setQrError] = useState(null);
@@ -183,6 +187,17 @@ export function MeetingDetailPage() {
               </div>
               {meeting.minutes && (
                 <p className="mt-2 whitespace-pre-wrap text-sm text-olive-800">{meeting.minutes}</p>
+              )}
+              {meeting.minutesSignedAt && (
+                <div className="mt-3 flex items-start gap-2 rounded-lg bg-olive-50 px-3 py-2">
+                  <span className="text-olive-600">✓</span>
+                  <div>
+                    <p className="text-xs font-medium text-olive-700">{t('meetings.signedBadge')}</p>
+                    <p className="text-xs text-olive-500 font-mono break-all">
+                      {meeting.minutesSignatureHash?.slice(0, 32)}…
+                    </p>
+                  </div>
+                </div>
               )}
               {meeting.minutesUrl && (
                 <a
@@ -369,6 +384,31 @@ export function MeetingDetailPage() {
                   {meeting.minutesPublished ? t('meetings.minutesUnpublish') : t('meetings.minutesPublish')}
                 </button>
               )}
+
+              {meeting.minutes && meeting.minutesPublished && (
+                <div className="mt-4 border-t border-cream-200 pt-4">
+                  {meeting.minutesSignedAt ? (
+                    <div className="rounded-lg bg-olive-50 p-3">
+                      <p className="text-xs font-semibold uppercase tracking-wider text-olive-600">
+                        ✓ {t('meetings.signed')}
+                      </p>
+                      <p className="mt-1 text-xs text-olive-600">
+                        {new Date(meeting.minutesSignedAt).toLocaleDateString()}
+                      </p>
+                      <p className="mt-1 font-mono text-xs text-olive-400 break-all">
+                        SHA-256: {meeting.minutesSignatureHash?.slice(0, 32)}…
+                      </p>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => { setShowSignModal(true); setSignError(''); setSignTotpCode(''); }}
+                      className="btn-ghost w-full text-sm"
+                    >
+                      ✍ {t('meetings.signMinutes')}
+                    </button>
+                  )}
+                </div>
+              )}
             </div>
           )}
 
@@ -419,6 +459,52 @@ export function MeetingDetailPage() {
       </div>
 
       <PollsSection meetingId={meetingId} />
+
+      {showSignModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+          <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl">
+            <h2 className="font-display text-lg font-medium text-olive-950">
+              {t('meetings.signMinutes')}
+            </h2>
+            <p className="mt-1 text-sm text-olive-600">
+              {t('meetings.signDesc')}
+            </p>
+            <form
+              onSubmit={async (e) => {
+                e.preventDefault();
+                setSignError('');
+                try {
+                  await signMinutesMutation.mutateAsync(signTotpCode);
+                  setShowSignModal(false);
+                } catch {
+                  setSignError(t('meetings.signError'));
+                }
+              }}
+              className="mt-4 space-y-3"
+            >
+              <input
+                value={signTotpCode}
+                onChange={e => { setSignTotpCode(e.target.value); setSignError(''); }}
+                placeholder={t('twofa.tokenPlaceholder')}
+                maxLength={6}
+                pattern="\d{6}"
+                required
+                autoFocus
+                className="input w-full text-center text-lg tracking-widest"
+              />
+              {signError && <p className="text-sm text-clay-600">{signError}</p>}
+              <div className="flex gap-2">
+                <button type="submit" disabled={signMinutesMutation.isPending} className="btn-primary flex-1">
+                  {t('meetings.signConfirm')}
+                </button>
+                <button type="button" onClick={() => setShowSignModal(false)} className="btn-ghost flex-1">
+                  {t('common.cancel')}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </Layout>
   );
 }

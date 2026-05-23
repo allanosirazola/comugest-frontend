@@ -656,7 +656,13 @@
     "create": "Schedule",
     "attendeeCount": "invited",
     "editMeeting": "Edit meeting",
-    "saveChanges": "Save changes"
+    "saveChanges": "Save changes",
+    "signMinutes": "Sign minutes digitally",
+    "signDesc": "Enter your 2FA code to sign the minutes. The signature includes a SHA-256 hash that ensures integrity.",
+    "signConfirm": "Sign",
+    "signError": "Incorrect code or signing error.",
+    "signed": "Digitally signed",
+    "signedBadge": "Digitally signed"
   },
   "recurring": {
     "eyebrow": "Automatic billing",

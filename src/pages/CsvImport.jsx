@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Layout } from '@/components/Layout';
 import { useCommunity } from '@/hooks/useCommunities';
+import { importCsv } from '@/api/import';
 
 const TEMPLATE_ROWS = [
   ['label', 'floor', 'door', 'ownerName', 'ownerEmail', 'ownerPhone'],
@@ -29,6 +30,8 @@ export function CsvImportPage() {
   const fileRef = useRef(null);
   const [preview, setPreview] = useState(null);
   const [parseError, setParseError] = useState(null);
+  const [importing, setImporting] = useState(false);
+  const [importResult, setImportResult] = useState(null);
 
   const handleFileChange = (e) => {
     const file = e.target.files?.[0];
@@ -50,6 +53,22 @@ export function CsvImportPage() {
       }
     };
     reader.readAsText(file, 'UTF-8');
+  };
+
+  const handleImport = async () => {
+    if (!preview) return;
+    setImporting(true);
+    setImportResult(null);
+    try {
+      const result = await importCsv(communityId, preview.rows);
+      setImportResult(result);
+      setPreview(null); // clear preview on success
+      if (fileRef.current) fileRef.current.value = '';
+    } catch (err) {
+      setImportResult({ error: err?.response?.data?.error?.message ?? 'Error al importar' });
+    } finally {
+      setImporting(false);
+    }
   };
 
   return (
@@ -150,14 +169,34 @@ export function CsvImportPage() {
             )}
           </div>
 
-          <div className="mt-4 rounded-lg border border-olive-200 bg-olive-50 px-4 py-3">
-            <p className="text-sm font-medium text-olive-800">🚧 Importación automática — próximamente</p>
-            <p className="mt-1 text-sm text-olive-600">
-              La importación directa desde CSV estará disponible en la próxima versión.
-              Por ahora puedes usar esta vista previa para verificar el formato y añadir las unidades manualmente en{' '}
-              <Link to={`/communities/${communityId}`} className="underline">la ficha de la comunidad</Link>.
-            </p>
+          <div className="mt-4 flex flex-col gap-3">
+            {importResult?.error && (
+              <p className="rounded-lg bg-clay-50 px-4 py-3 text-sm text-clay-700">{importResult.error}</p>
+            )}
+            <button
+              onClick={handleImport}
+              disabled={importing}
+              className="btn-primary w-fit"
+            >
+              {importing ? 'Importando…' : `Importar ${preview.rows.length} unidades`}
+            </button>
           </div>
+        </div>
+      )}
+
+      {importResult && !importResult.error && (
+        <div className="card bg-olive-50">
+          <p className="font-medium text-olive-800">✓ Importación completada</p>
+          <p className="mt-1 text-sm text-olive-600">
+            {importResult.created} unidad(es) creada(s) · {importResult.invited} invitación(es) enviada(s)
+          </p>
+          {importResult.errors?.length > 0 && (
+            <ul className="mt-2 space-y-1">
+              {importResult.errors.map((e, i) => (
+                <li key={i} className="text-xs text-clay-600">⚠ {e}</li>
+              ))}
+            </ul>
+          )}
         </div>
       )}
     </Layout>

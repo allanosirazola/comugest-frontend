@@ -43,3 +43,8 @@ export async function generateQrToken(meetingId) {
 export async function qrCheckIn(token) {
   await api.post(`/meetings/qr-check-in/${token}`);
 }
+
+export async function signMinutes(meetingId, totpCode) {
+  const { data } = await api.post(`/meetings/${meetingId}/minutes/sign`, { totpCode });
+  return data.meeting;
+}
