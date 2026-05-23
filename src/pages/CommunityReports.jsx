@@ -4,6 +4,8 @@ import { useTranslation } from 'react-i18next';
 import { Layout } from '@/components/Layout';
 import * as reportsApi from '@/api/reports';
 
+const currentYear = new Date().getFullYear();
+
 export function CommunityReportsPage() {
   const { t } = useTranslation();
   const { id: communityId } = useParams();
@@ -11,6 +13,7 @@ export function CommunityReportsPage() {
   const [error, setError] = useState(null);
   const [from, setFrom] = useState('');
   const [to, setTo] = useState('');
+  const [modelo347Year, setModelo347Year] = useState(currentYear - 1);
 
   const download = async (type, fn) => {
     setLoading(type);
@@ -100,6 +103,35 @@ export function CommunityReportsPage() {
             className="btn-primary mt-auto w-fit"
           >
             {loading === 'payments' ? t('common.loading') : t('reports.download')}
+          </button>
+        </div>
+
+        {/* Modelo 347 */}
+        <div className="card flex flex-col gap-3">
+          <div>
+            <p className="font-display text-lg font-medium text-olive-900">Modelo 347</p>
+            <p className="mt-1 text-sm text-olive-600">
+              Exporta las operaciones con proveedores superiores a 3.005,06 € en el ejercicio seleccionado (formato XML AEAT).
+            </p>
+          </div>
+          <div>
+            <label className="mb-1 block text-sm font-medium text-olive-700">Ejercicio fiscal</label>
+            <select
+              value={modelo347Year}
+              onChange={(e) => setModelo347Year(Number(e.target.value))}
+              className="input w-36"
+            >
+              {[currentYear - 1, currentYear - 2, currentYear - 3].map(y => (
+                <option key={y} value={y}>{y}</option>
+              ))}
+            </select>
+          </div>
+          <button
+            onClick={() => download('modelo347', () => reportsApi.downloadModelo347(communityId, modelo347Year))}
+            disabled={loading !== null}
+            className="btn-primary mt-auto w-fit"
+          >
+            {loading === 'modelo347' ? t('common.loading') : '↓ Descargar XML'}
           </button>
         </div>
       </div>

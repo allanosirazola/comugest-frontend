@@ -25,7 +25,8 @@
     "report": "Report",
     "support": "Support",
     "procedures": "Procedures",
-    "profile": "My profile"
+    "profile": "My profile",
+    "help": "Help"
   },
   "auth": {
     "login": {

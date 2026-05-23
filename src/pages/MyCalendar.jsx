@@ -41,6 +41,7 @@ export function MyCalendarPage() {
         <div className="flex-1">
           <p className="text-xs uppercase tracking-wider text-olive-600">{t('calendar.eyebrow')}</p>
           <h1 className="mt-1 font-display text-4xl font-medium text-olive-950">{t('calendar.myTitle')}</h1>
+          <p className="mt-1 text-xs text-olive-500">{t('calendar.icalMyHint')}</p>
         </div>
         <div className="flex items-center gap-3">
           <button onClick={prevMonth} className="btn-ghost px-3">‹</button>

@@ -25,7 +25,8 @@
     "report": "Reportar",
     "support": "Soporte",
     "procedures": "Trámites",
-    "profile": "Mi perfil"
+    "profile": "Mi perfil",
+    "help": "Ayuda"
   },
   "auth": {
     "login": {

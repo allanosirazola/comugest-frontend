@@ -53,6 +53,9 @@ import { CommunityCalendarPage } from '@/pages/CommunityCalendar';
 import { MyCalendarPage } from '@/pages/MyCalendar';
 import { BillingPage } from '@/pages/BillingPage';
 import { BillingSuccessPage } from '@/pages/BillingSuccess';
+import { HelpPage } from '@/pages/HelpPage';
+import { QrCheckInPage } from '@/pages/QrCheckIn';
+import { CsvImportPage } from '@/pages/CsvImport';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -77,6 +80,8 @@ export function App() {
             <Route path="/accept-invitation" element={<AcceptInvitationPage />} />
             <Route path="/forgot-password" element={<ForgotPasswordPage />} />
             <Route path="/reset-password" element={<ResetPasswordPage />} />
+            {/* QR check-in — accessible sin auth (requiere token en URL) */}
+            <Route path="/meetings/qr-check-in/:token" element={<QrCheckInPage />} />
 
             {/* Cualquier usuario autenticado */}
             <Route path="/" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
@@ -95,6 +100,7 @@ export function App() {
             <Route path="/my-meetings" element={<ProtectedRoute><MyMeetingsPage /></ProtectedRoute>} />
             <Route path="/documents" element={<ProtectedRoute><MyDocumentsPage /></ProtectedRoute>} />
             <Route path="/calendar" element={<ProtectedRoute><MyCalendarPage /></ProtectedRoute>} />
+            <Route path="/ayuda" element={<ProtectedRoute><HelpPage /></ProtectedRoute>} />
             <Route path="/support/tickets" element={<ProtectedRoute allowedRoles={['SUPPORT']}><SupportDashboardPage /></ProtectedRoute>} />
             <Route path="/support" element={<ProtectedRoute allowedRoles={['SUPPORT']}><SupportDashboardPage /></ProtectedRoute>} />
 
@@ -121,6 +127,7 @@ export function App() {
             <Route path="/communities/:id/meter-readings" element={<ProtectedRoute allowedRoles={[...ADMIN_ROLES]}><CommunityMeterReadingsPage /></ProtectedRoute>} />
             <Route path="/communities/:id/suppliers" element={<ProtectedRoute allowedRoles={[...ADMIN_ROLES]}><CommunitySuppliersPage /></ProtectedRoute>} />
             <Route path="/communities/:id/calendar" element={<ProtectedRoute allowedRoles={[...ADMIN_ROLES]}><CommunityCalendarPage /></ProtectedRoute>} />
+            <Route path="/communities/:id/import" element={<ProtectedRoute allowedRoles={[...ADMIN_ROLES]}><CsvImportPage /></ProtectedRoute>} />
             <Route path="/admin/invite" element={<ProtectedRoute allowedRoles={[...ADMIN_ROLES]}><InviteResidentPage /></ProtectedRoute>} />
             <Route path="/billing" element={<ProtectedRoute allowedRoles={['ADMIN_FINCAS']}><BillingPage /></ProtectedRoute>} />
             <Route path="/billing/success" element={<ProtectedRoute allowedRoles={['ADMIN_FINCAS']}><BillingSuccessPage /></ProtectedRoute>} />
@@ -132,3 +139,4 @@ export function App() {
     </QueryClientProvider>
   );
 }
+

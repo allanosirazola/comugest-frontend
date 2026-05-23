@@ -34,3 +34,12 @@ export async function publishMinutes(id, published) {
   const { data } = await api.patch(`/meetings/${id}/minutes/publish`, { published });
   return data;
 }
+
+export async function generateQrToken(meetingId) {
+  const { data } = await api.post(`/meetings/${meetingId}/qr-token`);
+  return data; // { token, qrDataUrl, url }
+}
+
+export async function qrCheckIn(token) {
+  await api.post(`/meetings/qr-check-in/${token}`);
+}

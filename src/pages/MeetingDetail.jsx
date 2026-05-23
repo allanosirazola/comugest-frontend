@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Layout } from '@/components/Layout';
 import { useAuth } from '@/contexts/AuthContext';
-import { useMeeting, useUpdateMeeting, useUpdateAttendance, useSaveMinutes, usePublishMinutes } from '@/hooks/useMeetings';
+import { useMeeting, useUpdateMeeting, useUpdateAttendance, useSaveMinutes, usePublishMinutes, useGenerateQr } from '@/hooks/useMeetings';
 import { usePolls, useCreatePoll, useClosePoll, useCastVote } from '@/hooks/usePolls';
 
 const TYPE_COLORS = {
@@ -83,6 +83,10 @@ export function MeetingDetailPage() {
   const updateAttendance = useUpdateAttendance(meetingId ?? '');
   const saveMinutesMutation = useSaveMinutes(meetingId ?? '');
   const publishMinutesMutation = usePublishMinutes(meetingId ?? '');
+  const generateQr = useGenerateQr(meetingId ?? '');
+
+  const [qrData, setQrData] = useState(null);
+  const [qrError, setQrError] = useState(null);
 
   const [attendanceStatus, setAttendanceStatus] = useState(null);
   const [proxy, setProxy] = useState('');
@@ -364,6 +368,50 @@ export function MeetingDetailPage() {
                 >
                   {meeting.minutesPublished ? t('meetings.minutesUnpublish') : t('meetings.minutesPublish')}
                 </button>
+              )}
+            </div>
+          )}
+
+          {isAdmin && (
+            <div className="card space-y-3">
+              <h2 className="font-display text-lg text-olive-900">{t('meetings.qrTitle')}</h2>
+              <p className="text-xs text-olive-500">{t('meetings.qrDesc')}</p>
+              <button
+                type="button"
+                className="btn-primary w-full py-1.5"
+                onClick={async () => {
+                  setQrError(null);
+                  try {
+                    const data = await generateQr.mutateAsync();
+                    setQrData(data);
+                  } catch (err) {
+                    setQrError(err?.response?.data?.error?.message ?? t('errors.generic'));
+                  }
+                }}
+                disabled={generateQr.isPending}
+              >
+                {generateQr.isPending ? t('common.loading') : t('meetings.qrGenerate')}
+              </button>
+              {qrError && (
+                <div role="alert" className="rounded-md border border-clay-400/40 bg-clay-400/10 px-3 py-2 text-sm text-clay-700">
+                  {qrError}
+                </div>
+              )}
+              {qrData && (
+                <div className="space-y-2">
+                  {qrData.qrDataUrl && (
+                    <img
+                      src={qrData.qrDataUrl}
+                      alt="QR de asistencia"
+                      className="mx-auto w-48 rounded-md border border-olive-200"
+                    />
+                  )}
+                  {qrData.url && (
+                    <p className="break-all rounded-md bg-cream-100 px-3 py-2 text-xs text-olive-700">
+                      {qrData.url}
+                    </p>
+                  )}
+                </div>
               )}
             </div>
           )}

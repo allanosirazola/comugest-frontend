@@ -3,7 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Layout } from '@/components/Layout';
 import { StatusBadge, formatMoney, formatDate } from '@/components/StatusBadge';
-import { useCommunityInvoices, useOverdue } from '@/hooks/useInvoices';
+import { useCommunityInvoices, useOverdue, useCreateBulkInvoice } from '@/hooks/useInvoices';
 import { useCommunity } from '@/hooks/useCommunities';
 
 const FILTERS = ['ALL', 'UNPAID', 'PAID', 'OVERDUE'];
@@ -15,9 +15,36 @@ export function CommunityInvoicesPage() {
   const { data: community } = useCommunity(id);
   const { data: invoices, isLoading } = useCommunityInvoices(id, { status: filter });
   const { data: overdueByOwner } = useOverdue(id);
+  const createBulkInvoice = useCreateBulkInvoice(id);
+
+  const [showBulkModal, setShowBulkModal] = useState(false);
+  const [bulkForm, setBulkForm] = useState({ concept: '', dueDate: '', perUnitAmount: '' });
+  const [bulkError, setBulkError] = useState(null);
+  const [bulkSuccess, setBulkSuccess] = useState(false);
 
   const overdueCount = overdueByOwner?.reduce((acc, o) => acc + o.items.length, 0) ?? 0;
   const totalPending = overdueByOwner?.reduce((acc, o) => acc + o.totalPending, 0) ?? 0;
+
+  const handleBulkSubmit = async (e) => {
+    e.preventDefault();
+    setBulkError(null);
+    try {
+      await createBulkInvoice.mutateAsync({
+        concept: bulkForm.concept,
+        dueDate: bulkForm.dueDate,
+        distributionMode: 'EQUAL',
+        perUnitAmount: parseFloat(bulkForm.perUnitAmount),
+      });
+      setBulkSuccess(true);
+      setTimeout(() => {
+        setShowBulkModal(false);
+        setBulkSuccess(false);
+        setBulkForm({ concept: '', dueDate: '', perUnitAmount: '' });
+      }, 1500);
+    } catch (err) {
+      setBulkError(err?.response?.data?.error?.message ?? t('errors.generic'));
+    }
+  };
 
   return (
     <Layout>
@@ -32,10 +59,82 @@ export function CommunityInvoicesPage() {
             {t('invoices.listTitle')}
           </h1>
         </div>
-        <Link to={`/communities/${id}/invoices/new`} className="btn-primary">
-          + {t('invoices.create')}
-        </Link>
+        <div className="flex items-center gap-2">
+          <button onClick={() => { setShowBulkModal(true); setBulkError(null); setBulkSuccess(false); }} className="btn-ghost">
+            + {t('invoices.createBulk')}
+          </button>
+          <Link to={`/communities/${id}/invoices/new`} className="btn-primary">
+            + {t('invoices.create')}
+          </Link>
+        </div>
       </div>
+
+      {/* Bulk invoice modal */}
+      {showBulkModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+          <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
+            <h2 className="mb-1 font-display text-xl font-medium text-olive-950">{t('invoices.createBulk')}</h2>
+            <p className="mb-4 text-sm text-olive-600">{t('invoices.bulkSubtitle')}</p>
+            {bulkSuccess ? (
+              <p className="rounded-md bg-olive-100 px-4 py-3 text-sm font-medium text-olive-800">
+                ✓ {t('invoices.bulkSuccess')}
+              </p>
+            ) : (
+              <form onSubmit={handleBulkSubmit} className="space-y-4">
+                <div>
+                  <label className="label" htmlFor="bulk-concept">{t('invoices.concept')}</label>
+                  <input
+                    id="bulk-concept"
+                    className="input"
+                    value={bulkForm.concept}
+                    onChange={(e) => setBulkForm({ ...bulkForm, concept: e.target.value })}
+                    placeholder="Derrama ascensor 2026"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="label" htmlFor="bulk-due">{t('invoices.dueDate')}</label>
+                  <input
+                    id="bulk-due"
+                    type="date"
+                    className="input"
+                    value={bulkForm.dueDate}
+                    onChange={(e) => setBulkForm({ ...bulkForm, dueDate: e.target.value })}
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="label" htmlFor="bulk-amount">{t('invoices.perUnitAmount')}</label>
+                  <input
+                    id="bulk-amount"
+                    type="number"
+                    min="0.01"
+                    step="0.01"
+                    className="input font-mono"
+                    value={bulkForm.perUnitAmount}
+                    onChange={(e) => setBulkForm({ ...bulkForm, perUnitAmount: e.target.value })}
+                    placeholder="150.00"
+                    required
+                  />
+                </div>
+                {bulkError && (
+                  <div role="alert" className="rounded-md border border-clay-400/40 bg-clay-400/10 px-3 py-2 text-sm text-clay-700">
+                    {bulkError}
+                  </div>
+                )}
+                <div className="flex justify-end gap-3">
+                  <button type="button" className="text-sm text-olive-600 hover:text-olive-900" onClick={() => setShowBulkModal(false)}>
+                    {t('common.cancel')}
+                  </button>
+                  <button type="submit" className="btn-primary" disabled={createBulkInvoice.isPending}>
+                    {createBulkInvoice.isPending ? t('common.loading') : t('invoices.bulkSubmit')}
+                  </button>
+                </div>
+              </form>
+            )}
+          </div>
+        </div>
+      )}
 
       {overdueCount > 0 && (
         <Link

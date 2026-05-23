@@ -61,6 +61,9 @@ export function Layout({ children }) {
             <NavLink to="/profile" className={navClass}>
               {t('nav.profile')}
             </NavLink>
+            <NavLink to="/ayuda" className={navClass}>
+              {t('nav.help')}
+            </NavLink>
           </nav>
 
           <div className="flex items-center gap-3">

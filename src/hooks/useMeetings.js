@@ -65,3 +65,7 @@ export function usePublishMinutes(meetingId) {
     onSuccess: () => void qc.invalidateQueries({ queryKey: KEYS.detail(meetingId) }),
   });
 }
+
+export function useGenerateQr(meetingId) {
+  return useMutation({ mutationFn: () => api.generateQrToken(meetingId) });
+}

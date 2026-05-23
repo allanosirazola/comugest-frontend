@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Layout } from '@/components/Layout';
 import { useCommunityCalendar } from '@/hooks/useCalendar';
+import { getIcalUrl } from '@/api/calendar';
 
 const TYPE_CONFIG = {
   MEETING: { color: 'bg-olive-100 text-olive-800 border-olive-200', label: 'calendar.typeMeeting' },
@@ -59,6 +60,14 @@ export function CommunityCalendarPage() {
           <p className="text-xs uppercase tracking-wider text-olive-600">{t('calendar.eyebrow')}</p>
           <h1 className="mt-1 font-display text-4xl font-medium text-olive-950">{t('calendar.title')}</h1>
         </div>
+        <a
+          href={getIcalUrl(communityId)}
+          target="_blank"
+          rel="noreferrer"
+          className="btn-ghost text-xs"
+        >
+          {t('calendar.ical')}
+        </a>
         <div className="flex items-center gap-3">
           <button onClick={prevMonth} className="btn-ghost px-3">‹</button>
           <span className="min-w-[140px] text-center font-medium text-olive-900 capitalize">{monthLabel}</span>
