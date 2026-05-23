@@ -237,6 +237,7 @@
     "linkMeetings": "Juntas",
     "linkDocuments": "Documentos",
     "linkReports": "Informes",
+    "linkMeters": "Contadores",
     "backToDetail": "Volver a la comunidad"
   },
   "invite": {
@@ -696,6 +697,30 @@
       "desc": "Todos los pagos registrados, con filtro por fechas opcional.",
       "from": "Desde",
       "to": "Hasta"
+    }
+  },
+  "meters": {
+    "eyebrow": "Contadores",
+    "title": "Lecturas de contadores",
+    "addReading": "Añadir lectura",
+    "confirmDelete": "¿Eliminar esta lectura?",
+    "empty": "No hay lecturas registradas.",
+    "selectUnit": "Seleccionar unidad",
+    "allTypes": "Todos los tipos",
+    "allUnits": "Todas las unidades",
+    "fieldValue": "Lectura (m³ / kWh)",
+    "fieldNotes": "Notas (opcional)",
+    "colUnit": "Unidad",
+    "colType": "Tipo",
+    "colDate": "Fecha",
+    "colValue": "Lectura",
+    "colConsumption": "Consumo",
+    "colNotes": "Notas",
+    "type": {
+      "agua": "Agua",
+      "luz": "Luz",
+      "gas": "Gas",
+      "otro": "Otro"
     }
   },
   "coAdmins": {

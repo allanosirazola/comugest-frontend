@@ -237,6 +237,7 @@
     "linkMeetings": "Meetings",
     "linkDocuments": "Documents",
     "linkReports": "Reports",
+    "linkMeters": "Meters",
     "backToDetail": "Back to community"
   },
   "invite": {
@@ -696,6 +697,30 @@
       "desc": "All registered payments, with optional date filter.",
       "from": "From",
       "to": "To"
+    }
+  },
+  "meters": {
+    "eyebrow": "Meters",
+    "title": "Meter readings",
+    "addReading": "Add reading",
+    "confirmDelete": "Delete this reading?",
+    "empty": "No readings recorded.",
+    "selectUnit": "Select unit",
+    "allTypes": "All types",
+    "allUnits": "All units",
+    "fieldValue": "Reading (m³ / kWh)",
+    "fieldNotes": "Notes (optional)",
+    "colUnit": "Unit",
+    "colType": "Type",
+    "colDate": "Date",
+    "colValue": "Reading",
+    "colConsumption": "Consumption",
+    "colNotes": "Notes",
+    "type": {
+      "agua": "Water",
+      "luz": "Electricity",
+      "gas": "Gas",
+      "otro": "Other"
     }
   },
   "coAdmins": {
