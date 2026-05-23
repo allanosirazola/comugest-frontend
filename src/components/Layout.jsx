@@ -2,6 +2,7 @@ import { Link, NavLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/contexts/AuthContext';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
+import { NotificationBell } from '@/components/NotificationBell';
 
 export function Layout({ children }) {
   const { user, logout } = useAuth();
@@ -64,6 +65,7 @@ export function Layout({ children }) {
 
           <div className="flex items-center gap-3">
             <LanguageSwitcher />
+            <NotificationBell />
             <div className="hidden text-right text-xs md:block">
               <div className="font-medium text-olive-900">
                 {user?.firstName} {user?.lastName}

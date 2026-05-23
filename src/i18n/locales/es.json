@@ -361,7 +361,9 @@
     "title": "Mis facturas",
     "empty": "No tienes facturas todavía",
     "emptyNote": "Cuando tu administrador emita facturas para tu inmueble, aparecerán aquí.",
-    "pendingTotal": "Total pendiente de pago"
+    "pendingTotal": "Total pendiente de pago",
+    "pay": "Pagar",
+    "paymentSuccess": "¡Pago completado! Tu factura ha sido registrada."
   },
   "profile": {
     "title": "Mi perfil",
@@ -857,6 +859,23 @@
     "disableDesc": "Introduce el código actual de tu app para desactivar 2FA:",
     "disableBtn": "Desactivar 2FA",
     "cancel": "Cancelar"
+  },
+  "notifications": {
+    "title": "Notificaciones",
+    "empty": "No tienes notificaciones nuevas.",
+    "markAllRead": "Marcar todo como leído",
+    "timeAgo": "hace {{time}}"
+  },
+  "onboarding": {
+    "title": "¡Bienvenido a Comugest!",
+    "subtitle": "Estás a 2 minutos de gestionar tu primera comunidad.",
+    "step1Title": "Crea tu primera comunidad",
+    "step1Desc": "Registra la comunidad con su dirección y unidades (pisos, locales, etc.).",
+    "step2Title": "Invita a tus vecinos",
+    "step2Desc": "Envía invitaciones por correo para que los vecinos accedan a sus facturas y anuncios.",
+    "createCommunity": "Crear comunidad →",
+    "dismiss": "Ahora no",
+    "skip": "Omitir"
   },
   "billing": {
     "eyebrow": "Suscripción",

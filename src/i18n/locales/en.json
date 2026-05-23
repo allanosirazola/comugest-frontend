@@ -361,7 +361,9 @@
     "title": "My invoices",
     "empty": "You have no invoices yet",
     "emptyNote": "When your manager issues invoices for your unit, they'll show up here.",
-    "pendingTotal": "Total pending"
+    "pendingTotal": "Total pending",
+    "pay": "Pay",
+    "paymentSuccess": "Payment completed! Your invoice has been registered."
   },
   "profile": {
     "title": "My profile",
@@ -857,6 +859,23 @@
     "disableDesc": "Enter your current app code to disable 2FA:",
     "disableBtn": "Disable 2FA",
     "cancel": "Cancel"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "empty": "No new notifications.",
+    "markAllRead": "Mark all as read",
+    "timeAgo": "{{time}} ago"
+  },
+  "onboarding": {
+    "title": "Welcome to Comugest!",
+    "subtitle": "You're 2 minutes away from managing your first community.",
+    "step1Title": "Create your first community",
+    "step1Desc": "Register the community with its address and units (flats, commercial spaces, etc.).",
+    "step2Title": "Invite your residents",
+    "step2Desc": "Send email invitations so residents can access their invoices and notices.",
+    "createCommunity": "Create community →",
+    "dismiss": "Not now",
+    "skip": "Skip"
   },
   "billing": {
     "eyebrow": "Subscription",

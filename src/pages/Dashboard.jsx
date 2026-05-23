@@ -1,9 +1,17 @@
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, PieChart, Pie, Cell, ResponsiveContainer, Legend } from 'recharts';
 import { Layout } from '@/components/Layout';
 import { useAuth } from '@/contexts/AuthContext';
 import { useAdminKpis } from '@/hooks/useAdmin';
 import { formatMoney } from '@/components/StatusBadge';
+import { useCommunities } from '@/hooks/useCommunities';
+import { useCommunityInvoices } from '@/hooks/useInvoices';
+import { useCommunityExpenses } from '@/hooks/useExpenses';
+import { OnboardingWizard } from '@/components/OnboardingWizard';
+
+const PIE_COLORS = ['#4a5329', '#6b7a3a', '#a3b373', '#d4b566', '#c17d4d', '#8b9e5a', '#5c6b30'];
 
 export function DashboardPage() {
   const { t } = useTranslation();
@@ -11,8 +19,24 @@ export function DashboardPage() {
   const isAdmin = user?.role === 'ADMIN_FINCAS' || user?.role === 'SUPPORT';
   const isAdminFincas = user?.role === 'ADMIN_FINCAS';
 
+  const { data: communities } = useCommunities();
+  const firstCommunityId = communities?.[0]?.id ?? null;
+
+  const [showWizard, setShowWizard] = useState(
+    isAdminFincas && !localStorage.getItem('onboarding_dismissed')
+  );
+
   return (
     <Layout>
+      {showWizard && communities?.length === 0 && (
+        <OnboardingWizard
+          onDismiss={() => {
+            localStorage.setItem('onboarding_dismissed', '1');
+            setShowWizard(false);
+          }}
+        />
+      )}
+
       <p className="text-xs uppercase tracking-wider text-olive-600">{t('dashboard.eyebrow')}</p>
       <h1 className="mt-1 font-display text-4xl font-medium tracking-tight text-olive-950">
         {t('dashboard.welcome', { name: user?.firstName })}
@@ -20,6 +44,8 @@ export function DashboardPage() {
       <p className="mt-3 max-w-xl text-sm text-olive-600">{t('dashboard.placeholder')}</p>
 
       {isAdminFincas && <AdminKpiStrip />}
+
+      {isAdminFincas && firstCommunityId && <AdminCharts communityId={firstCommunityId} />}
 
       <section className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {isAdmin ? <AdminCards /> : <VecinoCards />}
@@ -117,5 +143,93 @@ function VecinoCards() {
       <Card titleKey="dashboard.vecino.documents.title" descKey="dashboard.vecino.documents.desc" to="/documents" />
       <Card titleKey="dashboard.vecino.calendar.title" descKey="dashboard.vecino.calendar.desc" to="/calendar" />
     </>
+  );
+}
+
+// ─── Admin Charts ────────────────────────────────────────────
+
+function computeMonthlyBarData(invoices) {
+  if (!invoices || invoices.length === 0) return [];
+  const now = new Date();
+  const months = [];
+  for (let i = 5; i >= 0; i--) {
+    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    months.push({
+      key: `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`,
+      label: d.toLocaleString('default', { month: 'short', year: '2-digit' }),
+      invoiced: 0,
+      collected: 0,
+    });
+  }
+  for (const inv of invoices) {
+    const issueKey = inv.issueDate?.slice(0, 7);
+    const bucket = months.find((m) => m.key === issueKey);
+    if (!bucket) continue;
+    for (const item of inv.items ?? []) {
+      bucket.invoiced += parseFloat(item.amount ?? 0);
+      for (const p of item.payments ?? []) {
+        bucket.collected += parseFloat(p.amount ?? 0);
+      }
+    }
+  }
+  return months;
+}
+
+function computeExpensePieData(expenses) {
+  if (!expenses || expenses.length === 0) return [];
+  const byCategory = {};
+  for (const exp of expenses) {
+    const cat = exp.category ?? 'OTHER';
+    byCategory[cat] = (byCategory[cat] ?? 0) + parseFloat(exp.amount ?? 0);
+  }
+  return Object.entries(byCategory).map(([name, value]) => ({ name, value: Math.round(value * 100) / 100 }));
+}
+
+function AdminCharts({ communityId }) {
+  const { data: invoices, isLoading: invLoading } = useCommunityInvoices(communityId);
+  const { data: expenses, isLoading: expLoading } = useCommunityExpenses(communityId);
+
+  if (invLoading || expLoading) return null;
+
+  const barData = computeMonthlyBarData(invoices);
+  const pieData = computeExpensePieData(expenses);
+
+  if (barData.length === 0 && pieData.length === 0) return null;
+
+  return (
+    <div className="mt-8 grid gap-6 lg:grid-cols-2">
+      {barData.length > 0 && (
+        <div className="card">
+          <p className="mb-4 text-sm font-semibold text-olive-800">Facturado vs cobrado (6 meses)</p>
+          <ResponsiveContainer width="100%" height={220}>
+            <BarChart data={barData} barCategoryGap="30%">
+              <XAxis dataKey="label" tick={{ fontSize: 11, fill: '#6b7a3a' }} axisLine={false} tickLine={false} />
+              <YAxis tick={{ fontSize: 11, fill: '#6b7a3a' }} axisLine={false} tickLine={false} tickFormatter={(v) => `${v}€`} />
+              <Tooltip formatter={(v) => `${v.toFixed(2)} €`} contentStyle={{ borderRadius: 8, border: '1px solid #d4d4a8', fontSize: 12 }} />
+              <Legend wrapperStyle={{ fontSize: 12 }} />
+              <Bar dataKey="invoiced" name="Facturado" fill="#4a5329" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="collected" name="Cobrado" fill="#a3b373" radius={[4, 4, 0, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      )}
+
+      {pieData.length > 0 && (
+        <div className="card">
+          <p className="mb-4 text-sm font-semibold text-olive-800">Gastos por categoría</p>
+          <ResponsiveContainer width="100%" height={220}>
+            <PieChart>
+              <Pie data={pieData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`} labelLine={false}>
+                {pieData.map((_, i) => (
+                  <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />
+                ))}
+              </Pie>
+              <Tooltip formatter={(v) => `${v.toFixed(2)} €`} contentStyle={{ borderRadius: 8, border: '1px solid #d4d4a8', fontSize: 12 }} />
+              <Legend wrapperStyle={{ fontSize: 12 }} />
+            </PieChart>
+          </ResponsiveContainer>
+        </div>
+      )}
+    </div>
   );
 }

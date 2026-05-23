@@ -8,3 +8,8 @@ export const createCheckoutSession = () =>
 
 export const createPortalSession = () =>
   api.post('/billing/portal').then((r) => r.data);
+
+export async function createInvoiceCheckout(communityId, invoiceId) {
+  const { data } = await api.post(`/billing/communities/${communityId}/invoices/${invoiceId}/checkout`);
+  return data.url;
+}
