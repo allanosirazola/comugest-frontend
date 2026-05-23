@@ -5,6 +5,11 @@ export async function login(input) {
   return data;
 }
 
+export async function login2fa(preAuthToken, totpCode) {
+  const { data } = await api.post('/auth/login/2fa', { preAuthToken, totpCode });
+  return data;
+}
+
 export async function register(input) {
   const { data } = await api.post('/auth/register', input);
   return data;

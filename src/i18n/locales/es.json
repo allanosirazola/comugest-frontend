@@ -108,6 +108,14 @@
       "missingToken": "Falta el token en el enlace.",
       "successTitle": "Contraseña actualizada",
       "successSubtitle": "Te llevamos al inicio de sesión…"
+    },
+    "twofa": {
+      "title": "Verificación en dos pasos",
+      "desc": "Introduce el código de 6 dígitos de tu app de autenticación.",
+      "codePlaceholder": "000000",
+      "submit": "Verificar",
+      "error": "Código incorrecto. Inténtalo de nuevo.",
+      "back": "← Volver al inicio de sesión"
     }
   },
   "dashboard": {

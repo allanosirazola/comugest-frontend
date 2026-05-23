@@ -37,6 +37,16 @@ export function AuthProvider({ children }) {
 
   const handleLogin = async (input) => {
     const res = await authApi.login(input);
+    if (res.requiresTwoFactor) {
+      // Don't store tokens yet - return the challenge signal to the caller
+      return res; // { requiresTwoFactor: true, preAuthToken }
+    }
+    applyAuthResponse(res);
+    return res.user;
+  };
+
+  const handleCompleteTwoFactor = async (preAuthToken, totpCode) => {
+    const res = await authApi.login2fa(preAuthToken, totpCode);
     applyAuthResponse(res);
     return res.user;
   };
@@ -65,6 +75,7 @@ export function AuthProvider({ children }) {
         isLoading,
         isAuthenticated: !!user,
         login: handleLogin,
+        completeTwoFactor: handleCompleteTwoFactor,
         register: handleRegister,
         applyAuthResponse,
         logout: handleLogout,

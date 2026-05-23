@@ -108,6 +108,14 @@
       "missingToken": "The link is missing a token.",
       "successTitle": "Password updated",
       "successSubtitle": "Taking you to sign in…"
+    },
+    "twofa": {
+      "title": "Two-step verification",
+      "desc": "Enter the 6-digit code from your authenticator app.",
+      "codePlaceholder": "000000",
+      "submit": "Verify",
+      "error": "Incorrect code. Please try again.",
+      "back": "← Back to sign in"
     }
   },
   "dashboard": {
