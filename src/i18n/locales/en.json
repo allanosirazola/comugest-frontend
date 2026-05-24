@@ -886,6 +886,25 @@
     "dismiss": "Not now",
     "skip": "Skip"
   },
+  "incidents": {
+    "eyebrow": "Incident log",
+    "title": "Incidents",
+    "new": "New incident",
+    "number": "No.",
+    "statusOpen": "Open",
+    "statusInProgress": "In progress",
+    "statusResolved": "Resolved",
+    "statusClosed": "Closed",
+    "categories": {
+      "GENERAL": "General",
+      "STRUCTURAL": "Structural",
+      "ELECTRICAL": "Electrical",
+      "PLUMBING": "Plumbing",
+      "LIFT": "Lift",
+      "FIRE": "Fire/FPS",
+      "OTHER": "Other"
+    }
+  },
   "billing": {
     "eyebrow": "Subscription",
     "title": "Plan & billing",
