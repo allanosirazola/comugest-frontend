@@ -7,6 +7,8 @@ import {
   useIncidents,
   useCreateIncident,
   useUpdateIncidentStatus,
+  useAddIncidentPhoto,
+  useRemoveIncidentPhoto,
 } from '@/hooks/useIncidents';
 
 const STATUS_META = {
@@ -119,6 +121,20 @@ function IncidentRow({ incident, index, communityId, t }) {
   const [resolution, setResolution] = useState(incident.resolution ?? '');
   const [saving, setSaving]     = useState(false);
   const updateStatus = useUpdateIncidentStatus(communityId);
+  const addPhoto = useAddIncidentPhoto(communityId);
+  const removePhoto = useRemoveIncidentPhoto(communityId);
+
+  const handlePhotoUpload = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      addPhoto.mutate({ incidentId: incident.id, dataUri: ev.target.result });
+    };
+    reader.readAsDataURL(file);
+    // Reset the input so the same file can be uploaded again if needed
+    e.target.value = '';
+  };
 
   const num = String(index + 1).padStart(3, '0');
   const date = new Date(incident.createdAt).toLocaleDateString('es-ES', {
@@ -168,6 +184,29 @@ function IncidentRow({ incident, index, communityId, t }) {
                 <div className="mt-4 flex flex-wrap gap-2">
                   <CategoryBadge category={incident.category} t={t} />
                   <span className="text-xs text-olive-400">{date}</span>
+                </div>
+                <div className="mt-4">
+                  <p className="mb-2 text-xs font-medium uppercase tracking-wider text-olive-500">
+                    Fotos ({(incident.photos ?? []).length}/5)
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {(incident.photos ?? []).map((photo, idx) => (
+                      <div key={idx} className="relative group">
+                        <img src={photo} alt={`Foto ${idx + 1}`} className="h-20 w-20 rounded-lg object-cover border border-olive-100" />
+                        <button
+                          onClick={() => removePhoto.mutate({ incidentId: incident.id, photoIndex: idx })}
+                          className="absolute -top-1.5 -right-1.5 hidden group-hover:flex h-5 w-5 items-center justify-center rounded-full bg-clay-600 text-white text-xs"
+                        >✕</button>
+                      </div>
+                    ))}
+                    {(incident.photos ?? []).length < 5 && (
+                      <label className="flex h-20 w-20 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-olive-200 bg-cream-50 hover:border-olive-400 transition">
+                        <span className="text-2xl text-olive-400">+</span>
+                        <span className="text-xs text-olive-400">foto</span>
+                        <input type="file" accept="image/*" className="hidden" onChange={handlePhotoUpload} />
+                      </label>
+                    )}
+                  </div>
                 </div>
               </div>
               <div className="space-y-3">
