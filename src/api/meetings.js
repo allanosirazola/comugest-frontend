@@ -59,3 +59,14 @@ export async function downloadMinutesPdf(meetingId) {
   a.click();
   URL.revokeObjectURL(url);
 }
+
+export async function downloadConvocatoria(meetingId) {
+  const response = await api.get(`/meetings/${meetingId}/convocatoria`, { responseType: 'blob' });
+  const blob = new Blob([response.data], { type: 'application/pdf' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `convocatoria-${meetingId.slice(0, 8)}.pdf`;
+  a.click();
+  URL.revokeObjectURL(url);
+}

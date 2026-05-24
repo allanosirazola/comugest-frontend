@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { Layout } from '@/components/Layout';
 import { formatMoney } from '@/components/StatusBadge';
 import { useCommunity } from '@/hooks/useCommunities';
-import { useBudget, useUpsertBudget } from '@/hooks/useBudgets';
+import { useBudget, useUpsertBudget, useBudgetComparison } from '@/hooks/useBudgets';
 
 const CATEGORIES = [
   'CLEANING',
@@ -187,6 +188,76 @@ export function CommunityBudgetPage() {
           </div>
         </section>
       )}
+
+      <BudgetVsActualChart communityId={id} />
     </Layout>
+  );
+}
+
+function BudgetVsActualChart({ communityId }) {
+  const currentYear = new Date().getFullYear();
+  const [year, setYear] = useState(currentYear);
+  const { data, isLoading } = useBudgetComparison(communityId, year);
+
+  if (isLoading) return <p className="mt-6 text-sm text-olive-500">Cargando…</p>;
+  if (!data?.lines?.length) return <p className="mt-6 text-sm text-olive-400">No hay datos para comparar.</p>;
+
+  const chartData = data.lines.map((l) => ({
+    name: l.category,
+    Presupuesto: l.budgeted,
+    Real: l.actual,
+  }));
+
+  return (
+    <div className="card mt-6">
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="font-display text-lg font-medium text-olive-900">Presupuesto vs Real</h2>
+        <select
+          value={year}
+          onChange={(e) => setYear(Number(e.target.value))}
+          className="input w-24 text-sm"
+        >
+          {[currentYear, currentYear - 1, currentYear - 2].map((y) => (
+            <option key={y} value={y}>{y}</option>
+          ))}
+        </select>
+      </div>
+      <ResponsiveContainer width="100%" height={280}>
+        <BarChart data={chartData} margin={{ top: 5, right: 20, bottom: 40, left: 20 }}>
+          <XAxis dataKey="name" tick={{ fontSize: 11 }} angle={-30} textAnchor="end" />
+          <YAxis tick={{ fontSize: 11 }} tickFormatter={(v) => `${v.toLocaleString()}€`} />
+          <Tooltip
+            formatter={(v) =>
+              `${Number(v).toLocaleString('es-ES', { minimumFractionDigits: 2 })} €`
+            }
+          />
+          <Legend />
+          <Bar dataKey="Presupuesto" fill="#4a5329" radius={[3, 3, 0, 0]} />
+          <Bar dataKey="Real" fill="#c17d4d" radius={[3, 3, 0, 0]} />
+        </BarChart>
+      </ResponsiveContainer>
+      <div className="mt-3 grid grid-cols-2 gap-4 text-sm">
+        <div className="rounded-lg bg-olive-50 px-3 py-2 text-center">
+          <p className="text-olive-500">Total presupuestado</p>
+          <p className="font-semibold text-olive-800">
+            {data.totalBudgeted.toLocaleString('es-ES', { minimumFractionDigits: 2 })} €
+          </p>
+        </div>
+        <div
+          className={`rounded-lg px-3 py-2 text-center ${
+            data.totalActual > data.totalBudgeted ? 'bg-clay-400/10' : 'bg-olive-50'
+          }`}
+        >
+          <p className="text-olive-500">Total ejecutado</p>
+          <p
+            className={`font-semibold ${
+              data.totalActual > data.totalBudgeted ? 'text-clay-700' : 'text-olive-800'
+            }`}
+          >
+            {data.totalActual.toLocaleString('es-ES', { minimumFractionDigits: 2 })} €
+          </p>
+        </div>
+      </div>
+    </div>
   );
 }

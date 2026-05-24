@@ -6,6 +6,7 @@ import { formatDate } from '@/components/StatusBadge';
 import { useAuth } from '@/contexts/AuthContext';
 import { useCommunity } from '@/hooks/useCommunities';
 import { useCommunityMeetings, useCreateMeeting } from '@/hooks/useMeetings';
+import { downloadConvocatoria } from '@/api/meetings';
 
 const TYPE_COLORS = {
   ORDINARY: 'bg-olive-100 text-olive-800',
@@ -201,11 +202,20 @@ export function CommunityMeetingsPage() {
                 <TypeBadge type={meeting.type} />
                 <MeetingStatusBadge status={meeting.status} />
               </div>
-              {meeting._count?.attendees != null && (
-                <span className="text-xs text-olive-500">
-                  {meeting._count.attendees} {t('meetings.attendeeCount')}
-                </span>
-              )}
+              <div className="flex items-center gap-3">
+                {meeting._count?.attendees != null && (
+                  <span className="text-xs text-olive-500">
+                    {meeting._count.attendees} {t('meetings.attendeeCount')}
+                  </span>
+                )}
+                <button
+                  type="button"
+                  onClick={(e) => { e.stopPropagation(); downloadConvocatoria(meeting.id); }}
+                  className="text-xs text-olive-500 underline underline-offset-2 hover:text-olive-800"
+                >
+                  ↓ {t('meetings.downloadConvocatoria')}
+                </button>
+              </div>
             </div>
 
             <h2 className="mt-2 font-display text-xl font-medium text-olive-900">{meeting.title}</h2>

@@ -663,7 +663,8 @@
     "signError": "Incorrect code or signing error.",
     "signed": "Digitally signed",
     "signedBadge": "Digitally signed",
-    "downloadPdf": "Download minutes as PDF"
+    "downloadPdf": "Download minutes as PDF",
+    "downloadConvocatoria": "Download meeting notice"
   },
   "recurring": {
     "eyebrow": "Automatic billing",

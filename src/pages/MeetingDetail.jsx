@@ -5,7 +5,7 @@ import { Layout } from '@/components/Layout';
 import { useAuth } from '@/contexts/AuthContext';
 import { useMeeting, useUpdateMeeting, useUpdateAttendance, useSaveMinutes, usePublishMinutes, useGenerateQr, useSignMinutes } from '@/hooks/useMeetings';
 import { usePolls, useCreatePoll, useClosePoll, useCastVote } from '@/hooks/usePolls';
-import { downloadMinutesPdf } from '@/api/meetings';
+import { downloadMinutesPdf, downloadConvocatoria } from '@/api/meetings';
 
 const TYPE_COLORS = {
   ORDINARY: 'bg-olive-100 text-olive-800',
@@ -424,6 +424,25 @@ export function MeetingDetailPage() {
                   )}
                 </div>
               )}
+            </div>
+          )}
+
+          {isAdmin && (
+            <div className="card space-y-3">
+              <h2 className="font-display text-lg text-olive-900">{t('meetings.downloadConvocatoria')}</h2>
+              <button
+                type="button"
+                className="btn-ghost w-full py-1.5 text-sm"
+                onClick={async () => {
+                  try {
+                    await downloadConvocatoria(meeting.id);
+                  } catch {
+                    // silent
+                  }
+                }}
+              >
+                ↓ {t('meetings.downloadConvocatoria')}
+              </button>
             </div>
           )}
 

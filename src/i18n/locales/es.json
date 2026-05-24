@@ -663,7 +663,8 @@
     "signError": "Código incorrecto o error al firmar.",
     "signed": "Acta firmada digitalmente",
     "signedBadge": "Firmada digitalmente",
-    "downloadPdf": "Descargar acta en PDF"
+    "downloadPdf": "Descargar acta en PDF",
+    "downloadConvocatoria": "Descargar convocatoria"
   },
   "recurring": {
     "eyebrow": "Facturación automática",
@@ -884,6 +885,25 @@
     "createCommunity": "Crear comunidad →",
     "dismiss": "Ahora no",
     "skip": "Omitir"
+  },
+  "incidents": {
+    "eyebrow": "Libro de incidencias",
+    "title": "Incidencias",
+    "new": "Nueva incidencia",
+    "number": "Nº",
+    "statusOpen": "Abierta",
+    "statusInProgress": "En curso",
+    "statusResolved": "Resuelta",
+    "statusClosed": "Cerrada",
+    "categories": {
+      "GENERAL": "General",
+      "STRUCTURAL": "Estructural",
+      "ELECTRICAL": "Eléctrica",
+      "PLUMBING": "Fontanería",
+      "LIFT": "Ascensor",
+      "FIRE": "Incendios/PCI",
+      "OTHER": "Otra"
+    }
   },
   "billing": {
     "eyebrow": "Suscripción",
