@@ -905,6 +905,15 @@
       "OTHER": "Other"
     }
   },
+  "templates": {
+    "title": "Templates",
+    "use": "Use template",
+    "save": "Save as template",
+    "manage": "Manage templates",
+    "name": "Template name",
+    "empty": "No saved templates.",
+    "delete": "Delete"
+  },
   "billing": {
     "eyebrow": "Subscription",
     "title": "Plan & billing",

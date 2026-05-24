@@ -905,6 +905,15 @@
       "OTHER": "Otra"
     }
   },
+  "templates": {
+    "title": "Plantillas",
+    "use": "Usar plantilla",
+    "save": "Guardar como plantilla",
+    "manage": "Gestionar plantillas",
+    "name": "Nombre de la plantilla",
+    "empty": "No hay plantillas guardadas.",
+    "delete": "Eliminar"
+  },
   "billing": {
     "eyebrow": "Suscripción",
     "title": "Plan y facturación",
