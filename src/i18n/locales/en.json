@@ -342,6 +342,8 @@
       "OVERDUE": "Overdue",
       "CANCELLED": "Cancelled"
     },
+    "createBulk": "Create levy",
+    "perUnitAmount": "Amount per unit",
     "exportPdf": "Download PDF",
     "exportSepa": "Export SEPA",
     "sepaTitle": "Export SEPA XML",

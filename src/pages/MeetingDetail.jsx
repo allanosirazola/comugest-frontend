@@ -106,7 +106,7 @@ export function MeetingDetailPage() {
     return <Layout><p className="text-olive-600">{t('common.loading')}</p></Layout>;
   }
 
-  const myAttendance = meeting.attendees?.find((a) => a.user?.id === user?.id);
+  const myAttendance = (meeting.attendees ?? []).find((a) => a.user?.id === user?.id);
   const currentAttendanceStatus = attendanceStatus ?? myAttendance?.status ?? 'PENDING';
 
   const onSaveAttendance = async () => {
@@ -232,7 +232,7 @@ export function MeetingDetailPage() {
             </div>
           )}
 
-          {meeting.attendees && meeting.attendees.length > 0 && (
+          {(meeting.attendees ?? []).length > 0 && (
             <div className="card overflow-x-auto p-0">
               <div className="border-b border-olive-100 px-4 py-3">
                 <h2 className="font-display text-lg font-medium text-olive-900">{t('meetings.attendees')}</h2>
@@ -246,7 +246,7 @@ export function MeetingDetailPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {meeting.attendees.map((a) => (
+                  {(meeting.attendees ?? []).map((a) => (
                     <tr key={a.id} className="border-b border-olive-50 last:border-0">
                       <td className="px-4 py-3 font-medium text-olive-900">
                         {a.user ? `${a.user.firstName} ${a.user.lastName}` : '—'}

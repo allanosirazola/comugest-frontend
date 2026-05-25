@@ -5,6 +5,7 @@ import { Layout } from '@/components/Layout';
 import {
   useCommunity,
   useCreateUnit,
+  useUpdateUnit,
   useDeleteUnit,
   useDeleteCommunity,
 } from '@/hooks/useCommunities';
@@ -21,8 +22,12 @@ export function CommunityDetailPage() {
   const isAdmin = user?.role === 'ADMIN_FINCAS' || user?.role === 'SUPPORT';
   const { data: community, isLoading } = useCommunity(id);
   const createUnit = useCreateUnit(id ?? '');
+  const updateUnit = useUpdateUnit(id ?? '');
   const deleteUnit = useDeleteUnit(id ?? '');
   const deleteCommunity = useDeleteCommunity();
+
+  const [editingUnitId, setEditingUnitId] = useState(null);
+  const [editForm, setEditForm] = useState({});
 
   const [showNewUnit, setShowNewUnit] = useState(false);
   const [newUnit, setNewUnit] = useState({
@@ -69,6 +74,40 @@ export function CommunityDetailPage() {
     setActionError(null);
     try {
       await deleteUnit.mutateAsync(unitId);
+    } catch (err) {
+      setActionError(err?.response?.data?.error?.message ?? t('errors.generic'));
+    }
+  };
+
+  const handleEditUnit = (unit) => {
+    setEditingUnitId(unit.id);
+    setEditForm({
+      label: unit.label ?? '',
+      floor: unit.floor ?? '',
+      door: unit.door ?? '',
+      type: unit.type ?? 'VIVIENDA',
+      coefficient: unit.coefficient ?? '',
+      surfaceM2: unit.surfaceM2 ?? '',
+    });
+  };
+
+  const handleSaveUnit = async (e) => {
+    e.preventDefault();
+    setActionError(null);
+    try {
+      await updateUnit.mutateAsync({
+        unitId: editingUnitId,
+        input: {
+          label: editForm.label.trim(),
+          floor: editForm.floor?.trim() || null,
+          door: editForm.door?.trim() || null,
+          type: editForm.type,
+          coefficient: parseFloat(editForm.coefficient) || 0,
+          surfaceM2: editForm.surfaceM2 ? parseFloat(editForm.surfaceM2) : null,
+        },
+      });
+      setEditingUnitId(null);
+      setEditForm({});
     } catch (err) {
       setActionError(err?.response?.data?.error?.message ?? t('errors.generic'));
     }
@@ -260,6 +299,13 @@ export function CommunityDetailPage() {
                     communityId={community.id}
                     isAdmin={isAdmin}
                     onDelete={() => handleDeleteUnit(u.id)}
+                    onEdit={() => handleEditUnit(u)}
+                    isEditing={editingUnitId === u.id}
+                    editForm={editForm}
+                    setEditForm={setEditForm}
+                    onSaveEdit={handleSaveUnit}
+                    onCancelEdit={() => { setEditingUnitId(null); setEditForm({}); }}
+                    isSaving={updateUnit.isPending}
                     t={t}
                   />
                 );
@@ -361,7 +407,7 @@ function OwnershipHistoryPanel({ communityId, unitId }) {
   );
 }
 
-function UnitRows({ unit, owner, occupant, communityId, isAdmin, onDelete, t }) {
+function UnitRows({ unit, owner, occupant, communityId, isAdmin, onDelete, onEdit, isEditing, editForm, setEditForm, onSaveEdit, onCancelEdit, isSaving, t }) {
   return (
     <>
       <tr className="border-b border-olive-50 last:border-0">
@@ -376,16 +422,86 @@ function UnitRows({ unit, owner, occupant, communityId, isAdmin, onDelete, t }) 
         </td>
         <td className="px-4 py-3 text-right">
           {isAdmin && (
-            <button
-              onClick={onDelete}
-              className="text-xs text-olive-400 hover:text-clay-600"
-              aria-label={t('common.remove')}
-            >
-              ✕
-            </button>
+            <div className="flex items-center justify-end gap-2">
+              <button
+                onClick={onEdit}
+                className="text-xs text-olive-400 hover:text-olive-700"
+                aria-label={t('common.edit')}
+              >
+                ✎
+              </button>
+              <button
+                onClick={onDelete}
+                className="text-xs text-olive-400 hover:text-clay-600"
+                aria-label={t('common.remove')}
+              >
+                ✕
+              </button>
+            </div>
           )}
         </td>
       </tr>
+      {isAdmin && isEditing && (
+        <tr className="border-b border-olive-100 bg-cream-50">
+          <td colSpan={6} className="px-4 py-3">
+            <form onSubmit={onSaveEdit} className="grid gap-2 sm:grid-cols-6">
+              <select
+                className="input"
+                value={editForm.type ?? ''}
+                onChange={(e) => setEditForm((f) => ({ ...f, type: e.target.value }))}
+              >
+                <option value="VIVIENDA">{t('communities.typeVivienda')}</option>
+                <option value="LOCAL">{t('communities.typeLocal')}</option>
+                <option value="GARAJE">{t('communities.typeGaraje')}</option>
+                <option value="TRASTERO">{t('communities.typeTrastero')}</option>
+              </select>
+              <input
+                className="input sm:col-span-2"
+                placeholder={t('communities.unitLabel')}
+                value={editForm.label ?? ''}
+                onChange={(e) => setEditForm((f) => ({ ...f, label: e.target.value }))}
+                required
+              />
+              <input
+                className="input"
+                placeholder={t('communities.unitFloor')}
+                value={editForm.floor ?? ''}
+                onChange={(e) => setEditForm((f) => ({ ...f, floor: e.target.value }))}
+              />
+              <input
+                className="input"
+                placeholder={t('communities.unitDoor')}
+                value={editForm.door ?? ''}
+                onChange={(e) => setEditForm((f) => ({ ...f, door: e.target.value }))}
+              />
+              <input
+                className="input font-mono"
+                type="number"
+                step="0.01"
+                placeholder="%"
+                value={editForm.coefficient ?? ''}
+                onChange={(e) => setEditForm((f) => ({ ...f, coefficient: e.target.value }))}
+              />
+              <input
+                className="input font-mono sm:col-span-2"
+                type="number"
+                step="0.01"
+                placeholder="m²"
+                value={editForm.surfaceM2 ?? ''}
+                onChange={(e) => setEditForm((f) => ({ ...f, surfaceM2: e.target.value }))}
+              />
+              <div className="flex gap-2 sm:col-span-4">
+                <button type="submit" className="btn-primary" disabled={isSaving}>
+                  {isSaving ? t('common.loading') : t('common.save')}
+                </button>
+                <button type="button" className="btn-ghost" onClick={onCancelEdit}>
+                  {t('common.cancel')}
+                </button>
+              </div>
+            </form>
+          </td>
+        </tr>
+      )}
       {isAdmin && (
         <tr className="border-b border-olive-50">
           <td colSpan={6} className="px-4 pb-3">

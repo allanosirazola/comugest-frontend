@@ -88,7 +88,7 @@ export function useExportSepa() {
 }
 
 export function useExportPdf() {
-  return useMutation({ mutationFn: (invoiceId) => api.exportPdf(invoiceId) });
+  return useMutation({ mutationFn: ({ communityId, invoiceId }) => api.exportPdf(communityId, invoiceId) });
 }
 
 export function useDownloadSepa(invoiceId) {
@@ -109,11 +109,11 @@ export function useDownloadSepa(invoiceId) {
   return { download, isPending: mutation.isPending, error: mutation.error };
 }
 
-export function useDownloadPdf(invoiceId) {
+export function useDownloadPdf(communityId, invoiceId) {
   const mutation = useExportPdf();
   const download = useCallback(
     async () => {
-      const buffer = await mutation.mutateAsync(invoiceId);
+      const buffer = await mutation.mutateAsync({ communityId, invoiceId });
       const blob = new Blob([buffer], { type: 'application/pdf' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -122,7 +122,7 @@ export function useDownloadPdf(invoiceId) {
       a.click();
       URL.revokeObjectURL(url);
     },
-    [invoiceId, mutation]
+    [communityId, invoiceId, mutation]
   );
   return { download, isPending: mutation.isPending, error: mutation.error };
 }

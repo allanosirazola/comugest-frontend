@@ -15,7 +15,7 @@ export function InvoiceDetailPage() {
   const cancelInvoice = useCancelInvoice();
 
   const sepa = useDownloadSepa(id ?? '');
-  const pdf = useDownloadPdf(id ?? '');
+  const pdf = useDownloadPdf(invoice?.communityId ?? '', id ?? '');
 
   const [payingItemId, setPayingItemId] = useState(null);
   const [payAmount, setPayAmount] = useState('');
