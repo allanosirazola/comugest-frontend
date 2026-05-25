@@ -7,6 +7,12 @@ export function MyAnnouncementsPage() {
   const { t } = useTranslation();
   const { data: announcements, isLoading } = useMyAnnouncements();
 
+  // Filter out expired announcements (expiresAt < today)
+  const now = new Date();
+  const activeAnnouncements = announcements?.filter(
+    (a) => !a.expiresAt || new Date(a.expiresAt) >= now
+  );
+
   return (
     <Layout>
       <p className="text-xs uppercase tracking-wider text-olive-600">{t('announcements.boardEyebrow')}</p>
@@ -14,13 +20,13 @@ export function MyAnnouncementsPage() {
 
       <div className="mt-8 space-y-4">
         {isLoading && <p className="text-olive-600">{t('common.loading')}</p>}
-        {announcements && announcements.length === 0 && (
+        {activeAnnouncements && activeAnnouncements.length === 0 && (
           <div className="card text-center">
             <p className="font-display text-xl text-olive-950">{t('announcements.boardEmpty')}</p>
             <p className="mt-2 text-sm text-olive-600">{t('announcements.boardEmptyNote')}</p>
           </div>
         )}
-        {announcements?.map((a) => (
+        {activeAnnouncements?.map((a) => (
           <article key={a.id} className="card">
             <div className="flex items-center gap-2">
               {a.pinned && <span className="text-clay-500">📌</span>}
@@ -29,6 +35,12 @@ export function MyAnnouncementsPage() {
             <p className="mt-1 text-xs text-olive-500">
               {a.community?.name} · {formatDate(a.publishedAt)}
             </p>
+            {a.expiresAt && (
+              <p className="mt-0.5 text-xs text-olive-400">
+                {t('announcements.validUntil') ?? 'Válido hasta'}:{' '}
+                {new Date(a.expiresAt).toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' })}
+              </p>
+            )}
             <p className="mt-3 whitespace-pre-wrap text-sm text-olive-700">{a.body}</p>
           </article>
         ))}

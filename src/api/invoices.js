@@ -45,8 +45,8 @@ export async function exportSepa(invoiceId, body) {
   return data;
 }
 
-export async function exportPdf(invoiceId) {
-  const { data } = await api.get(`/invoices/${invoiceId}/pdf`, {
+export async function exportPdf(communityId, invoiceId) {
+  const { data } = await api.get(`/communities/${communityId}/invoices/${invoiceId}/pdf`, {
     responseType: 'arraybuffer',
   });
   return data;

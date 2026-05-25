@@ -24,6 +24,7 @@ export function CommunityAnnouncementsPage() {
   const [body, setBody] = useState('');
   const [pinned, setPinned] = useState(false);
   const [notify, setNotify] = useState(true);
+  const [expiresAt, setExpiresAt] = useState('');
   const [error, setError] = useState(null);
 
   // Template UI state
@@ -39,11 +40,18 @@ export function CommunityAnnouncementsPage() {
     e.preventDefault();
     setError(null);
     try {
-      await createAnnouncement.mutateAsync({ title: title.trim(), body: body.trim(), pinned, notify });
+      await createAnnouncement.mutateAsync({
+        title: title.trim(),
+        body: body.trim(),
+        pinned,
+        notify,
+        expiresAt: expiresAt ? new Date(expiresAt).toISOString() : undefined,
+      });
       setTitle('');
       setBody('');
       setPinned(false);
       setNotify(true);
+      setExpiresAt('');
       setShowForm(false);
     } catch (err) {
       setError(err?.response?.data?.error?.message ?? t('errors.generic'));
@@ -181,6 +189,20 @@ export function CommunityAnnouncementsPage() {
               {t('announcements.notify')}
             </label>
           </div>
+          <div>
+            <label className="label" htmlFor="expires-at">
+              {t('announcements.expiresAt') ?? 'Fecha de expiración'}{' '}
+              <span className="text-olive-400 font-normal">({t('common.optional') ?? 'opcional'})</span>
+            </label>
+            <input
+              id="expires-at"
+              type="date"
+              className="input w-auto"
+              value={expiresAt}
+              onChange={(e) => setExpiresAt(e.target.value)}
+              min={new Date().toISOString().slice(0, 10)}
+            />
+          </div>
           {error && (
             <div role="alert" className="rounded-md border border-clay-400/40 bg-clay-400/10 px-3 py-2 text-sm text-clay-700">{error}</div>
           )}
@@ -208,25 +230,46 @@ export function CommunityAnnouncementsPage() {
             <p className="font-display text-xl text-olive-950">{t('announcements.empty')}</p>
           </div>
         )}
-        {announcements?.map((a) => (
-          <article key={a.id} className="card">
-            <div className="flex items-start justify-between gap-4">
-              <div>
-                <div className="flex items-center gap-2">
-                  {a.pinned && <span className="text-clay-500" title={t('announcements.pinned')}>📌</span>}
-                  <h3 className="font-display text-xl font-medium text-olive-900">{a.title}</h3>
+        {announcements?.map((a) => {
+          const now = new Date();
+          const isExpired = a.expiresAt ? new Date(a.expiresAt) < now : false;
+          return (
+            <article key={a.id} className="card">
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <div className="flex flex-wrap items-center gap-2">
+                    {a.pinned && <span className="text-clay-500" title={t('announcements.pinned')}>📌</span>}
+                    <h3 className="font-display text-xl font-medium text-olive-900">{a.title}</h3>
+                    {a.expiresAt && (
+                      isExpired ? (
+                        <span className="rounded-full bg-clay-500/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-clay-700">
+                          {t('announcements.badgeExpired') ?? 'EXPIRADO'}
+                        </span>
+                      ) : (
+                        <span className="rounded-full bg-olive-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-olive-700">
+                          {t('announcements.badgeActive') ?? 'ACTIVO'}
+                        </span>
+                      )
+                    )}
+                  </div>
+                  <p className="mt-1 text-xs text-olive-500">
+                    {a.author.firstName} {a.author.lastName} · {formatDate(a.publishedAt)}
+                  </p>
+                  {a.expiresAt && (
+                    <p className="mt-0.5 text-xs text-olive-400">
+                      {t('announcements.validUntil') ?? 'Válido hasta'}:{' '}
+                      {new Date(a.expiresAt).toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' })}
+                    </p>
+                  )}
                 </div>
-                <p className="mt-1 text-xs text-olive-500">
-                  {a.author.firstName} {a.author.lastName} · {formatDate(a.publishedAt)}
-                </p>
+                <button onClick={() => handleDelete(a.id)} className="text-xs text-olive-500 hover:text-clay-600">
+                  {t('common.remove')}
+                </button>
               </div>
-              <button onClick={() => handleDelete(a.id)} className="text-xs text-olive-500 hover:text-clay-600">
-                {t('common.remove')}
-              </button>
-            </div>
-            <p className="mt-3 whitespace-pre-wrap text-sm text-olive-700">{a.body}</p>
-          </article>
-        ))}
+              <p className="mt-3 whitespace-pre-wrap text-sm text-olive-700">{a.body}</p>
+            </article>
+          );
+        })}
       </div>
 
       {/* Save as template modal */}

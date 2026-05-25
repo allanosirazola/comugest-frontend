@@ -342,6 +342,8 @@
       "OVERDUE": "Vencida",
       "CANCELLED": "Cancelada"
     },
+    "createBulk": "Crear derrama",
+    "perUnitAmount": "Importe por unidad",
     "exportPdf": "Descargar PDF",
     "exportSepa": "Exportar SEPA",
     "sepaTitle": "Exportar XML SEPA",
