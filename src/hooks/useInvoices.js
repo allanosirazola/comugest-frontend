@@ -126,3 +126,11 @@ export function useDownloadPdf(invoiceId) {
   );
   return { download, isPending: mutation.isPending, error: mutation.error };
 }
+
+export function useCreateBulkInvoice(communityId) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (input) => api.createBulkInvoice(communityId, input),
+    onSuccess: () => void qc.invalidateQueries({ queryKey: ['invoices', communityId] }),
+  });
+}

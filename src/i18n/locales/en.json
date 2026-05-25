@@ -9,6 +9,7 @@
     "language": "Language",
     "soon": "Coming soon",
     "remove": "Remove",
+    "edit": "Edit",
     "filter": "Filter",
     "prev": "Previous",
     "next": "Next"
@@ -23,7 +24,9 @@
     "expenses": "Expenses",
     "report": "Report",
     "support": "Support",
-    "procedures": "Procedures"
+    "procedures": "Procedures",
+    "profile": "My profile",
+    "help": "Help"
   },
   "auth": {
     "login": {
@@ -106,6 +109,14 @@
       "missingToken": "The link is missing a token.",
       "successTitle": "Password updated",
       "successSubtitle": "Taking you to sign in…"
+    },
+    "twofa": {
+      "title": "Two-step verification",
+      "desc": "Enter the 6-digit code from your authenticator app.",
+      "codePlaceholder": "000000",
+      "submit": "Verify",
+      "error": "Incorrect code. Please try again.",
+      "back": "← Back to sign in"
     }
   },
   "dashboard": {
@@ -144,7 +155,8 @@
       "audit": {
         "title": "Audit log",
         "desc": "View the history of all actions performed on the platform."
-      }
+      },
+      "billing": { "title": "Billing", "desc": "Manage your subscription and plan." }
     },
     "kpi": {
       "pendingInvoices": "Pending invoices",
@@ -172,6 +184,22 @@
       "procedures": {
         "title": "Procedures",
         "desc": "Submit requests to your manager and track their status."
+      },
+      "reservations": {
+        "title": "My bookings",
+        "desc": "View your bookings in common areas."
+      },
+      "meetings": {
+        "title": "My meetings",
+        "desc": "General meeting notices and your attendance confirmation."
+      },
+      "documents": {
+        "title": "Documents",
+        "desc": "Access your community documents."
+      },
+      "calendar": {
+        "title": "Calendar",
+        "desc": "Meetings, reservations and due dates in one place."
       }
     }
   },
@@ -221,7 +249,13 @@
     "linkProcedures": "Procedures",
     "linkBudget": "Budget",
     "linkAreas": "Common areas",
-    "linkMeetings": "Meetings"
+    "linkMeetings": "Meetings",
+    "linkDocuments": "Documents",
+    "linkReports": "Reports",
+    "linkMeters": "Meters",
+    "linkSuppliers": "Suppliers",
+    "linkCalendar": "Calendar",
+    "backToDetail": "Back to community"
   },
   "invite": {
     "eyebrow": "Administration",
@@ -328,7 +362,42 @@
     "title": "My invoices",
     "empty": "You have no invoices yet",
     "emptyNote": "When your manager issues invoices for your unit, they'll show up here.",
-    "pendingTotal": "Total pending"
+    "pendingTotal": "Total pending",
+    "pay": "Pay",
+    "paymentSuccess": "Payment completed! Your invoice has been registered."
+  },
+  "profile": {
+    "title": "My profile",
+    "eyebrow": "Account",
+    "personalData": "Personal data",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "phone": "Phone",
+    "locale": "Language",
+    "localeEs": "Español",
+    "localeEn": "English",
+    "saveChanges": "Save changes",
+    "saved": "Changes saved",
+    "changePassword": "Change password",
+    "currentPassword": "Current password",
+    "newPassword": "New password (min. 8 characters)",
+    "passwordChanged": "Password updated successfully",
+    "role": "Role"
+  },
+  "myReservations": {
+    "title": "My bookings",
+    "eyebrow": "Common areas",
+    "empty": "You have no active bookings",
+    "area": "Area",
+    "community": "Community",
+    "date": "Date",
+    "time": "Time slot"
+  },
+  "myMeetings": {
+    "title": "My meetings",
+    "eyebrow": "Community",
+    "empty": "You have no scheduled meetings",
+    "myAttendance": "My attendance"
   },
   "announcements": {
     "eyebrow": "Communication",
@@ -570,6 +639,10 @@
     "agenda": "Agenda",
     "minutes": "Minutes",
     "minutesUrl": "Minutes URL (PDF)",
+    "minutesPublished": "Published",
+    "minutesPublish": "Publish minutes to residents",
+    "minutesUnpublish": "Unpublish",
+    "minutesLastUpdated": "Last edited: {{date}}",
     "attendees": "Attendees",
     "myAttendance": "My attendance",
     "attendancePENDING": "Pending",
@@ -583,7 +656,149 @@
     "create": "Schedule",
     "attendeeCount": "invited",
     "editMeeting": "Edit meeting",
-    "saveChanges": "Save changes"
+    "saveChanges": "Save changes",
+    "signMinutes": "Sign minutes digitally",
+    "signDesc": "Enter your 2FA code to sign the minutes. The signature includes a SHA-256 hash that ensures integrity.",
+    "signConfirm": "Sign",
+    "signError": "Incorrect code or signing error.",
+    "signed": "Digitally signed",
+    "signedBadge": "Digitally signed",
+    "downloadPdf": "Download minutes as PDF",
+    "downloadConvocatoria": "Download meeting notice"
+  },
+  "recurring": {
+    "eyebrow": "Automatic billing",
+    "title": "Recurring fees",
+    "newRecurring": "New fee",
+    "concept": "Concept",
+    "description": "Description (optional)",
+    "frequency": "Frequency",
+    "MONTHLY": "Monthly",
+    "QUARTERLY": "Quarterly",
+    "YEARLY": "Annual",
+    "amount": "Amount (€)",
+    "dayOfMonth": "Day of month",
+    "startAt": "Start date (optional)",
+    "nextBillingAt": "Next billing",
+    "create": "Create fee",
+    "triggerNow": "Generate now",
+    "triggered": "Invoice generated successfully",
+    "deactivate": "Deactivate",
+    "activate": "Activate",
+    "empty": "No recurring fees configured",
+    "active": "Active",
+    "inactive": "Inactive",
+    "linkRecurring": "Recurring fees"
+  },
+  "documents": {
+    "eyebrow": "Archive",
+    "title": "Community documents",
+    "myTitle": "My documents",
+    "addDocument": "Add document",
+    "confirmDelete": "Delete this document?",
+    "empty": "No documents available.",
+    "fieldName": "Document name",
+    "fieldUrl": "Document URL (Google Drive, Dropbox…)",
+    "fieldDescription": "Description (optional)",
+    "publicForResidents": "Visible to residents",
+    "adminOnly": "Admins only",
+    "category": {
+      "acta": "Minutes",
+      "reglamento": "Rules",
+      "presupuesto": "Budget",
+      "contrato": "Contract",
+      "certificado": "Certificate",
+      "otro": "Other"
+    }
+  },
+  "reports": {
+    "eyebrow": "Reports",
+    "title": "Export reports",
+    "download": "Download PDF",
+    "morosos": {
+      "title": "Arrears list",
+      "desc": "Units with outstanding invoice balances."
+    },
+    "budget": {
+      "title": "Budget vs actual",
+      "desc": "Annual budget compared to real expenses."
+    },
+    "payments": {
+      "title": "Payment history",
+      "desc": "All registered payments, with optional date filter.",
+      "from": "From",
+      "to": "To"
+    }
+  },
+  "meters": {
+    "eyebrow": "Meters",
+    "title": "Meter readings",
+    "addReading": "Add reading",
+    "confirmDelete": "Delete this reading?",
+    "empty": "No readings recorded.",
+    "selectUnit": "Select unit",
+    "allTypes": "All types",
+    "allUnits": "All units",
+    "fieldValue": "Reading (m³ / kWh)",
+    "fieldNotes": "Notes (optional)",
+    "colUnit": "Unit",
+    "colType": "Type",
+    "colDate": "Date",
+    "colValue": "Reading",
+    "colConsumption": "Consumption",
+    "colNotes": "Notes",
+    "type": {
+      "agua": "Water",
+      "luz": "Electricity",
+      "gas": "Gas",
+      "otro": "Other"
+    }
+  },
+  "suppliers": {
+    "eyebrow": "Suppliers",
+    "title": "Supplier management",
+    "addSupplier": "Add supplier",
+    "confirmDelete": "Delete this supplier?",
+    "empty": "No suppliers registered.",
+    "expenseCount": "{{count}} linked expense(s)",
+    "fieldName": "Supplier name",
+    "fieldCif": "CIF / VAT",
+    "fieldEmail": "Email",
+    "fieldPhone": "Phone",
+    "fieldAddress": "Address",
+    "fieldNotes": "Internal notes"
+  },
+  "coAdmins": {
+    "title": "Co-administrators",
+    "emailPlaceholder": "New administrator's email",
+    "addButton": "Add",
+    "confirmRemove": "Remove this administrator?",
+    "empty": "This community has only one administrator."
+  },
+  "polls": {
+    "title": "Polls",
+    "addPoll": "New poll",
+    "fieldQuestion": "Poll question",
+    "fieldDescription": "Description (optional)",
+    "empty": "No polls for this meeting.",
+    "close": "Close poll",
+    "totalVotes": "{{count}} votes",
+    "status": {
+      "open": "Open",
+      "closed": "Closed"
+    },
+    "option": {
+      "favor": "In favour",
+      "contra": "Against",
+      "abstencion": "Abstain"
+    },
+    "votingDeadline": "Voting deadline",
+    "requiresAttendance": "Only attendees can vote",
+    "deadline": "Deadline",
+    "telematic": "Remote votes",
+    "inPerson": "In-person votes",
+    "quorumReached": "Quorum reached",
+    "quorumNotReached": "Quorum not reached"
   },
   "audit": {
     "eyebrow": "Administration",
@@ -618,6 +833,111 @@
       "budget.upserted": "Budget saved",
       "user.login": "Login",
       "user.roleChanged": "Role changed"
+    }
+  },
+  "calendar": {
+    "eyebrow": "Schedule",
+    "title": "Community calendar",
+    "myTitle": "My calendar",
+    "empty": "No events in this period.",
+    "typeMeeting": "Meeting",
+    "typeReservation": "Reservation",
+    "typeInvoice": "Due date",
+    "typeRecurring": "Recurring fee"
+  },
+  "push": {
+    "title": "Notifications",
+    "desc": "Get instant alerts when there are new announcements in your community.",
+    "enable": "Enable notifications",
+    "disable": "Disable",
+    "enabled": "Notifications enabled",
+    "notSupported": "Your browser does not support push notifications."
+  },
+  "twofa": {
+    "title": "Two-factor authentication (2FA)",
+    "desc": "Add an extra layer of security to your account with an authenticator app (Google Authenticator, Authy, etc.).",
+    "enabled": "2FA enabled",
+    "disabled": "2FA disabled",
+    "setup": "Enable 2FA",
+    "setupStep1": "Scan this QR code with your authenticator app:",
+    "setupStep2": "Enter the 6-digit code your app generates to confirm:",
+    "tokenPlaceholder": "6-digit code",
+    "verify": "Confirm and enable",
+    "verifyError": "Incorrect code. Please try again.",
+    "disableTitle": "Disable 2FA",
+    "disableDesc": "Enter your current app code to disable 2FA:",
+    "disableBtn": "Disable 2FA",
+    "cancel": "Cancel"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "empty": "No new notifications.",
+    "markAllRead": "Mark all as read",
+    "timeAgo": "{{time}} ago"
+  },
+  "onboarding": {
+    "title": "Welcome to Comugest!",
+    "subtitle": "You're 2 minutes away from managing your first community.",
+    "step1Title": "Create your first community",
+    "step1Desc": "Register the community with its address and units (flats, commercial spaces, etc.).",
+    "step2Title": "Invite your residents",
+    "step2Desc": "Send email invitations so residents can access their invoices and notices.",
+    "createCommunity": "Create community →",
+    "dismiss": "Not now",
+    "skip": "Skip"
+  },
+  "incidents": {
+    "eyebrow": "Incident log",
+    "title": "Incidents",
+    "new": "New incident",
+    "number": "No.",
+    "statusOpen": "Open",
+    "statusInProgress": "In progress",
+    "statusResolved": "Resolved",
+    "statusClosed": "Closed",
+    "categories": {
+      "GENERAL": "General",
+      "STRUCTURAL": "Structural",
+      "ELECTRICAL": "Electrical",
+      "PLUMBING": "Plumbing",
+      "LIFT": "Lift",
+      "FIRE": "Fire/FPS",
+      "OTHER": "Other"
+    }
+  },
+  "templates": {
+    "title": "Templates",
+    "use": "Use template",
+    "save": "Save as template",
+    "manage": "Manage templates",
+    "name": "Template name",
+    "empty": "No saved templates.",
+    "delete": "Delete"
+  },
+  "billing": {
+    "eyebrow": "Subscription",
+    "title": "Plan & billing",
+    "currentPlan": "Current plan",
+    "freePlan": "Free Plan",
+    "statusFree": "Free",
+    "statusActive": "Active",
+    "statusPastDue": "Payment due",
+    "statusCancelled": "Cancelled",
+    "upgrade": "Subscribe to PRO",
+    "manageSubscription": "Manage subscription",
+    "renewsOn": "Renews on {{date}}",
+    "pastDueWarning": "There is an issue with your payment method. Please update it to continue.",
+    "successMessage": "Subscription activated successfully. Welcome to Comugest PRO.",
+    "proFeaturesTitle": "Everything included in PRO",
+    "acceptedMethods": "We accept card, Google Pay and Apple Pay.",
+    "feature": {
+      "communities": "Unlimited communities",
+      "documents": "Document archive",
+      "reports": "PDF report exports",
+      "meters": "Meter reading history",
+      "polls": "Telematic voting",
+      "calendar": "Unified calendar",
+      "support": "Priority support"
     }
   }
 }

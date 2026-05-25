@@ -40,6 +40,24 @@ import { CommunityMeetingsPage } from '@/pages/CommunityMeetings';
 import { MeetingDetailPage } from '@/pages/MeetingDetail';
 import { SoporteLoginPage } from '@/pages/SoporteLogin';
 import { NotFoundPage } from '@/pages/NotFound';
+import { ProfilePage } from '@/pages/ProfilePage';
+import { MyReservationsPage } from '@/pages/MyReservations';
+import { MyMeetingsPage } from '@/pages/MyMeetings';
+import { CommunityRecurringPage } from '@/pages/CommunityRecurring';
+import { CommunityDocumentsPage } from '@/pages/CommunityDocuments';
+import { MyDocumentsPage } from '@/pages/MyDocuments';
+import { CommunityReportsPage } from '@/pages/CommunityReports';
+import { CommunityMeterReadingsPage } from '@/pages/CommunityMeterReadings';
+import { CommunitySuppliersPage } from '@/pages/CommunitySuppliers';
+import { CommunityCalendarPage } from '@/pages/CommunityCalendar';
+import { MyCalendarPage } from '@/pages/MyCalendar';
+import { BillingPage } from '@/pages/BillingPage';
+import { BillingSuccessPage } from '@/pages/BillingSuccess';
+import { HelpPage } from '@/pages/HelpPage';
+import { QrCheckInPage } from '@/pages/QrCheckIn';
+import { CsvImportPage } from '@/pages/CsvImport';
+import { CommunityBankingPage } from '@/pages/CommunityBanking';
+import { CommunityIncidentsPage } from '@/pages/CommunityIncidents';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -64,6 +82,8 @@ export function App() {
             <Route path="/accept-invitation" element={<AcceptInvitationPage />} />
             <Route path="/forgot-password" element={<ForgotPasswordPage />} />
             <Route path="/reset-password" element={<ResetPasswordPage />} />
+            {/* QR check-in — accessible sin auth (requiere token en URL) */}
+            <Route path="/meetings/qr-check-in/:token" element={<QrCheckInPage />} />
 
             {/* Cualquier usuario autenticado */}
             <Route path="/" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
@@ -77,6 +97,12 @@ export function App() {
             <Route path="/procedures" element={<ProtectedRoute><MyProceduresPage /></ProtectedRoute>} />
             <Route path="/procedures/new" element={<ProtectedRoute><CreateProcedurePage /></ProtectedRoute>} />
             <Route path="/procedures/:id" element={<ProtectedRoute><ProcedureDetailPage /></ProtectedRoute>} />
+            <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+            <Route path="/my-reservations" element={<ProtectedRoute><MyReservationsPage /></ProtectedRoute>} />
+            <Route path="/my-meetings" element={<ProtectedRoute><MyMeetingsPage /></ProtectedRoute>} />
+            <Route path="/documents" element={<ProtectedRoute><MyDocumentsPage /></ProtectedRoute>} />
+            <Route path="/calendar" element={<ProtectedRoute><MyCalendarPage /></ProtectedRoute>} />
+            <Route path="/ayuda" element={<ProtectedRoute><HelpPage /></ProtectedRoute>} />
             <Route path="/support/tickets" element={<ProtectedRoute allowedRoles={['SUPPORT']}><SupportDashboardPage /></ProtectedRoute>} />
             <Route path="/support" element={<ProtectedRoute allowedRoles={['SUPPORT']}><SupportDashboardPage /></ProtectedRoute>} />
 
@@ -97,7 +123,18 @@ export function App() {
             <Route path="/communities/:communityId/areas/:areaId/reservations" element={<ProtectedRoute><AreaReservationsPage /></ProtectedRoute>} />
             <Route path="/communities/:id/meetings" element={<ProtectedRoute allowedRoles={[...ADMIN_ROLES]}><CommunityMeetingsPage /></ProtectedRoute>} />
             <Route path="/communities/:id/meetings/:meetingId" element={<ProtectedRoute><MeetingDetailPage /></ProtectedRoute>} />
+            <Route path="/communities/:id/recurring" element={<ProtectedRoute allowedRoles={['ADMIN_FINCAS','SUPPORT']}><CommunityRecurringPage /></ProtectedRoute>} />
+            <Route path="/communities/:id/documents" element={<ProtectedRoute allowedRoles={[...ADMIN_ROLES]}><CommunityDocumentsPage /></ProtectedRoute>} />
+            <Route path="/communities/:id/reports" element={<ProtectedRoute allowedRoles={[...ADMIN_ROLES]}><CommunityReportsPage /></ProtectedRoute>} />
+            <Route path="/communities/:id/meter-readings" element={<ProtectedRoute allowedRoles={[...ADMIN_ROLES]}><CommunityMeterReadingsPage /></ProtectedRoute>} />
+            <Route path="/communities/:id/suppliers" element={<ProtectedRoute allowedRoles={[...ADMIN_ROLES]}><CommunitySuppliersPage /></ProtectedRoute>} />
+            <Route path="/communities/:id/calendar" element={<ProtectedRoute allowedRoles={[...ADMIN_ROLES]}><CommunityCalendarPage /></ProtectedRoute>} />
+            <Route path="/communities/:id/import" element={<ProtectedRoute allowedRoles={[...ADMIN_ROLES]}><CsvImportPage /></ProtectedRoute>} />
+            <Route path="/communities/:id/banking" element={<ProtectedRoute allowedRoles={['ADMIN_FINCAS','SUPPORT']}><CommunityBankingPage /></ProtectedRoute>} />
+            <Route path="/communities/:id/incidents" element={<ProtectedRoute allowedRoles={['ADMIN_FINCAS','SUPPORT']}><CommunityIncidentsPage /></ProtectedRoute>} />
             <Route path="/admin/invite" element={<ProtectedRoute allowedRoles={[...ADMIN_ROLES]}><InviteResidentPage /></ProtectedRoute>} />
+            <Route path="/billing" element={<ProtectedRoute allowedRoles={['ADMIN_FINCAS']}><BillingPage /></ProtectedRoute>} />
+            <Route path="/billing/success" element={<ProtectedRoute allowedRoles={['ADMIN_FINCAS']}><BillingSuccessPage /></ProtectedRoute>} />
 
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
@@ -106,3 +143,4 @@ export function App() {
     </QueryClientProvider>
   );
 }
+

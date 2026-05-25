@@ -9,6 +9,7 @@
     "language": "Idioma",
     "soon": "Próximamente",
     "remove": "Eliminar",
+    "edit": "Editar",
     "filter": "Filtrar",
     "prev": "Anterior",
     "next": "Siguiente"
@@ -23,7 +24,9 @@
     "expenses": "Gastos",
     "report": "Reportar",
     "support": "Soporte",
-    "procedures": "Trámites"
+    "procedures": "Trámites",
+    "profile": "Mi perfil",
+    "help": "Ayuda"
   },
   "auth": {
     "login": {
@@ -106,6 +109,14 @@
       "missingToken": "Falta el token en el enlace.",
       "successTitle": "Contraseña actualizada",
       "successSubtitle": "Te llevamos al inicio de sesión…"
+    },
+    "twofa": {
+      "title": "Verificación en dos pasos",
+      "desc": "Introduce el código de 6 dígitos de tu app de autenticación.",
+      "codePlaceholder": "000000",
+      "submit": "Verificar",
+      "error": "Código incorrecto. Inténtalo de nuevo.",
+      "back": "← Volver al inicio de sesión"
     }
   },
   "dashboard": {
@@ -144,7 +155,8 @@
       "audit": {
         "title": "Registro de auditoría",
         "desc": "Consulta el historial de todas las acciones realizadas en la plataforma."
-      }
+      },
+      "billing": { "title": "Facturación", "desc": "Gestiona tu suscripción y plan." }
     },
     "kpi": {
       "pendingInvoices": "Facturas pendientes",
@@ -172,6 +184,22 @@
       "procedures": {
         "title": "Trámites",
         "desc": "Presenta gestiones a tu administrador y sigue su estado."
+      },
+      "reservations": {
+        "title": "Mis reservas",
+        "desc": "Consulta tus reservas en las zonas comunes."
+      },
+      "meetings": {
+        "title": "Mis juntas",
+        "desc": "Convocatorias de juntas de vecinos y tu confirmación de asistencia."
+      },
+      "documents": {
+        "title": "Documentos",
+        "desc": "Accede a los documentos de tu comunidad."
+      },
+      "calendar": {
+        "title": "Calendario",
+        "desc": "Juntas, reservas y vencimientos en un solo lugar."
       }
     }
   },
@@ -221,7 +249,13 @@
     "linkProcedures": "Trámites",
     "linkBudget": "Presupuesto",
     "linkAreas": "Zonas comunes",
-    "linkMeetings": "Juntas"
+    "linkMeetings": "Juntas",
+    "linkDocuments": "Documentos",
+    "linkReports": "Informes",
+    "linkMeters": "Contadores",
+    "linkSuppliers": "Proveedores",
+    "linkCalendar": "Calendario",
+    "backToDetail": "Volver a la comunidad"
   },
   "invite": {
     "eyebrow": "Administración",
@@ -328,7 +362,42 @@
     "title": "Mis facturas",
     "empty": "No tienes facturas todavía",
     "emptyNote": "Cuando tu administrador emita facturas para tu inmueble, aparecerán aquí.",
-    "pendingTotal": "Total pendiente de pago"
+    "pendingTotal": "Total pendiente de pago",
+    "pay": "Pagar",
+    "paymentSuccess": "¡Pago completado! Tu factura ha sido registrada."
+  },
+  "profile": {
+    "title": "Mi perfil",
+    "eyebrow": "Cuenta",
+    "personalData": "Datos personales",
+    "firstName": "Nombre",
+    "lastName": "Apellidos",
+    "phone": "Teléfono",
+    "locale": "Idioma",
+    "localeEs": "Español",
+    "localeEn": "English",
+    "saveChanges": "Guardar cambios",
+    "saved": "Cambios guardados",
+    "changePassword": "Cambiar contraseña",
+    "currentPassword": "Contraseña actual",
+    "newPassword": "Nueva contraseña (mín. 8 caracteres)",
+    "passwordChanged": "Contraseña actualizada correctamente",
+    "role": "Rol"
+  },
+  "myReservations": {
+    "title": "Mis reservas",
+    "eyebrow": "Zonas comunes",
+    "empty": "No tienes reservas activas",
+    "area": "Zona",
+    "community": "Comunidad",
+    "date": "Fecha",
+    "time": "Horario"
+  },
+  "myMeetings": {
+    "title": "Mis juntas",
+    "eyebrow": "Comunidad",
+    "empty": "No estás convocado a ninguna junta",
+    "myAttendance": "Mi asistencia"
   },
   "announcements": {
     "eyebrow": "Comunicación",
@@ -570,6 +639,10 @@
     "agenda": "Orden del día",
     "minutes": "Acta",
     "minutesUrl": "URL del acta (PDF)",
+    "minutesPublished": "Publicada",
+    "minutesPublish": "Publicar acta para vecinos",
+    "minutesUnpublish": "Retirar publicación",
+    "minutesLastUpdated": "Última edición: {{date}}",
     "attendees": "Asistentes",
     "myAttendance": "Mi asistencia",
     "attendancePENDING": "Pendiente",
@@ -583,7 +656,149 @@
     "create": "Convocar",
     "attendeeCount": "convocados",
     "editMeeting": "Editar junta",
-    "saveChanges": "Guardar cambios"
+    "saveChanges": "Guardar cambios",
+    "signMinutes": "Firmar acta digitalmente",
+    "signDesc": "Introduce tu código 2FA para firmar el acta. La firma incluye un hash SHA-256 que garantiza su integridad.",
+    "signConfirm": "Firmar",
+    "signError": "Código incorrecto o error al firmar.",
+    "signed": "Acta firmada digitalmente",
+    "signedBadge": "Firmada digitalmente",
+    "downloadPdf": "Descargar acta en PDF",
+    "downloadConvocatoria": "Descargar convocatoria"
+  },
+  "recurring": {
+    "eyebrow": "Facturación automática",
+    "title": "Cuotas ordinarias",
+    "newRecurring": "Nueva cuota",
+    "concept": "Concepto",
+    "description": "Descripción (opcional)",
+    "frequency": "Frecuencia",
+    "MONTHLY": "Mensual",
+    "QUARTERLY": "Trimestral",
+    "YEARLY": "Anual",
+    "amount": "Importe (€)",
+    "dayOfMonth": "Día del mes",
+    "startAt": "Fecha de inicio (opcional)",
+    "nextBillingAt": "Próximo cargo",
+    "create": "Crear cuota",
+    "triggerNow": "Generar ahora",
+    "triggered": "Factura generada correctamente",
+    "deactivate": "Desactivar",
+    "activate": "Activar",
+    "empty": "No hay cuotas configuradas",
+    "active": "Activa",
+    "inactive": "Inactiva",
+    "linkRecurring": "Cuotas ordinarias"
+  },
+  "documents": {
+    "eyebrow": "Archivo",
+    "title": "Documentos de la comunidad",
+    "myTitle": "Mis documentos",
+    "addDocument": "Añadir documento",
+    "confirmDelete": "¿Eliminar este documento?",
+    "empty": "No hay documentos disponibles.",
+    "fieldName": "Nombre del documento",
+    "fieldUrl": "URL del documento (Google Drive, Dropbox…)",
+    "fieldDescription": "Descripción (opcional)",
+    "publicForResidents": "Visible para vecinos",
+    "adminOnly": "Solo admins",
+    "category": {
+      "acta": "Acta",
+      "reglamento": "Reglamento",
+      "presupuesto": "Presupuesto",
+      "contrato": "Contrato",
+      "certificado": "Certificado",
+      "otro": "Otro"
+    }
+  },
+  "reports": {
+    "eyebrow": "Informes",
+    "title": "Exportar informes",
+    "download": "Descargar PDF",
+    "morosos": {
+      "title": "Listado de morosos",
+      "desc": "Unidades con recibos pendientes de pago."
+    },
+    "budget": {
+      "title": "Presupuesto vs real",
+      "desc": "Comparativa del presupuesto anual frente a los gastos reales."
+    },
+    "payments": {
+      "title": "Histórico de pagos",
+      "desc": "Todos los pagos registrados, con filtro por fechas opcional.",
+      "from": "Desde",
+      "to": "Hasta"
+    }
+  },
+  "meters": {
+    "eyebrow": "Contadores",
+    "title": "Lecturas de contadores",
+    "addReading": "Añadir lectura",
+    "confirmDelete": "¿Eliminar esta lectura?",
+    "empty": "No hay lecturas registradas.",
+    "selectUnit": "Seleccionar unidad",
+    "allTypes": "Todos los tipos",
+    "allUnits": "Todas las unidades",
+    "fieldValue": "Lectura (m³ / kWh)",
+    "fieldNotes": "Notas (opcional)",
+    "colUnit": "Unidad",
+    "colType": "Tipo",
+    "colDate": "Fecha",
+    "colValue": "Lectura",
+    "colConsumption": "Consumo",
+    "colNotes": "Notas",
+    "type": {
+      "agua": "Agua",
+      "luz": "Luz",
+      "gas": "Gas",
+      "otro": "Otro"
+    }
+  },
+  "suppliers": {
+    "eyebrow": "Proveedores",
+    "title": "Gestión de proveedores",
+    "addSupplier": "Añadir proveedor",
+    "confirmDelete": "¿Eliminar este proveedor?",
+    "empty": "No hay proveedores registrados.",
+    "expenseCount": "{{count}} gasto(s) vinculado(s)",
+    "fieldName": "Nombre del proveedor",
+    "fieldCif": "CIF / NIF",
+    "fieldEmail": "Email",
+    "fieldPhone": "Teléfono",
+    "fieldAddress": "Dirección",
+    "fieldNotes": "Notas internas"
+  },
+  "coAdmins": {
+    "title": "Co-administradores",
+    "emailPlaceholder": "Email del nuevo administrador",
+    "addButton": "Añadir",
+    "confirmRemove": "¿Eliminar este administrador?",
+    "empty": "Solo hay un administrador en esta comunidad."
+  },
+  "polls": {
+    "title": "Votaciones",
+    "addPoll": "Nueva votación",
+    "fieldQuestion": "Pregunta de la votación",
+    "fieldDescription": "Descripción (opcional)",
+    "empty": "No hay votaciones en esta junta.",
+    "close": "Cerrar votación",
+    "totalVotes": "{{count}} votos",
+    "status": {
+      "open": "Abierta",
+      "closed": "Cerrada"
+    },
+    "option": {
+      "favor": "A favor",
+      "contra": "En contra",
+      "abstencion": "Abstención"
+    },
+    "votingDeadline": "Fecha límite de votación",
+    "requiresAttendance": "Solo convocados pueden votar",
+    "deadline": "Límite",
+    "telematic": "Votos telemáticos",
+    "inPerson": "Votos presenciales",
+    "quorumReached": "Quórum alcanzado",
+    "quorumNotReached": "Quórum no alcanzado"
   },
   "audit": {
     "eyebrow": "Administración",
@@ -618,6 +833,111 @@
       "budget.upserted": "Presupuesto guardado",
       "user.login": "Inicio de sesión",
       "user.roleChanged": "Rol cambiado"
+    }
+  },
+  "calendar": {
+    "eyebrow": "Agenda",
+    "title": "Calendario de la comunidad",
+    "myTitle": "Mi calendario",
+    "empty": "No hay eventos en este período.",
+    "typeMeeting": "Junta",
+    "typeReservation": "Reserva",
+    "typeInvoice": "Vencimiento",
+    "typeRecurring": "Cuota periódica"
+  },
+  "push": {
+    "title": "Notificaciones",
+    "desc": "Recibe avisos instantáneos cuando haya nuevos anuncios en tu comunidad.",
+    "enable": "Activar notificaciones",
+    "disable": "Desactivar",
+    "enabled": "Notificaciones activadas",
+    "notSupported": "Tu navegador no soporta notificaciones push."
+  },
+  "twofa": {
+    "title": "Verificación en dos pasos (2FA)",
+    "desc": "Añade una capa extra de seguridad a tu cuenta con una app de autenticación (Google Authenticator, Authy, etc.).",
+    "enabled": "2FA activado",
+    "disabled": "2FA desactivado",
+    "setup": "Activar 2FA",
+    "setupStep1": "Escanea este código QR con tu app de autenticación:",
+    "setupStep2": "Introduce el código de 6 dígitos que genera la app para confirmar:",
+    "tokenPlaceholder": "Código de 6 dígitos",
+    "verify": "Confirmar y activar",
+    "verifyError": "Código incorrecto. Inténtalo de nuevo.",
+    "disableTitle": "Desactivar 2FA",
+    "disableDesc": "Introduce el código actual de tu app para desactivar 2FA:",
+    "disableBtn": "Desactivar 2FA",
+    "cancel": "Cancelar"
+  },
+  "notifications": {
+    "title": "Notificaciones",
+    "empty": "No tienes notificaciones nuevas.",
+    "markAllRead": "Marcar todo como leído",
+    "timeAgo": "hace {{time}}"
+  },
+  "onboarding": {
+    "title": "¡Bienvenido a Comugest!",
+    "subtitle": "Estás a 2 minutos de gestionar tu primera comunidad.",
+    "step1Title": "Crea tu primera comunidad",
+    "step1Desc": "Registra la comunidad con su dirección y unidades (pisos, locales, etc.).",
+    "step2Title": "Invita a tus vecinos",
+    "step2Desc": "Envía invitaciones por correo para que los vecinos accedan a sus facturas y anuncios.",
+    "createCommunity": "Crear comunidad →",
+    "dismiss": "Ahora no",
+    "skip": "Omitir"
+  },
+  "incidents": {
+    "eyebrow": "Libro de incidencias",
+    "title": "Incidencias",
+    "new": "Nueva incidencia",
+    "number": "Nº",
+    "statusOpen": "Abierta",
+    "statusInProgress": "En curso",
+    "statusResolved": "Resuelta",
+    "statusClosed": "Cerrada",
+    "categories": {
+      "GENERAL": "General",
+      "STRUCTURAL": "Estructural",
+      "ELECTRICAL": "Eléctrica",
+      "PLUMBING": "Fontanería",
+      "LIFT": "Ascensor",
+      "FIRE": "Incendios/PCI",
+      "OTHER": "Otra"
+    }
+  },
+  "templates": {
+    "title": "Plantillas",
+    "use": "Usar plantilla",
+    "save": "Guardar como plantilla",
+    "manage": "Gestionar plantillas",
+    "name": "Nombre de la plantilla",
+    "empty": "No hay plantillas guardadas.",
+    "delete": "Eliminar"
+  },
+  "billing": {
+    "eyebrow": "Suscripción",
+    "title": "Plan y facturación",
+    "currentPlan": "Plan actual",
+    "freePlan": "Plan Gratuito",
+    "statusFree": "Gratuito",
+    "statusActive": "Activo",
+    "statusPastDue": "Pago pendiente",
+    "statusCancelled": "Cancelado",
+    "upgrade": "Suscribirse a PRO",
+    "manageSubscription": "Gestionar suscripción",
+    "renewsOn": "Se renueva el {{date}}",
+    "pastDueWarning": "Hay un problema con tu método de pago. Actualízalo para continuar.",
+    "successMessage": "Suscripción activada correctamente. Bienvenido a Comugest PRO.",
+    "proFeaturesTitle": "Todo incluido en PRO",
+    "acceptedMethods": "Aceptamos tarjeta, Google Pay y Apple Pay.",
+    "feature": {
+      "communities": "Comunidades ilimitadas",
+      "documents": "Archivo de documentos",
+      "reports": "Exportación de informes PDF",
+      "meters": "Historial de contadores",
+      "polls": "Votaciones telemáticas",
+      "calendar": "Calendario unificado",
+      "support": "Soporte prioritario"
     }
   }
 }

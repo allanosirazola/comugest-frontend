@@ -51,3 +51,8 @@ export async function exportPdf(invoiceId) {
   });
   return data;
 }
+
+export async function createBulkInvoice(communityId, input) {
+  const { data } = await api.post(`/communities/${communityId}/invoices/bulk`, input);
+  return data.invoice;
+}

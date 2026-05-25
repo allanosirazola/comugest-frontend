@@ -3,7 +3,9 @@ import { useParams, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Layout } from '@/components/Layout';
 import { useAuth } from '@/contexts/AuthContext';
-import { useMeeting, useUpdateMeeting, useUpdateAttendance } from '@/hooks/useMeetings';
+import { useMeeting, useUpdateMeeting, useUpdateAttendance, useSaveMinutes, usePublishMinutes, useGenerateQr, useSignMinutes } from '@/hooks/useMeetings';
+import { usePolls, useCreatePoll, useClosePoll, useCastVote } from '@/hooks/usePolls';
+import { downloadMinutesPdf, downloadConvocatoria } from '@/api/meetings';
 
 const TYPE_COLORS = {
   ORDINARY: 'bg-olive-100 text-olive-800',
@@ -80,6 +82,16 @@ export function MeetingDetailPage() {
   const { data: meeting, isLoading } = useMeeting(meetingId);
   const updateMeeting = useUpdateMeeting(meetingId ?? '');
   const updateAttendance = useUpdateAttendance(meetingId ?? '');
+  const saveMinutesMutation = useSaveMinutes(meetingId ?? '');
+  const publishMinutesMutation = usePublishMinutes(meetingId ?? '');
+  const generateQr = useGenerateQr(meetingId ?? '');
+  const signMinutesMutation = useSignMinutes(meetingId ?? '');
+  const [showSignModal, setShowSignModal] = useState(false);
+  const [signTotpCode, setSignTotpCode] = useState('');
+  const [signError, setSignError] = useState('');
+
+  const [qrData, setQrData] = useState(null);
+  const [qrError, setQrError] = useState(null);
 
   const [attendanceStatus, setAttendanceStatus] = useState(null);
   const [proxy, setProxy] = useState('');
@@ -164,11 +176,43 @@ export function MeetingDetailPage() {
             </div>
           )}
 
-          {(meeting.minutes || meeting.minutesUrl) && (
+          {(isAdmin || meeting.minutesPublished) && (meeting.minutes || meeting.minutesUrl) && (
             <div className="card border-olive-200 bg-olive-50">
-              <p className="text-xs font-medium uppercase tracking-wider text-olive-600">{t('meetings.minutes')}</p>
+              <div className="flex items-center justify-between gap-3">
+                <p className="text-xs font-medium uppercase tracking-wider text-olive-600">{t('meetings.minutes')}</p>
+                {meeting.minutesPublished && (
+                  <span className="rounded-full bg-olive-100 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider text-olive-700">
+                    {t('meetings.minutesPublished')}
+                  </span>
+                )}
+              </div>
               {meeting.minutes && (
                 <p className="mt-2 whitespace-pre-wrap text-sm text-olive-800">{meeting.minutes}</p>
+              )}
+              {meeting.minutesPublished && meeting.minutes && (
+                <button
+                  onClick={async () => {
+                    try {
+                      await downloadMinutesPdf(meeting.id);
+                    } catch {
+                      // silent - browser will handle download errors
+                    }
+                  }}
+                  className="mt-2 btn-ghost text-sm"
+                >
+                  ↓ {t('meetings.downloadPdf')}
+                </button>
+              )}
+              {meeting.minutesSignedAt && (
+                <div className="mt-3 flex items-start gap-2 rounded-lg bg-olive-50 px-3 py-2">
+                  <span className="text-olive-600">✓</span>
+                  <div>
+                    <p className="text-xs font-medium text-olive-700">{t('meetings.signedBadge')}</p>
+                    <p className="text-xs text-olive-500 font-mono break-all">
+                      {meeting.minutesSignatureHash?.slice(0, 32)}…
+                    </p>
+                  </div>
+                </div>
               )}
               {meeting.minutesUrl && (
                 <a
@@ -179,6 +223,11 @@ export function MeetingDetailPage() {
                 >
                   📎 {t('meetings.minutesUrl')}
                 </a>
+              )}
+              {meeting.minutesUpdatedAt && (
+                <p className="mt-2 text-xs text-olive-400">
+                  {t('meetings.minutesLastUpdated', { date: new Date(meeting.minutesUpdatedAt).toLocaleString() })}
+                </p>
               )}
             </div>
           )}
@@ -339,10 +388,352 @@ export function MeetingDetailPage() {
                   {t('meetings.markHeld')}
                 </button>
               )}
+
+              {meeting.minutes && (
+                <button
+                  type="button"
+                  onClick={() => publishMinutesMutation.mutate(!meeting.minutesPublished)}
+                  disabled={publishMinutesMutation.isPending}
+                  className={`w-full py-1.5 text-sm ${meeting.minutesPublished ? 'btn-ghost text-clay-600' : 'btn-primary'}`}
+                >
+                  {meeting.minutesPublished ? t('meetings.minutesUnpublish') : t('meetings.minutesPublish')}
+                </button>
+              )}
+
+              {meeting.minutes && meeting.minutesPublished && (
+                <div className="mt-4 border-t border-cream-200 pt-4">
+                  {meeting.minutesSignedAt ? (
+                    <div className="rounded-lg bg-olive-50 p-3">
+                      <p className="text-xs font-semibold uppercase tracking-wider text-olive-600">
+                        ✓ {t('meetings.signed')}
+                      </p>
+                      <p className="mt-1 text-xs text-olive-600">
+                        {new Date(meeting.minutesSignedAt).toLocaleDateString()}
+                      </p>
+                      <p className="mt-1 font-mono text-xs text-olive-400 break-all">
+                        SHA-256: {meeting.minutesSignatureHash?.slice(0, 32)}…
+                      </p>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => { setShowSignModal(true); setSignError(''); setSignTotpCode(''); }}
+                      className="btn-ghost w-full text-sm"
+                    >
+                      ✍ {t('meetings.signMinutes')}
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+
+          {isAdmin && (
+            <div className="card space-y-3">
+              <h2 className="font-display text-lg text-olive-900">{t('meetings.downloadConvocatoria')}</h2>
+              <button
+                type="button"
+                className="btn-ghost w-full py-1.5 text-sm"
+                onClick={async () => {
+                  try {
+                    await downloadConvocatoria(meeting.id);
+                  } catch {
+                    // silent
+                  }
+                }}
+              >
+                ↓ {t('meetings.downloadConvocatoria')}
+              </button>
+            </div>
+          )}
+
+          {isAdmin && (
+            <div className="card space-y-3">
+              <h2 className="font-display text-lg text-olive-900">{t('meetings.qrTitle')}</h2>
+              <p className="text-xs text-olive-500">{t('meetings.qrDesc')}</p>
+              <button
+                type="button"
+                className="btn-primary w-full py-1.5"
+                onClick={async () => {
+                  setQrError(null);
+                  try {
+                    const data = await generateQr.mutateAsync();
+                    setQrData(data);
+                  } catch (err) {
+                    setQrError(err?.response?.data?.error?.message ?? t('errors.generic'));
+                  }
+                }}
+                disabled={generateQr.isPending}
+              >
+                {generateQr.isPending ? t('common.loading') : t('meetings.qrGenerate')}
+              </button>
+              {qrError && (
+                <div role="alert" className="rounded-md border border-clay-400/40 bg-clay-400/10 px-3 py-2 text-sm text-clay-700">
+                  {qrError}
+                </div>
+              )}
+              {qrData && (
+                <div className="space-y-2">
+                  {qrData.qrDataUrl && (
+                    <img
+                      src={qrData.qrDataUrl}
+                      alt="QR de asistencia"
+                      className="mx-auto w-48 rounded-md border border-olive-200"
+                    />
+                  )}
+                  {qrData.url && (
+                    <p className="break-all rounded-md bg-cream-100 px-3 py-2 text-xs text-olive-700">
+                      {qrData.url}
+                    </p>
+                  )}
+                </div>
+              )}
             </div>
           )}
         </aside>
       </div>
+
+      <PollsSection meetingId={meetingId} />
+
+      {showSignModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+          <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl">
+            <h2 className="font-display text-lg font-medium text-olive-950">
+              {t('meetings.signMinutes')}
+            </h2>
+            <p className="mt-1 text-sm text-olive-600">
+              {t('meetings.signDesc')}
+            </p>
+            <form
+              onSubmit={async (e) => {
+                e.preventDefault();
+                setSignError('');
+                try {
+                  await signMinutesMutation.mutateAsync(signTotpCode);
+                  setShowSignModal(false);
+                } catch {
+                  setSignError(t('meetings.signError'));
+                }
+              }}
+              className="mt-4 space-y-3"
+            >
+              <input
+                value={signTotpCode}
+                onChange={e => { setSignTotpCode(e.target.value); setSignError(''); }}
+                placeholder={t('twofa.tokenPlaceholder')}
+                maxLength={6}
+                pattern="\d{6}"
+                required
+                autoFocus
+                className="input w-full text-center text-lg tracking-widest"
+              />
+              {signError && <p className="text-sm text-clay-600">{signError}</p>}
+              <div className="flex gap-2">
+                <button type="submit" disabled={signMinutesMutation.isPending} className="btn-primary flex-1">
+                  {t('meetings.signConfirm')}
+                </button>
+                <button type="button" onClick={() => setShowSignModal(false)} className="btn-ghost flex-1">
+                  {t('common.cancel')}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </Layout>
+  );
+}
+
+function PollsSection({ meetingId }) {
+  const { t } = useTranslation();
+  const { user } = useAuth();
+  const isAdmin = user?.role === 'ADMIN_FINCAS' || user?.role === 'SUPPORT';
+  const { data: polls = [] } = usePolls(meetingId);
+  const createPoll = useCreatePoll(meetingId);
+  const closePoll = useClosePoll(meetingId);
+  const castVote = useCastVote(meetingId);
+
+  const [showForm, setShowForm] = useState(false);
+  const [form, setForm] = useState({ question: '', description: '', votingDeadline: '', requiresAttendance: false });
+  const [error, setError] = useState(null);
+
+  const handleCreate = async (e) => {
+    e.preventDefault();
+    setError(null);
+    try {
+      await createPoll.mutateAsync({
+        question: form.question,
+        description: form.description || undefined,
+        votingDeadline: form.votingDeadline || undefined,
+        requiresAttendance: form.requiresAttendance,
+      });
+      setShowForm(false);
+      setForm({ question: '', description: '', votingDeadline: '', requiresAttendance: false });
+    } catch (err) {
+      setError(err?.response?.data?.error?.message ?? t('errors.generic'));
+    }
+  };
+
+  const handleVote = async (pollId, option) => {
+    try {
+      await castVote.mutateAsync({ pollId, option });
+    } catch (err) {
+      setError(err?.response?.data?.error?.message ?? t('errors.generic'));
+    }
+  };
+
+  const VOTE_OPTIONS = ['FAVOR', 'CONTRA', 'ABSTENCION'];
+  const VOTE_COLORS = {
+    FAVOR: 'bg-green-100 text-green-800 hover:bg-green-200',
+    CONTRA: 'bg-clay-100 text-clay-800 hover:bg-clay-200',
+    ABSTENCION: 'bg-gray-100 text-gray-800 hover:bg-gray-200',
+  };
+  const VOTE_ACTIVE = {
+    FAVOR: 'ring-2 ring-green-500',
+    CONTRA: 'ring-2 ring-clay-500',
+    ABSTENCION: 'ring-2 ring-gray-500',
+  };
+
+  return (
+    <section className="mt-10">
+      <div className="flex items-center justify-between">
+        <h2 className="font-display text-2xl text-olive-900">{t('polls.title')}</h2>
+        {isAdmin && (
+          <button onClick={() => setShowForm((v) => !v)} className="btn-primary">
+            {showForm ? t('common.cancel') : `+ ${t('polls.addPoll')}`}
+          </button>
+        )}
+      </div>
+
+      {showForm && (
+        <form onSubmit={handleCreate} className="card mt-4 grid gap-3">
+          <input
+            className="input"
+            placeholder={t('polls.fieldQuestion')}
+            value={form.question}
+            onChange={(e) => setForm({ ...form, question: e.target.value })}
+            required
+          />
+          <textarea
+            className="input"
+            placeholder={t('polls.fieldDescription')}
+            rows={2}
+            value={form.description}
+            onChange={(e) => setForm({ ...form, description: e.target.value })}
+          />
+          <div className="grid gap-3 sm:grid-cols-2">
+            <div>
+              <label className="mb-1 block text-xs text-olive-600">{t('polls.votingDeadline')}</label>
+              <input
+                type="datetime-local"
+                className="input"
+                value={form.votingDeadline}
+                onChange={(e) => setForm({ ...form, votingDeadline: e.target.value })}
+              />
+            </div>
+            <label className="flex items-center gap-2 text-sm text-olive-700 cursor-pointer self-end pb-2">
+              <input
+                type="checkbox"
+                checked={form.requiresAttendance}
+                onChange={(e) => setForm({ ...form, requiresAttendance: e.target.checked })}
+                className="rounded border-olive-300"
+              />
+              {t('polls.requiresAttendance')}
+            </label>
+          </div>
+          <button type="submit" className="btn-primary w-fit" disabled={createPoll.isPending}>
+            {createPoll.isPending ? t('common.loading') : t('polls.addPoll')}
+          </button>
+        </form>
+      )}
+
+      {error && (
+        <div role="alert" className="mt-3 rounded-md border border-clay-400/40 bg-clay-400/10 px-3 py-2 text-sm text-clay-700">
+          {error}
+        </div>
+      )}
+
+      {polls.length === 0 ? (
+        <p className="mt-6 text-sm text-olive-500">{t('polls.empty')}</p>
+      ) : (
+        <div className="mt-4 space-y-4">
+          {polls.map((poll) => {
+            const total = (poll.results?.FAVOR ?? 0) + (poll.results?.CONTRA ?? 0) + (poll.results?.ABSTENCION ?? 0);
+            return (
+              <div key={poll.id} className="card">
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <p className="font-medium text-olive-900">{poll.question}</p>
+                    {poll.description && <p className="mt-0.5 text-sm text-olive-600">{poll.description}</p>}
+                    {poll.votingDeadline && (
+                      <p className="mt-0.5 text-xs text-olive-500">
+                        {t('polls.deadline')}: {new Date(poll.votingDeadline).toLocaleString()}
+                      </p>
+                    )}
+                    {poll.requiresAttendance && (
+                      <p className="mt-0.5 text-xs text-olive-500">{t('polls.requiresAttendance')}</p>
+                    )}
+                  </div>
+                  <div className="flex shrink-0 items-center gap-2">
+                    <span className={`rounded-full px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider ${poll.status === 'OPEN' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'}`}>
+                      {t(`polls.status.${poll.status.toLowerCase()}`)}
+                    </span>
+                    {poll.status === 'CLOSED' && poll.quorumReached !== null && poll.quorumReached !== undefined && (
+                      <span className={`rounded-full px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider ${poll.quorumReached ? 'bg-olive-100 text-olive-800' : 'bg-clay-100 text-clay-700'}`}>
+                        {poll.quorumReached ? t('polls.quorumReached') : t('polls.quorumNotReached')}
+                      </span>
+                    )}
+                    {isAdmin && poll.status === 'OPEN' && (
+                      <button
+                        onClick={() => closePoll.mutate(poll.id)}
+                        className="text-xs text-olive-500 hover:text-clay-600"
+                      >
+                        {t('polls.close')}
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                {/* Vote buttons */}
+                {poll.status === 'OPEN' && (
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {VOTE_OPTIONS.map((opt) => (
+                      <button
+                        key={opt}
+                        onClick={() => handleVote(poll.id, opt)}
+                        disabled={castVote.isPending}
+                        className={`rounded-full px-3 py-1 text-xs font-medium transition-all ${VOTE_COLORS[opt]} ${poll.myVote === opt ? VOTE_ACTIVE[opt] : ''}`}
+                      >
+                        {t(`polls.option.${opt.toLowerCase()}`)}
+                        {poll.results?.[opt] > 0 && ` (${poll.results[opt]})`}
+                      </button>
+                    ))}
+                    {total > 0 && <span className="self-center text-xs text-olive-500">{t('polls.totalVotes', { count: total })}</span>}
+                  </div>
+                )}
+
+                {/* Results for closed polls */}
+                {poll.status === 'CLOSED' && (
+                  <div className="mt-3 space-y-1">
+                    <div className="flex flex-wrap gap-4 text-sm">
+                      {VOTE_OPTIONS.map((opt) => (
+                        <span key={opt} className="text-olive-700">
+                          <span className="font-medium">{t(`polls.option.${opt.toLowerCase()}`)}</span>: {poll.results?.[opt] ?? 0}
+                        </span>
+                      ))}
+                      <span className="text-olive-500">{t('polls.totalVotes', { count: total })}</span>
+                    </div>
+                    {(poll.results?.telematic > 0 || poll.results?.inPerson > 0) && (
+                      <p className="text-xs text-olive-400">
+                        {t('polls.telematic')}: {poll.results?.telematic ?? 0} · {t('polls.inPerson')}: {poll.results?.inPerson ?? 0}
+                      </p>
+                    )}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </section>
   );
 }

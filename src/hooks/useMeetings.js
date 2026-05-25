@@ -49,3 +49,31 @@ export function useUpdateAttendance(meetingId) {
     onSuccess: () => void qc.invalidateQueries({ queryKey: KEYS.detail(meetingId) }),
   });
 }
+
+export function useSaveMinutes(meetingId) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (minutes) => api.saveMinutes(meetingId, minutes),
+    onSuccess: () => void qc.invalidateQueries({ queryKey: KEYS.detail(meetingId) }),
+  });
+}
+
+export function usePublishMinutes(meetingId) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (published) => api.publishMinutes(meetingId, published),
+    onSuccess: () => void qc.invalidateQueries({ queryKey: KEYS.detail(meetingId) }),
+  });
+}
+
+export function useGenerateQr(meetingId) {
+  return useMutation({ mutationFn: () => api.generateQrToken(meetingId) });
+}
+
+export function useSignMinutes(meetingId) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (totpCode) => api.signMinutes(meetingId, totpCode),
+    onSuccess: () => void qc.invalidateQueries({ queryKey: KEYS.detail(meetingId) }),
+  });
+}

@@ -8,11 +8,17 @@ import {
   useDeleteUnit,
   useDeleteCommunity,
 } from '@/hooks/useCommunities';
+import { useCoAdmins, useAddCoAdmin, useRemoveCoAdmin } from '@/hooks/useCoAdmins';
+import { useAuth } from '@/contexts/AuthContext';
+import { useUnitNotes, useAddUnitNote, useDeleteUnitNote } from '@/hooks/useUnitNotes';
+import { useOwnershipHistory } from '@/hooks/useDelinquency';
 
 export function CommunityDetailPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { id } = useParams();
+  const { user } = useAuth();
+  const isAdmin = user?.role === 'ADMIN_FINCAS' || user?.role === 'SUPPORT';
   const { data: community, isLoading } = useCommunity(id);
   const createUnit = useCreateUnit(id ?? '');
   const deleteUnit = useDeleteUnit(id ?? '');
@@ -131,6 +137,34 @@ export function CommunityDetailPage() {
         <Link to={`/communities/${community.id}/meetings`} className="btn-ghost">
           {t('communities.linkMeetings')}
         </Link>
+        <Link to={`/communities/${community.id}/recurring`} className="btn-ghost">
+          {t('recurring.linkRecurring')}
+        </Link>
+        <Link to={`/communities/${community.id}/documents`} className="btn-ghost">
+          {t('communities.linkDocuments')}
+        </Link>
+        <Link to={`/communities/${community.id}/reports`} className="btn-ghost">
+          {t('communities.linkReports')}
+        </Link>
+        <Link to={`/communities/${community.id}/meter-readings`} className="btn-ghost">
+          {t('communities.linkMeters')}
+        </Link>
+        <Link to={`/communities/${community.id}/suppliers`} className="btn-ghost">
+          {t('communities.linkSuppliers')}
+        </Link>
+        <Link to={`/communities/${community.id}/calendar`} className="btn-ghost">
+          {t('communities.linkCalendar')}
+        </Link>
+        <Link to={`/communities/${community.id}/banking`} className="card flex items-center gap-3 hover:border-olive-300">
+          <span className="text-2xl">🏦</span>
+          <div>
+            <p className="font-medium text-olive-900">Banca</p>
+            <p className="text-sm text-olive-500">Movimientos y reconciliación</p>
+          </div>
+        </Link>
+        <Link to={`/communities/${community.id}/incidents`} className="btn-ghost">
+          {t('incidents.title')}
+        </Link>
       </div>
 
       <section className="mt-10">
@@ -218,37 +252,151 @@ export function CommunityDetailPage() {
                 const owner = u.ownerships?.[0]?.owner;
                 const occupant = u.occupancies?.[0]?.occupant;
                 return (
-                  <tr key={u.id} className="border-b border-olive-50 last:border-0">
-                    <td className="px-4 py-3 text-xs uppercase tracking-wider text-olive-600">
-                      {u.type}
-                    </td>
-                    <td className="px-4 py-3 font-medium text-olive-900">{u.label}</td>
-                    <td className="px-4 py-3 text-right font-mono text-olive-700">
-                      {parseFloat(u.coefficient).toFixed(2)}%
-                    </td>
-                    <td className="px-4 py-3 text-olive-700">
-                      {owner ? `${owner.firstName} ${owner.lastName}` : <span className="text-olive-400">—</span>}
-                    </td>
-                    <td className="px-4 py-3 text-olive-700">
-                      {occupant ? `${occupant.firstName} ${occupant.lastName}` : <span className="text-olive-400">—</span>}
-                    </td>
-                    <td className="px-4 py-3 text-right">
-                      <button
-                        onClick={() => handleDeleteUnit(u.id)}
-                        className="text-xs text-olive-500 hover:text-clay-600"
-                        aria-label={t('common.remove')}
-                      >
-                        ✕
-                      </button>
-                    </td>
-                  </tr>
+                  <UnitRows
+                    key={u.id}
+                    unit={u}
+                    owner={owner}
+                    occupant={occupant}
+                    communityId={community.id}
+                    isAdmin={isAdmin}
+                    onDelete={() => handleDeleteUnit(u.id)}
+                    t={t}
+                  />
                 );
               })}
             </tbody>
           </table>
         </div>
       </section>
+
+      <CoAdminsSection communityId={community.id} />
     </Layout>
+  );
+}
+
+function UnitNotesPanel({ unitId }) {
+  const { data: notes = [] } = useUnitNotes(unitId);
+  const addNote = useAddUnitNote(unitId);
+  const deleteNote = useDeleteUnitNote(unitId);
+  const [text, setText] = useState('');
+  const [open, setOpen] = useState(false);
+
+  if (!open) {
+    return (
+      <button onClick={() => setOpen(true)} className="text-xs text-olive-400 hover:text-olive-600">
+        📝 {notes.length > 0 ? `${notes.length} nota(s)` : 'Añadir nota'}
+      </button>
+    );
+  }
+
+  return (
+    <div className="mt-2 rounded-lg border border-cream-200 bg-cream-50 p-3">
+      <div className="flex items-center justify-between mb-2">
+        <p className="text-xs font-medium text-olive-700">Notas privadas (solo visible para admins)</p>
+        <button onClick={() => setOpen(false)} className="text-xs text-olive-400">✕</button>
+      </div>
+      {notes.map(note => (
+        <div key={note.id} className="mb-2 flex items-start justify-between gap-2">
+          <div>
+            <p className="text-xs text-olive-700">{note.content}</p>
+            <p className="text-xs text-olive-400">{note.author?.firstName} · {new Date(note.createdAt).toLocaleDateString()}</p>
+          </div>
+          <button onClick={() => deleteNote.mutate(note.id)} className="text-xs text-clay-500 hover:text-clay-700">✕</button>
+        </div>
+      ))}
+      <form
+        onSubmit={async (e) => {
+          e.preventDefault();
+          if (!text.trim()) return;
+          await addNote.mutateAsync(text);
+          setText('');
+        }}
+        className="flex gap-2 mt-2"
+      >
+        <input
+          value={text}
+          onChange={e => setText(e.target.value)}
+          placeholder="Nueva nota…"
+          className="input flex-1 text-xs"
+        />
+        <button type="submit" disabled={addNote.isPending} className="btn-primary text-xs px-3">+</button>
+      </form>
+    </div>
+  );
+}
+
+function OwnershipHistoryPanel({ communityId, unitId }) {
+  const { data: ownerships = [] } = useOwnershipHistory(communityId, unitId);
+  const [open, setOpen] = useState(false);
+
+  if (!open) {
+    return (
+      <button onClick={() => setOpen(true)} className="text-xs text-olive-400 hover:text-olive-600">
+        🏠 Historial propietarios
+      </button>
+    );
+  }
+
+  return (
+    <div className="mt-2 rounded-lg border border-cream-200 bg-cream-50 p-3">
+      <div className="flex items-center justify-between mb-2">
+        <p className="text-xs font-medium text-olive-700">Historial de propietarios</p>
+        <button onClick={() => setOpen(false)} className="text-xs text-olive-400">✕</button>
+      </div>
+      {ownerships.length === 0 && (
+        <p className="text-xs text-olive-400">Sin historial disponible.</p>
+      )}
+      {ownerships.map((o, i) => (
+        <div key={o.id ?? i} className="mb-1.5 text-xs text-olive-700">
+          <span className="font-medium">{o.owner?.firstName} {o.owner?.lastName}</span>
+          {o.owner?.email && <span className="ml-1 text-olive-400">({o.owner.email})</span>}
+          <span className="ml-1 text-olive-400">
+            · {o.startDate ? new Date(o.startDate).toLocaleDateString() : '?'}
+            {' → '}
+            {o.endDate ? new Date(o.endDate).toLocaleDateString() : 'presente'}
+          </span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function UnitRows({ unit, owner, occupant, communityId, isAdmin, onDelete, t }) {
+  return (
+    <>
+      <tr className="border-b border-olive-50 last:border-0">
+        <td className="px-4 py-3 text-olive-700">{unit.type}</td>
+        <td className="px-4 py-3 font-medium text-olive-900">{unit.label}</td>
+        <td className="px-4 py-3 text-right font-mono text-olive-700">{unit.coefficient}%</td>
+        <td className="px-4 py-3 text-olive-700">
+          {owner ? `${owner.firstName} ${owner.lastName}` : '—'}
+        </td>
+        <td className="px-4 py-3 text-olive-700">
+          {occupant ? `${occupant.firstName} ${occupant.lastName}` : '—'}
+        </td>
+        <td className="px-4 py-3 text-right">
+          {isAdmin && (
+            <button
+              onClick={onDelete}
+              className="text-xs text-olive-400 hover:text-clay-600"
+              aria-label={t('common.remove')}
+            >
+              ✕
+            </button>
+          )}
+        </td>
+      </tr>
+      {isAdmin && (
+        <tr className="border-b border-olive-50">
+          <td colSpan={6} className="px-4 pb-3">
+            <div className="flex flex-wrap gap-4">
+              <UnitNotesPanel unitId={unit.id} />
+              <OwnershipHistoryPanel communityId={communityId} unitId={unit.id} />
+            </div>
+          </td>
+        </tr>
+      )}
+    </>
   );
 }
 
@@ -258,5 +406,81 @@ function StatCard({ label, value }) {
       <p className="text-xs uppercase tracking-wider text-olive-500">{label}</p>
       <p className="mt-1 font-display text-3xl text-olive-950">{value}</p>
     </div>
+  );
+}
+
+function CoAdminsSection({ communityId }) {
+  const { t } = useTranslation();
+  const { user } = useAuth();
+  const { data: admins = [] } = useCoAdmins(communityId);
+  const addAdmin = useAddCoAdmin(communityId);
+  const removeAdmin = useRemoveCoAdmin(communityId);
+  const [email, setEmail] = useState('');
+  const [error, setError] = useState(null);
+
+  const handleAdd = async (e) => {
+    e.preventDefault();
+    setError(null);
+    try {
+      await addAdmin.mutateAsync(email.trim());
+      setEmail('');
+    } catch (err) {
+      setError(err?.response?.data?.error?.message ?? t('errors.generic'));
+    }
+  };
+
+  const handleRemove = async (userId) => {
+    if (!window.confirm(t('coAdmins.confirmRemove'))) return;
+    try {
+      await removeAdmin.mutateAsync(userId);
+    } catch (err) {
+      setError(err?.response?.data?.error?.message ?? t('errors.generic'));
+    }
+  };
+
+  return (
+    <section className="mt-10">
+      <h2 className="font-display text-2xl text-olive-900">{t('coAdmins.title')}</h2>
+      <form onSubmit={handleAdd} className="mt-4 flex gap-2">
+        <input
+          className="input flex-1"
+          type="email"
+          placeholder={t('coAdmins.emailPlaceholder')}
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
+        <button type="submit" className="btn-primary" disabled={addAdmin.isPending}>
+          {addAdmin.isPending ? t('common.loading') : t('coAdmins.addButton')}
+        </button>
+      </form>
+      {error && (
+        <div role="alert" className="mt-2 rounded-md border border-clay-400/40 bg-clay-400/10 px-3 py-2 text-sm text-clay-700">
+          {error}
+        </div>
+      )}
+      <ul className="mt-4 space-y-2">
+        {admins.map((a) => (
+          <li key={a.user.id} className="card flex items-center justify-between gap-4">
+            <div>
+              <p className="font-medium text-olive-900">{a.user.firstName} {a.user.lastName}</p>
+              <p className="text-xs text-olive-500">{a.user.email}</p>
+            </div>
+            {a.user.id !== user?.id && (
+              <button
+                onClick={() => handleRemove(a.user.id)}
+                className="text-xs text-olive-500 hover:text-clay-600"
+                aria-label={t('common.remove')}
+              >
+                ✕
+              </button>
+            )}
+          </li>
+        ))}
+        {admins.length === 0 && (
+          <p className="text-sm text-olive-500">{t('coAdmins.empty')}</p>
+        )}
+      </ul>
+    </section>
   );
 }

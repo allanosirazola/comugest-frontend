@@ -1,9 +1,67 @@
+import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Layout } from '@/components/Layout';
 import { formatMoney, formatDate } from '@/components/StatusBadge';
 import { useOverdue } from '@/hooks/useInvoices';
 import { useCommunity } from '@/hooks/useCommunities';
+import { useUnitDelinquencyHistory } from '@/hooks/useDelinquency';
+
+function DelinquencyHistoryPanel({ communityId, unitId, unitLabel }) {
+  const [open, setOpen] = useState(false);
+  const { data: history = [], isLoading } = useUnitDelinquencyHistory(open ? communityId : null, open ? unitId : null);
+
+  const statusColor = (status) => {
+    if (status === 'PAID') return 'text-green-700 bg-green-50';
+    if (status === 'OVERDUE') return 'text-clay-700 bg-clay-50';
+    return 'text-olive-700 bg-cream-100';
+  };
+
+  if (!open) {
+    return (
+      <button
+        onClick={() => setOpen(true)}
+        className="mt-1 text-xs text-olive-400 hover:text-olive-700 underline underline-offset-2"
+      >
+        Ver historial de pagos ({unitLabel})
+      </button>
+    );
+  }
+
+  return (
+    <div className="mt-3 rounded-lg border border-cream-200 bg-cream-50 p-3">
+      <div className="flex items-center justify-between mb-2">
+        <p className="text-xs font-medium text-olive-700">Historial de pagos · {unitLabel}</p>
+        <button onClick={() => setOpen(false)} className="text-xs text-olive-400 hover:text-olive-700">✕</button>
+      </div>
+      {isLoading && <p className="text-xs text-olive-500">Cargando…</p>}
+      {!isLoading && history.length === 0 && (
+        <p className="text-xs text-olive-500">Sin historial disponible.</p>
+      )}
+      {history.map((item, i) => (
+        <div key={item.id ?? i} className="mb-1.5 flex items-start justify-between gap-3 text-xs">
+          <div>
+            <span className="font-medium text-olive-800">{item.concept ?? item.invoice?.concept}</span>
+            {item.dueDate && (
+              <span className="ml-1 text-olive-400">· Vcto: {new Date(item.dueDate).toLocaleDateString()}</span>
+            )}
+            {item.daysOverdue > 0 && (
+              <span className="ml-1 text-clay-500">{item.daysOverdue}d vencida</span>
+            )}
+          </div>
+          <div className="flex items-center gap-2 shrink-0">
+            {item.amount != null && (
+              <span className="font-mono text-olive-700">{formatMoney(item.amount)}</span>
+            )}
+            <span className={`rounded-full px-2 py-0.5 text-[10px] font-medium uppercase ${statusColor(item.status)}`}>
+              {item.status}
+            </span>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
 
 export function MorososPage() {
   const { t } = useTranslation();
@@ -65,6 +123,13 @@ export function MorososPage() {
                               {it.invoice.concept}
                             </Link>
                             <span className="ml-2 text-xs text-olive-400">· {it.unit.label}</span>
+                            <div>
+                              <DelinquencyHistoryPanel
+                                communityId={id}
+                                unitId={it.unit.id}
+                                unitLabel={it.unit.label}
+                              />
+                            </div>
                           </td>
                           <td className="py-2 text-right text-xs text-olive-500">
                             {t('invoices.dueDate')}: {formatDate(it.invoice.dueDate)}

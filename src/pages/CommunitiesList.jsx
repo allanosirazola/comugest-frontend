@@ -3,6 +3,64 @@ import { useTranslation } from 'react-i18next';
 import { Layout } from '@/components/Layout';
 import { useCommunities } from '@/hooks/useCommunities';
 
+function ComparisonTable({ communities, t }) {
+  if (!communities || communities.length < 2) return null;
+
+  return (
+    <section className="mt-12">
+      <h2 className="font-display text-2xl text-olive-900">Comparativa de comunidades</h2>
+      <p className="mt-1 text-sm text-olive-500">
+        Resumen de las métricas disponibles en el listado. Los datos detallados (facturas, morosos, gastos) se cargan por comunidad.
+      </p>
+      <div className="card mt-4 overflow-x-auto p-0">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="border-b border-olive-100 bg-cream-100/50 text-left text-xs uppercase tracking-wider text-olive-600">
+              <th className="px-4 py-3">Comunidad</th>
+              <th className="px-4 py-3 text-right">Unidades</th>
+              <th className="px-4 py-3">Ciudad</th>
+              <th className="px-4 py-3">CIF</th>
+              <th className="px-4 py-3 text-right">Facturas pendientes</th>
+              <th className="px-4 py-3 text-right">Morosos</th>
+              <th className="px-4 py-3 text-right">Gastos YTD</th>
+            </tr>
+          </thead>
+          <tbody>
+            {communities.map((c) => (
+              <tr key={c.id} className="border-b border-olive-50 transition-colors hover:bg-olive-50/40 last:border-0">
+                <td className="px-4 py-3">
+                  <Link to={`/communities/${c.id}`} className="font-medium text-olive-900 hover:text-olive-600">
+                    {c.name}
+                  </Link>
+                </td>
+                <td className="px-4 py-3 text-right font-mono text-olive-700">
+                  {c._count?.units ?? '—'}
+                </td>
+                <td className="px-4 py-3 text-olive-600">{c.city}</td>
+                <td className="px-4 py-3 font-mono text-xs text-olive-500">{c.cif ?? '—'}</td>
+                <td className="px-4 py-3 text-right text-olive-400" title="No disponible en el listado">—</td>
+                <td className="px-4 py-3 text-right text-olive-400" title="No disponible en el listado">—</td>
+                <td className="px-4 py-3 text-right text-olive-400" title="No disponible en el listado">—</td>
+              </tr>
+            ))}
+          </tbody>
+          <tfoot>
+            <tr className="border-t border-olive-100 bg-cream-50/50">
+              <td className="px-4 py-2 text-xs font-medium text-olive-600">Total</td>
+              <td className="px-4 py-2 text-right font-mono text-xs font-semibold text-olive-800">
+                {communities.reduce((sum, c) => sum + (c._count?.units ?? 0), 0)}
+              </td>
+              <td colSpan={5} className="px-4 py-2 text-xs text-olive-400">
+                Los datos de facturas, morosos y gastos se consultan en cada comunidad individual.
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </section>
+  );
+}
+
 export function CommunitiesListPage() {
   const { t } = useTranslation();
   const { data: communities, isLoading, error } = useCommunities();
@@ -67,6 +125,8 @@ export function CommunitiesListPage() {
           </div>
         )}
       </div>
+
+      <ComparisonTable communities={communities} t={t} />
     </Layout>
   );
 }

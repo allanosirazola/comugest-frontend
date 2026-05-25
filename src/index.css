@@ -54,6 +54,6 @@
   }
 
   .card {
-    @apply rounded-xl border border-olive-100 bg-white p-6 shadow-soft;
+    @apply rounded-xl border border-olive-100 bg-white p-6 shadow-soft dark:border-olive-800 dark:bg-olive-900;
   }
 }

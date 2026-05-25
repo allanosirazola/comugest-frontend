@@ -9,10 +9,13 @@ import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 
 export function LoginPage() {
   const { t } = useTranslation();
-  const { login } = useAuth();
+  const { login, completeTwoFactor } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [serverError, setServerError] = useState(null);
+  const [preAuthToken, setPreAuthToken] = useState(null);
+  const [totpCode, setTotpCode] = useState('');
+  const [totpError, setTotpError] = useState('');
 
   const {
     register: rhfRegister,
@@ -23,11 +26,27 @@ export function LoginPage() {
   const onSubmit = async (values) => {
     setServerError(null);
     try {
-      await login(values);
+      const result = await login(values);
+      if (result && result.requiresTwoFactor) {
+        setPreAuthToken(result.preAuthToken);
+        return;
+      }
       const from = location.state?.from?.pathname ?? '/';
       navigate(from, { replace: true });
     } catch {
       setServerError(t('auth.login.errorInvalid'));
+    }
+  };
+
+  const handleTotpSubmit = async (e) => {
+    e.preventDefault();
+    setTotpError('');
+    try {
+      await completeTwoFactor(preAuthToken, totpCode);
+      const from = location.state?.from?.pathname ?? '/';
+      navigate(from, { replace: true });
+    } catch {
+      setTotpError(t('auth.twofa.error'));
     }
   };
 
@@ -46,75 +65,129 @@ export function LoginPage() {
         </header>
 
         <div className="my-auto w-full max-w-md self-center py-12">
-          <h1 className="font-display text-4xl font-medium leading-tight text-olive-950">
-            {t('auth.login.title')}
-          </h1>
-          <p className="mt-2 text-sm text-olive-600">{t('auth.login.subtitle')}</p>
+          {preAuthToken ? (
+            <>
+              <h1 className="font-display text-4xl font-medium leading-tight text-olive-950">
+                {t('auth.twofa.title')}
+              </h1>
+              <p className="mt-2 text-sm text-olive-600">{t('auth.twofa.desc')}</p>
 
-          <form onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-5" noValidate>
-            <div>
-              <label htmlFor="email" className="label">
-                {t('auth.login.email')}
-              </label>
-              <input
-                id="email"
-                type="email"
-                autoComplete="email"
-                className="input"
-                {...rhfRegister('email')}
-              />
-              {errors.email && (
-                <p className="mt-1 text-xs text-clay-600">{t('errors.invalidEmail')}</p>
-              )}
-            </div>
+              <form onSubmit={handleTotpSubmit} className="mt-8 space-y-5" noValidate>
+                <div>
+                  <label htmlFor="totp-code" className="label">
+                    {t('auth.twofa.codePlaceholder')}
+                  </label>
+                  <input
+                    id="totp-code"
+                    type="text"
+                    inputMode="numeric"
+                    autoComplete="one-time-code"
+                    maxLength={6}
+                    placeholder={t('auth.twofa.codePlaceholder')}
+                    className="input"
+                    value={totpCode}
+                    onChange={(e) => setTotpCode(e.target.value.replace(/\D/g, ''))}
+                    autoFocus
+                  />
+                </div>
 
-            <div>
-              <label htmlFor="password" className="label">
-                {t('auth.login.password')}
-              </label>
-              <input
-                id="password"
-                type="password"
-                autoComplete="current-password"
-                className="input"
-                {...rhfRegister('password')}
-              />
-              {errors.password && (
-                <p className="mt-1 text-xs text-clay-600">{t('errors.required')}</p>
-              )}
-            </div>
+                {totpError && (
+                  <div
+                    role="alert"
+                    className="rounded-md border border-clay-400/40 bg-clay-400/10 px-3 py-2 text-sm text-clay-700"
+                  >
+                    {totpError}
+                  </div>
+                )}
 
-            {serverError && (
-              <div
-                role="alert"
-                className="rounded-md border border-clay-400/40 bg-clay-400/10 px-3 py-2 text-sm text-clay-700"
-              >
-                {serverError}
+                <button type="submit" className="btn-primary w-full" disabled={totpCode.length !== 6}>
+                  {t('auth.twofa.submit')}
+                </button>
+              </form>
+
+              <p className="mt-6 text-sm">
+                <button
+                  type="button"
+                  onClick={() => { setPreAuthToken(null); setTotpCode(''); setTotpError(''); }}
+                  className="text-olive-700 underline underline-offset-4 hover:text-olive-900"
+                >
+                  {t('auth.twofa.back')}
+                </button>
+              </p>
+            </>
+          ) : (
+            <>
+              <h1 className="font-display text-4xl font-medium leading-tight text-olive-950">
+                {t('auth.login.title')}
+              </h1>
+              <p className="mt-2 text-sm text-olive-600">{t('auth.login.subtitle')}</p>
+
+              <form onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-5" noValidate>
+                <div>
+                  <label htmlFor="email" className="label">
+                    {t('auth.login.email')}
+                  </label>
+                  <input
+                    id="email"
+                    type="email"
+                    autoComplete="email"
+                    className="input"
+                    {...rhfRegister('email')}
+                  />
+                  {errors.email && (
+                    <p className="mt-1 text-xs text-clay-600">{t('errors.invalidEmail')}</p>
+                  )}
+                </div>
+
+                <div>
+                  <label htmlFor="password" className="label">
+                    {t('auth.login.password')}
+                  </label>
+                  <input
+                    id="password"
+                    type="password"
+                    autoComplete="current-password"
+                    className="input"
+                    {...rhfRegister('password')}
+                  />
+                  {errors.password && (
+                    <p className="mt-1 text-xs text-clay-600">{t('errors.required')}</p>
+                  )}
+                </div>
+
+                {serverError && (
+                  <div
+                    role="alert"
+                    className="rounded-md border border-clay-400/40 bg-clay-400/10 px-3 py-2 text-sm text-clay-700"
+                  >
+                    {serverError}
+                  </div>
+                )}
+
+                <button type="submit" className="btn-primary w-full" disabled={isSubmitting}>
+                  {isSubmitting ? t('common.loading') : t('auth.login.submit')}
+                </button>
+              </form>
+
+              <p className="mt-4 text-sm text-olive-600">
+                <Link to="/forgot-password" className="text-olive-700 underline underline-offset-4 hover:text-olive-900">
+                  {t('auth.login.forgotPassword')}
+                </Link>
+              </p>
+
+              <p className="mt-6 text-sm text-olive-600">
+                {t('auth.login.noAccount')}{' '}
+                <Link to="/register" className="font-medium text-olive-800 underline underline-offset-4 hover:text-olive-900">
+                  {t('auth.login.createAccount')}
+                </Link>
+              </p>
+
+              {/* Aviso para vecinos */}
+              <div className="mt-6 rounded-lg border border-olive-100 bg-cream-100/60 px-4 py-3 text-sm text-olive-600">
+                {t('auth.login.vecinoNote')}
               </div>
-            )}
-
-            <button type="submit" className="btn-primary w-full" disabled={isSubmitting}>
-              {isSubmitting ? t('common.loading') : t('auth.login.submit')}
-            </button>
-          </form>
-
-          <p className="mt-4 text-sm text-olive-600">
-            <Link to="/forgot-password" className="text-olive-700 underline underline-offset-4 hover:text-olive-900">
-              {t('auth.login.forgotPassword')}
-            </Link>
-          </p>
-
-          <p className="mt-6 text-sm text-olive-600">
-            {t('auth.login.noAccount')}{' '}
-            <Link to="/register" className="font-medium text-olive-800 underline underline-offset-4 hover:text-olive-900">
-              {t('auth.login.createAccount')}
-            </Link>
-          </p>
-
-          {/* Aviso para vecinos */}
-          <div className="mt-6 rounded-lg border border-olive-100 bg-cream-100/60 px-4 py-3 text-sm text-olive-600">
-            {t('auth.login.vecinoNote')}
-          </div>
+            </>
+          )}
         </div>
 
         <footer className="flex items-center justify-between text-xs text-olive-400">

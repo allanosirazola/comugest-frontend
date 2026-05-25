@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Layout } from '@/components/Layout';
 import { useAuth } from '@/contexts/AuthContext';
 import { useAreas, useReservations, useCreateReservation, useCancelReservation } from '@/hooks/useAreas';
+import { useMyWaitlist, useJoinWaitlist, useLeaveWaitlist } from '@/hooks/useWaitlist';
 
 const ADMIN_ROLES = ['ADMIN_FINCAS', 'SUPPORT'];
 
@@ -61,8 +62,14 @@ export function AreaReservationsPage() {
   const [confirmSlot, setConfirmSlot] = useState(null); // { startTime, endTime }
   const [notes, setNotes] = useState('');
   const [modalError, setModalError] = useState(null);
+  const [waitlistConflictSlot, setWaitlistConflictSlot] = useState(null); // slot that had 409 conflict
+  const [waitlistSuccess, setWaitlistSuccess] = useState(false);
 
   const [cancelTarget, setCancelTarget] = useState(null); // reservation object
+
+  const joinWaitlist = useJoinWaitlist();
+  const leaveWaitlist = useLeaveWaitlist();
+  const { data: myWaitlist = [] } = useMyWaitlist();
 
   const handleReserve = async (e) => {
     e.preventDefault();
@@ -74,7 +81,29 @@ export function AreaReservationsPage() {
       setConfirmSlot(null);
       setNotes('');
     } catch (err) {
-      setModalError(err?.response?.data?.error?.message ?? t('errors.generic'));
+      const status = err?.response?.status;
+      if (status === 409) {
+        // Slot conflict: offer waitlist
+        setWaitlistConflictSlot(confirmSlot);
+        setConfirmSlot(null);
+        setNotes('');
+      } else {
+        setModalError(err?.response?.data?.error?.message ?? t('errors.generic'));
+      }
+    }
+  };
+
+  const handleJoinWaitlist = async () => {
+    if (!waitlistConflictSlot) return;
+    try {
+      const startTime = new Date(`${date}T${waitlistConflictSlot.startTime}:00.000Z`).toISOString();
+      const endTime = new Date(`${date}T${waitlistConflictSlot.endTime}:00.000Z`).toISOString();
+      await joinWaitlist.mutateAsync({ areaId, startTime, endTime });
+      setWaitlistConflictSlot(null);
+      setWaitlistSuccess(true);
+      setTimeout(() => setWaitlistSuccess(false), 3000);
+    } catch {
+      // dismiss silently — user can retry
     }
   };
 
@@ -258,6 +287,80 @@ export function AreaReservationsPage() {
                 {cancelReservation.isPending ? t('common.loading') : t('areas.cancel')}
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Waitlist conflict modal */}
+      {waitlistConflictSlot && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+          <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
+            <h2 className="mb-1 font-display text-xl font-medium text-olive-950">{t('areas.slotTaken')}</h2>
+            <p className="mb-4 text-sm text-olive-600">{t('areas.joinWaitlistPrompt')}</p>
+            <div className="flex justify-end gap-3">
+              <button
+                type="button"
+                className="text-sm text-olive-600 hover:text-olive-900"
+                onClick={() => setWaitlistConflictSlot(null)}
+              >
+                {t('common.cancel')}
+              </button>
+              <button
+                type="button"
+                className="btn-primary"
+                disabled={joinWaitlist.isPending}
+                onClick={handleJoinWaitlist}
+              >
+                {joinWaitlist.isPending ? t('common.loading') : t('areas.joinWaitlist')}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Waitlist success toast */}
+      {waitlistSuccess && (
+        <div className="fixed bottom-6 right-6 z-50 rounded-lg bg-olive-700 px-4 py-3 text-sm font-medium text-white shadow-lg">
+          {t('areas.waitlistJoined')}
+        </div>
+      )}
+
+      {/* My waitlist entries for this area */}
+      {myWaitlist.filter((e) => e.areaId === areaId).length > 0 && (
+        <div className="mt-8">
+          <h2 className="font-display text-xl text-olive-900">{t('areas.myWaitlist')}</h2>
+          <div className="card mt-3 overflow-x-auto p-0">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-olive-100 bg-cream-100/50 text-left text-xs uppercase tracking-wider text-olive-600">
+                  <th className="px-4 py-3">{t('areas.selectDate')}</th>
+                  <th className="px-4 py-3">Hora</th>
+                  <th className="px-4 py-3"></th>
+                </tr>
+              </thead>
+              <tbody>
+                {myWaitlist.filter((e) => e.areaId === areaId).map((entry) => (
+                  <tr key={entry.id} className="border-b border-olive-50 last:border-0">
+                    <td className="px-4 py-3 text-olive-700">
+                      {new Date(entry.startTime).toLocaleDateString()}
+                    </td>
+                    <td className="px-4 py-3 font-mono text-olive-700">
+                      {new Date(entry.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      –{new Date(entry.endTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    </td>
+                    <td className="px-4 py-3 text-right">
+                      <button
+                        onClick={() => leaveWaitlist.mutate(entry.id)}
+                        className="text-xs text-olive-500 hover:text-clay-600"
+                        disabled={leaveWaitlist.isPending}
+                      >
+                        {t('areas.leaveWaitlist')}
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
       )}
