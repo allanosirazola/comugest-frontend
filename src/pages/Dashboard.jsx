@@ -253,12 +253,15 @@ function computeExpensePieData(expenses) {
 
 function AdminCharts({ communityId }) {
   const { data: invoices, isLoading: invLoading } = useCommunityInvoices(communityId);
-  const { data: expenses, isLoading: expLoading } = useCommunityExpenses(communityId);
+  const { data: expData, isLoading: expLoading } = useCommunityExpenses(communityId);
 
   if (invLoading || expLoading) return null;
 
+  // Backend returns { expenses: [...], summary: {} } — extract the array
+  const expenseList = Array.isArray(expData) ? expData : (expData?.expenses ?? []);
+
   const barData = computeMonthlyBarData(invoices);
-  const pieData = computeExpensePieData(expenses);
+  const pieData = computeExpensePieData(expenseList);
 
   if (barData.length === 0 && pieData.length === 0) return null;
 
