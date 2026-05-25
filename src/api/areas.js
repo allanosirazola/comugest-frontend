@@ -19,13 +19,13 @@ export async function deleteArea(id) {
   await api.delete(`/areas/${id}`);
 }
 
-export async function listReservations(areaId, date) {
-  const { data } = await api.get(`/areas/${areaId}/reservations`, { params: { date } });
+export async function listReservations(communityId, areaId, date) {
+  const { data } = await api.get(`/communities/${communityId}/areas/${areaId}/reservations`, { params: { date } });
   return data;
 }
 
-export async function createReservation(areaId, input) {
-  const { data } = await api.post(`/areas/${areaId}/reservations`, input);
+export async function createReservation(communityId, areaId, input) {
+  const { data } = await api.post(`/communities/${communityId}/areas/${areaId}/reservations`, input);
   return data.reservation;
 }
 
