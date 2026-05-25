@@ -23,6 +23,12 @@ vi.mock('@/hooks/useComms', () => ({
   useDeleteAnnouncement: vi.fn(),
 }));
 
+vi.mock('@/hooks/useTemplates', () => ({
+  useTemplates: vi.fn().mockReturnValue({ data: [], isLoading: false }),
+  useCreateTemplate: vi.fn().mockReturnValue({ mutateAsync: vi.fn(), isPending: false }),
+  useDeleteTemplate: vi.fn().mockReturnValue({ mutateAsync: vi.fn() }),
+}));
+
 import { useCommunity } from '@/hooks/useCommunities';
 import { useCommunityAnnouncements, useCreateAnnouncement, useDeleteAnnouncement } from '@/hooks/useComms';
 

@@ -21,6 +21,10 @@ vi.mock('@/hooks/useCommunities', () => ({
   useCommunity: vi.fn(),
 }));
 
+vi.mock('@/hooks/useDelinquency', () => ({
+  useUnitDelinquencyHistory: vi.fn().mockReturnValue({ data: [], isLoading: false }),
+}));
+
 import { useOverdue } from '@/hooks/useInvoices';
 import { useCommunity } from '@/hooks/useCommunities';
 

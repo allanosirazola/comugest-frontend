@@ -7,6 +7,10 @@ vi.mock('@/contexts/AuthContext', () => ({
   AuthProvider: ({ children }) => children,
 }));
 
+vi.mock('@/hooks/useBilling', () => ({
+  useBillingStatus: vi.fn().mockReturnValue({ data: { planStatus: 'ACTIVE' }, isLoading: false }),
+}));
+
 import { useAuth } from '@/contexts/AuthContext';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
 

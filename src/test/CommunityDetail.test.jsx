@@ -8,11 +8,34 @@ vi.mock('@/components/Layout', () => ({
   Layout: ({ children }) => <div>{children}</div>,
 }));
 
+vi.mock('@/contexts/AuthContext', () => ({
+  useAuth: vi.fn().mockReturnValue({ user: { role: 'ADMIN_FINCAS' } }),
+  AuthProvider: ({ children }) => children,
+}));
+
 vi.mock('@/hooks/useCommunities', () => ({
   useCommunity: vi.fn(),
   useCreateUnit: vi.fn(),
+  useUpdateUnit: vi.fn().mockReturnValue({ mutateAsync: vi.fn(), isPending: false }),
   useDeleteUnit: vi.fn(),
   useDeleteCommunity: vi.fn(),
+}));
+
+vi.mock('@/hooks/useUnitNotes', () => ({
+  useUnitNotes: vi.fn().mockReturnValue({ data: [], isLoading: false }),
+  useAddUnitNote: vi.fn().mockReturnValue({ mutateAsync: vi.fn(), isPending: false }),
+  useDeleteUnitNote: vi.fn().mockReturnValue({ mutateAsync: vi.fn() }),
+}));
+
+vi.mock('@/hooks/useDelinquency', () => ({
+  useUnitDelinquencyHistory: vi.fn().mockReturnValue({ data: [], isLoading: false }),
+  useOwnershipHistory: vi.fn().mockReturnValue({ data: [], isLoading: false }),
+}));
+
+vi.mock('@/hooks/useCoAdmins', () => ({
+  useCoAdmins: vi.fn().mockReturnValue({ data: [], isLoading: false }),
+  useAddCoAdmin: vi.fn().mockReturnValue({ mutateAsync: vi.fn(), isPending: false }),
+  useRemoveCoAdmin: vi.fn().mockReturnValue({ mutateAsync: vi.fn() }),
 }));
 
 import { useCommunity, useCreateUnit, useDeleteUnit, useDeleteCommunity } from '@/hooks/useCommunities';

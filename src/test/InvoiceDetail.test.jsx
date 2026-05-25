@@ -20,6 +20,8 @@ vi.mock('@/hooks/useInvoices', () => ({
   useRecordPayment: vi.fn(),
   useDeletePayment: vi.fn(),
   useCancelInvoice: vi.fn(),
+  useDownloadSepa: vi.fn().mockReturnValue({ mutate: vi.fn(), isPending: false }),
+  useDownloadPdf: vi.fn().mockReturnValue({ mutate: vi.fn(), isPending: false }),
 }));
 
 import { useInvoice, useRecordPayment, useDeletePayment, useCancelInvoice } from '@/hooks/useInvoices';
