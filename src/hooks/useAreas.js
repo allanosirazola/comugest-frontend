@@ -33,19 +33,19 @@ export function useDeleteArea(communityId) {
   });
 }
 
-export function useReservations(areaId, date) {
+export function useReservations(communityId, areaId, date) {
   return useQuery({
-    queryKey: ['reservations', areaId, date],
-    queryFn: () => api.listReservations(areaId, date),
-    enabled: !!areaId && !!date,
+    queryKey: ['reservations', communityId, areaId, date],
+    queryFn: () => api.listReservations(communityId, areaId, date),
+    enabled: !!communityId && !!areaId && !!date,
   });
 }
 
-export function useCreateReservation(areaId, date) {
+export function useCreateReservation(communityId, areaId, date) {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (input) => api.createReservation(areaId, input),
-    onSuccess: () => void qc.invalidateQueries({ queryKey: ['reservations', areaId, date] }),
+    mutationFn: (input) => api.createReservation(communityId, areaId, input),
+    onSuccess: () => void qc.invalidateQueries({ queryKey: ['reservations', communityId, areaId, date] }),
   });
 }
 

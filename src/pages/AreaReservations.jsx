@@ -55,8 +55,8 @@ export function AreaReservationsPage() {
   const { data: areasData, isLoading: areasLoading } = useAreas(communityId);
   const area = areasData?.areas?.find((a) => a.id === areaId);
 
-  const { data: reservationsData, isLoading: resLoading } = useReservations(areaId, date);
-  const createReservation = useCreateReservation(areaId, date);
+  const { data: reservationsData, isLoading: resLoading } = useReservations(communityId, areaId, date);
+  const createReservation = useCreateReservation(communityId, areaId, date);
   const cancelReservation = useCancelReservation(areaId, date);
 
   const [confirmSlot, setConfirmSlot] = useState(null); // { startTime, endTime }

@@ -13,6 +13,26 @@ vi.mock('@/components/Layout', () => ({
   Layout: ({ children }) => <div data-testid="layout">{children}</div>,
 }));
 
+vi.mock('@/hooks/useCommunities', () => ({
+  useCommunities: vi.fn().mockReturnValue({ data: [], isLoading: false }),
+}));
+
+vi.mock('@/hooks/useAdmin', () => ({
+  useAdminKpis: vi.fn().mockReturnValue({ data: null, isLoading: false }),
+}));
+
+vi.mock('@/hooks/useInvoices', () => ({
+  useCommunityInvoices: vi.fn().mockReturnValue({ data: [], isLoading: false }),
+}));
+
+vi.mock('@/hooks/useExpenses', () => ({
+  useCommunityExpenses: vi.fn().mockReturnValue({ data: { expenses: [], summary: {} }, isLoading: false }),
+}));
+
+vi.mock('@/components/OnboardingWizard', () => ({
+  OnboardingWizard: () => null,
+}));
+
 import { useAuth } from '@/contexts/AuthContext';
 
 function renderDashboard() {

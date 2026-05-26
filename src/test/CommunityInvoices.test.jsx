@@ -17,6 +17,7 @@ vi.mock('@/components/StatusBadge', () => ({
 vi.mock('@/hooks/useInvoices', () => ({
   useCommunityInvoices: vi.fn(),
   useOverdue: vi.fn(),
+  useCreateBulkInvoice: vi.fn().mockReturnValue({ mutateAsync: vi.fn(), isPending: false }),
 }));
 
 vi.mock('@/hooks/useCommunities', () => ({

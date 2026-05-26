@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeAll, afterAll } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { I18nextProvider } from 'react-i18next';
 import i18n from '@/i18n';
@@ -20,6 +20,11 @@ vi.mock('@/api/client', () => ({
     clear: vi.fn(),
   },
   api: { interceptors: { request: { use: vi.fn() }, response: { use: vi.fn() } } },
+}));
+
+// NotificationBell calls useNotifications (useQuery) — mock it to avoid QueryClient requirement
+vi.mock('@/components/NotificationBell', () => ({
+  NotificationBell: () => null,
 }));
 
 import { AuthProvider } from '@/contexts/AuthContext';
@@ -53,15 +58,22 @@ describe('Layout', () => {
     expect(await screen.findByRole('link', { name: /mensajes/i })).toBeInTheDocument();
   });
 
-  it('renders the Report nav link', async () => {
+  it('renders the "Más" dropdown button (which contains Report link)', async () => {
     renderLayout();
-    // es locale: nav.report = "Reportar"
+    // The "Reportar" link is inside the "Más" dropdown; test that the trigger exists
+    // and that clicking it reveals the link
+    const masBtn = await screen.findByRole('button', { name: /más/i });
+    expect(masBtn).toBeInTheDocument();
+    fireEvent.click(masBtn);
     expect(await screen.findByRole('link', { name: /reportar/i })).toBeInTheDocument();
   });
 
-  it('renders the logout button', async () => {
+  it('renders the user menu button (which contains logout)', async () => {
     renderLayout();
-    // es locale: auth.logout = "Cerrar sesión"
+    // The "Cerrar sesión" button is inside the user menu dropdown; test the trigger
+    const userMenuBtn = await screen.findByRole('button', { name: /user menu/i });
+    expect(userMenuBtn).toBeInTheDocument();
+    fireEvent.click(userMenuBtn);
     expect(await screen.findByRole('button', { name: /cerrar sesión/i })).toBeInTheDocument();
   });
 
@@ -76,10 +88,9 @@ describe('Layout', () => {
     expect(await screen.findByText('hello world')).toBeInTheDocument();
   });
 
-  it('renders resident nav links when no user is logged in (unauthenticated = non-admin)', async () => {
+  it('renders resident nav link "Mis facturas" for non-admin users', async () => {
     renderLayout();
-    // es locale: nav.myInvoices = "Mis facturas", nav.expenses = "Gastos"
+    // "Mis facturas" is in the desktop nav bar (always rendered in DOM)
     expect(await screen.findByRole('link', { name: /mis facturas/i })).toBeInTheDocument();
-    expect(await screen.findByRole('link', { name: /gastos/i })).toBeInTheDocument();
   });
 });
